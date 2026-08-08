@@ -5,7 +5,7 @@ import { Reveal } from "@/components/marketing/Reveal";
 import { CONTACT, ADDRESS_FULL } from "@/lib/contact";
 
 export const metadata: Metadata = {
-  title: "Contact Us — DMECH Value Auto Services",
+  title: "Contact Us — DMECH Services Limited",
   description: "Talk to DMECH on WhatsApp, by phone, or visit our hub in Lagos.",
 };
 

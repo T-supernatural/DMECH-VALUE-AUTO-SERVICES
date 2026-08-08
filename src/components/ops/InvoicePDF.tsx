@@ -259,7 +259,7 @@ export function InvoicePDF({ invoice, business, customer, logoDataUri, vehiclePh
         </View>
 
         <Text style={s.footer} fixed>
-          {business.legal_name || "DMECH Value Auto Services"} · Generated {new Date().toISOString().slice(0, 10)}
+          {business.legal_name || "DMECH Services Limited"} · Generated {new Date().toISOString().slice(0, 10)}
         </Text>
       </Page>
     </Document>

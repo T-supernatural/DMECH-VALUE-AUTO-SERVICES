@@ -9,7 +9,7 @@ import "@/styles/marketing.css";
 // brings its own minimal branded shell instead, reusing the existing
 // dark hero + CTA button styles rather than inventing new ones.
 export const metadata: Metadata = {
-  title: "Page Not Found — DMECH Value Auto Services",
+  title: "Page Not Found — DMECH Services Limited",
 };
 
 export default function NotFound() {

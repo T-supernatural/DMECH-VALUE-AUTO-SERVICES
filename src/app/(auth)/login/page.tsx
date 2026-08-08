@@ -41,7 +41,7 @@ function LoginForm() {
           <Logo variant="splash" />
         </div>
         <div className="login-title">Staff Login</div>
-        <div className="login-subtitle">Operations Platform — DMECH Value Auto Services</div>
+        <div className="login-subtitle">Operations Platform — DMECH Services Limited</div>
 
         <form onSubmit={handleSubmit}>
           <label className="login-label" htmlFor="email">

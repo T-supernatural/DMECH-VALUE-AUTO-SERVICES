@@ -4,7 +4,7 @@ import { InstalmentPlans } from "@/components/marketing/InstalmentPlans";
 import { Reveal } from "@/components/marketing/Reveal";
 
 export const metadata: Metadata = {
-  title: "Financing & Instalment Plans — DMECH Value Auto Services",
+  title: "Financing & Instalment Plans — DMECH Services Limited",
   description:
     "DMECH Direct Finance and Partner Finance — pay while your vehicle ships, with flexible deposit and tenor options.",
 };

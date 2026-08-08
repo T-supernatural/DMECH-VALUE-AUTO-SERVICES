@@ -4,7 +4,7 @@ import { getPublicVehicles } from "@/lib/vehicles";
 import { getConfigValue } from "@/lib/platform-config";
 
 export const metadata: Metadata = {
-  title: "Vehicle Marketplace — DMECH Value Auto Services",
+  title: "Vehicle Marketplace — DMECH Services Limited",
   description:
     "Browse verified vehicles available now, in transit, and at port — imports and DMECH Certified Nigerian-used.",
 };

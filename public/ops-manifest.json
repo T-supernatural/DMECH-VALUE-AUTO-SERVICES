@@ -1,7 +1,7 @@
 {
   "name": "DMECH Ops",
   "short_name": "DMECH Ops",
-  "description": "DMECH Value Auto Services — internal operations platform",
+  "description": "DMECH Services Limited — internal operations platform",
   "start_url": "/ops/dashboard",
   "scope": "/ops",
   "id": "/ops/dashboard",

@@ -20,7 +20,7 @@ export function Logo({ variant = "nav" }: { variant?: "nav" | "footer" | "splash
   return (
     <Image
       src="/logo.png"
-      alt="DMECH Value Services"
+      alt="DMECH Services Limited"
       width={width}
       height={height}
       style={{ height, width: "auto" }}

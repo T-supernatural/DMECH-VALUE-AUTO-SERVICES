@@ -3,7 +3,7 @@ import { FAQ } from "@/components/marketing/FAQ";
 import { Reveal } from "@/components/marketing/Reveal";
 
 export const metadata: Metadata = {
-  title: "FAQ — DMECH Value Auto Services",
+  title: "FAQ — DMECH Services Limited",
   description: "Everything you need to know before you import or buy a certified vehicle.",
 };
 

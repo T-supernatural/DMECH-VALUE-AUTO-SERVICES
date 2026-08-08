@@ -5,7 +5,7 @@ import { Reveal } from "@/components/marketing/Reveal";
 import { SERVICE_PAGES, WHAT_TO_EXPECT } from "@/lib/service-pages";
 
 export const metadata: Metadata = {
-  title: "Vehicle Services — DMECH Value Auto Services",
+  title: "Vehicle Services — DMECH Services Limited",
   description: "Book workshop service for your vehicle — diagnostics, repairs, and maintenance.",
 };
 

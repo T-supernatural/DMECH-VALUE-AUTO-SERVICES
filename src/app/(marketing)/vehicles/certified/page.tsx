@@ -5,7 +5,7 @@ import { getPublicVehicles, isCertified } from "@/lib/vehicles";
 import { Reveal } from "@/components/marketing/Reveal";
 
 export const metadata: Metadata = {
-  title: "DMECH Certified Nigerian-Used — DMECH Value Auto Services",
+  title: "DMECH Certified Nigerian-Used — DMECH Services Limited",
   description:
     "Verified Nigerian-used vehicles, inspected and title-checked, sold with a real warranty backed by a dedicated reserve fund.",
 };

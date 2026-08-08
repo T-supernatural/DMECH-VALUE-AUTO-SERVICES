@@ -34,7 +34,7 @@ export const SERVICE_PAGES: ServicePageData[] = [
     slug: "diagnostics",
     name: "Car Diagnostics",
     icon: Search,
-    seoTitle: "Car Diagnostics in Lagos — DMECH Value Auto Services",
+    seoTitle: "Car Diagnostics in Lagos — DMECH Services Limited",
     seoDescription:
       "Computerized car diagnostics in Lagos — find the real fault before you pay for repairs. Book a diagnostic check with DMECH's workshop.",
     intro:
@@ -50,7 +50,7 @@ export const SERVICE_PAGES: ServicePageData[] = [
     slug: "engine",
     name: "Engine Repair",
     icon: Cog,
-    seoTitle: "Engine Repair in Lagos — DMECH Value Auto Services",
+    seoTitle: "Engine Repair in Lagos — DMECH Services Limited",
     seoDescription:
       "Engine repair and overhaul in Lagos — knocking, overheating, oil leaks, and full engine replacement. Book with DMECH's workshop.",
     intro:
@@ -66,7 +66,7 @@ export const SERVICE_PAGES: ServicePageData[] = [
     slug: "electrical",
     name: "Auto Electrical Repair",
     icon: Zap,
-    seoTitle: "Car Electrical Repair in Lagos — DMECH Value Auto Services",
+    seoTitle: "Car Electrical Repair in Lagos — DMECH Services Limited",
     seoDescription:
       "Car battery, alternator, starter motor, and ignition repair in Lagos. Book an auto electrical diagnosis with DMECH's workshop.",
     intro:
@@ -82,7 +82,7 @@ export const SERVICE_PAGES: ServicePageData[] = [
     slug: "ac",
     name: "Car AC Repair",
     icon: Snowflake,
-    seoTitle: "Car AC Repair in Lagos — DMECH Value Auto Services",
+    seoTitle: "Car AC Repair in Lagos — DMECH Services Limited",
     seoDescription:
       "Car air conditioning repair and regas in Lagos — blowing warm, weak airflow, or AC not turning on. Book with DMECH's workshop.",
     intro:
@@ -98,7 +98,7 @@ export const SERVICE_PAGES: ServicePageData[] = [
     slug: "suspension",
     name: "Suspension Repair",
     icon: Car,
-    seoTitle: "Suspension Repair in Lagos — DMECH Value Auto Services",
+    seoTitle: "Suspension Repair in Lagos — DMECH Services Limited",
     seoDescription:
       "Shock absorber, strut, and suspension repair in Lagos — for a smoother ride and safer handling on Lagos roads. Book with DMECH.",
     intro:
@@ -114,7 +114,7 @@ export const SERVICE_PAGES: ServicePageData[] = [
     slug: "brakes",
     name: "Brake Repair",
     icon: Disc,
-    seoTitle: "Brake Repair in Lagos — DMECH Value Auto Services",
+    seoTitle: "Brake Repair in Lagos — DMECH Services Limited",
     seoDescription:
       "Brake pad, disc, and fluid service in Lagos — squealing, grinding, or a soft brake pedal. Book a brake inspection with DMECH's workshop.",
     intro:
@@ -130,7 +130,7 @@ export const SERVICE_PAGES: ServicePageData[] = [
     slug: "body-paint",
     name: "Body & Paint",
     icon: Paintbrush,
-    seoTitle: "Car Body Repair & Paint in Lagos — DMECH Value Auto Services",
+    seoTitle: "Car Body Repair & Paint in Lagos — DMECH Services Limited",
     seoDescription:
       "Dent repair, scratch removal, panel beating, and paint matching in Lagos. Book a body and paint job with DMECH's workshop.",
     intro:
@@ -146,7 +146,7 @@ export const SERVICE_PAGES: ServicePageData[] = [
     slug: "ev-service",
     name: "EV Service",
     icon: BatteryCharging,
-    seoTitle: "EV Service & Repair in Lagos — DMECH Value Auto Services",
+    seoTitle: "EV Service & Repair in Lagos — DMECH Services Limited",
     seoDescription:
       "Electric vehicle servicing in Lagos — battery health checks, charging issues, and EV-specific maintenance. Book with DMECH's workshop.",
     intro:
@@ -162,7 +162,7 @@ export const SERVICE_PAGES: ServicePageData[] = [
     slug: "routine-maintenance",
     name: "Routine Maintenance",
     icon: Wrench,
-    seoTitle: "Car Servicing in Lagos — DMECH Value Auto Services",
+    seoTitle: "Car Servicing in Lagos — DMECH Services Limited",
     seoDescription:
       "Interim and full car servicing in Lagos — oil change, fluid checks, and scheduled maintenance. Book a service with DMECH's workshop.",
     intro:
