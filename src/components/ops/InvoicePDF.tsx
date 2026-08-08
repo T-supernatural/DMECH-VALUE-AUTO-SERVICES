@@ -61,9 +61,11 @@ const s = StyleSheet.create({
   },
   headerAccent: { position: "absolute", top: 0, left: 0, height: HEADER_HEIGHT, width: 78 },
   headerLeft: { flex: 1, paddingLeft: 92 },
-  // 718x190 source — fixed height keeps the wordmark crisp instead of
-  // relying on objectFit to shrink-and-center it inside a square box.
-  logo: { width: 150, height: 40, marginBottom: 8 },
+  // public/logo.png is 604x235 (DMECH Services Limited wordmark + tagline
+  // crop) -- width kept in that same ratio so react-pdf's fixed-dimension
+  // Image (no objectFit; see the photoImage note below for why) doesn't
+  // stretch it out of proportion.
+  logo: { width: 103, height: 40, marginBottom: 8 },
   headerRight: { alignItems: "flex-end", width: 170 },
   photoFrame: { marginTop: 10, width: 120, height: 50, backgroundColor: "#0B2038", padding: 3, flexShrink: 0, overflow: "hidden" },
   // NOT objectFit — confirmed live (rendered and visually inspected) that

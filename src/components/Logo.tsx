@@ -1,25 +1,32 @@
 import Image from "next/image";
 
-// Real logo asset (public/logo.png), cropped tight to content and made
-// transparent so it sits cleanly on both light (nav) and dark
-// (footer/splash) backgrounds. Original file was a 1080x1080 JPEG with a
-// large baked-in white canvas — cropped to its actual 718x190 content
-// bounding box and had its white background converted to alpha via Pillow.
-const ASPECT_RATIO = 718 / 190;
+// Two real logo crops from the DMECH Services Limited rebrand artwork, both
+// tight-cropped to content with the white canvas converted to alpha via
+// Pillow (same treatment as the previous asset):
+//   - public/logo.png (604x235) — wordmark + "Services Limited" tagline
+//     only, no icon mark. Used wherever height is constrained (nav bar,
+//     footer, sidebar) since the full stacked lockup below reads as an
+//     illegible near-square blob at those heights.
+//   - public/logo-full.png (604x691) — the complete lockup (icon mark +
+//     wordmark + tagline), stacked. Used only on the splash screen, which
+//     has the vertical room for the icon to actually read.
+const WORDMARK_ASPECT = 604 / 235;
+const FULL_ASPECT = 604 / 691;
 
 const HEIGHT: Record<"nav" | "footer" | "splash" | "sidebar", number> = {
   nav: 30,
   footer: 32,
-  splash: 64,
+  splash: 170,
   sidebar: 26,
 };
 
 export function Logo({ variant = "nav" }: { variant?: "nav" | "footer" | "splash" | "sidebar" }) {
   const height = HEIGHT[variant];
-  const width = Math.round(height * ASPECT_RATIO);
+  const isFull = variant === "splash";
+  const width = Math.round(height * (isFull ? FULL_ASPECT : WORDMARK_ASPECT));
   return (
     <Image
-      src="/logo.png"
+      src={isFull ? "/logo-full.png" : "/logo.png"}
       alt="DMECH Services Limited"
       width={width}
       height={height}
