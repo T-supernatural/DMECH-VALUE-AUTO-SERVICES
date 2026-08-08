@@ -10,7 +10,7 @@ export function Footer() {
         <div>
           <Logo variant="footer" />
           <div className="footer-about">
-            DMECH Value Services — Nigeria&apos;s trusted vehicle import, sales,
+            DMECH Services Limited — Nigeria&apos;s trusted vehicle import, sales,
             financing, and automotive service hub. Import. Drive. Thrive.
           </div>
         </div>
@@ -64,7 +64,7 @@ export function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <div>&copy; {new Date().getFullYear()} DMECH Value Services. All rights reserved.</div>
+        <div>&copy; {new Date().getFullYear()} DMECH Services Limited. All rights reserved.</div>
         <div>
           Developed and Managed by{" "}
           <a href="https://serialsets.com" target="_blank" rel="noopener noreferrer">
