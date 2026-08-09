@@ -33,7 +33,7 @@ interface PageProps {
 }
 
 export default async function AuditLogPage({ searchParams }: PageProps) {
-  const staff = await roleGuard(["super_admin", "managing_partner"]);
+  const staff = await roleGuard(["super_admin", "managing_partner", "it_manager"]);
   if (!staff) redirect("/ops/dashboard");
 
   const { action, table, staff: staffId, from, to } = await searchParams;

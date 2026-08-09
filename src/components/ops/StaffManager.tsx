@@ -16,14 +16,17 @@ const ROLE_OPTIONS: { value: StaffRole; label: string }[] = [
   { value: "workshop_lead", label: "Workshop Lead" },
   { value: "sales_rep", label: "Sales Rep" },
   { value: "accountant", label: "Accountant" },
+  { value: "it_manager", label: "IT Manager" },
 ];
 
 export function StaffManager({
   staff,
   currentUserId,
+  currentUserRole,
 }: {
   staff: DmechUser[];
   currentUserId: string;
+  currentUserRole: StaffRole;
 }) {
   const [roster, setRoster] = useState(staff);
   const [fullName, setFullName] = useState("");
@@ -33,6 +36,14 @@ export function StaffManager({
   const [role, setRole] = useState<StaffRole>("sales_rep");
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [resettingId, setResettingId] = useState<string | null>(null);
+  const [resetPasswordValue, setResetPasswordValue] = useState("");
+  const [resetStatus, setResetStatus] = useState<"idle" | "saving" | "error" | "saved">("idle");
+
+  // IT Manager provisions accounts but can never grant Super Admin --
+  // that decision stays with an existing Super Admin/Managing Partner.
+  const assignableRoles =
+    currentUserRole === "it_manager" ? ROLE_OPTIONS.filter((r) => r.value !== "super_admin") : ROLE_OPTIONS;
 
   async function addStaff() {
     setStatus("saving");
@@ -69,6 +80,29 @@ export function StaffManager({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updates),
     });
+  }
+
+  async function submitPasswordReset(id: string) {
+    setResetStatus("saving");
+    try {
+      const res = await fetch(`/api/admin/staff/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: resetPasswordValue }),
+      });
+      if (!res.ok) {
+        setResetStatus("error");
+        return;
+      }
+      setResetStatus("saved");
+      setResetPasswordValue("");
+      setTimeout(() => {
+        setResettingId(null);
+        setResetStatus("idle");
+      }, 1200);
+    } catch {
+      setResetStatus("error");
+    }
   }
 
   const activeCount = roster.filter((s) => s.is_active).length;
@@ -143,7 +177,7 @@ export function StaffManager({
               value={role}
               onChange={(e) => setRole(e.target.value as StaffRole)}
             >
-              {ROLE_OPTIONS.map((r) => (
+              {assignableRoles.map((r) => (
                 <option key={r.value} value={r.value}>
                   {r.label}
                 </option>
@@ -183,11 +217,21 @@ export function StaffManager({
               <th>Email</th>
               <th>Role</th>
               <th>Active</th>
+              <th>Password</th>
             </tr>
           </thead>
           <tbody>
             {roster.map((s) => {
               const isSelf = s.id === currentUserId;
+              // IT Manager can't touch a Super Admin account at all -- not
+              // just barred from granting the role, but from editing or
+              // deactivating one that already exists.
+              const isLockedSuperAdmin = currentUserRole === "it_manager" && s.role === "super_admin";
+              const rowRoleOptions =
+                s.role === "super_admin" && !assignableRoles.some((r) => r.value === "super_admin")
+                  ? [{ value: "super_admin" as StaffRole, label: "Super Admin" }, ...assignableRoles]
+                  : assignableRoles;
+              const isResetting = resettingId === s.id;
               return (
                 <tr key={s.id}>
                   <td>
@@ -205,10 +249,10 @@ export function StaffManager({
                       className="ops-input"
                       style={{ marginBottom: 0, width: "auto" }}
                       value={s.role}
-                      disabled={isSelf}
+                      disabled={isSelf || isLockedSuperAdmin}
                       onChange={(e) => updateStaff(s.id, { role: e.target.value as StaffRole })}
                     >
-                      {ROLE_OPTIONS.map((r) => (
+                      {rowRoleOptions.map((r) => (
                         <option key={r.value} value={r.value}>
                           {r.label}
                         </option>
@@ -219,9 +263,68 @@ export function StaffManager({
                     <input
                       type="checkbox"
                       checked={s.is_active}
-                      disabled={isSelf}
+                      disabled={isSelf || isLockedSuperAdmin}
                       onChange={(e) => updateStaff(s.id, { is_active: e.target.checked })}
                     />
+                  </td>
+                  <td>
+                    {isSelf ? (
+                      <span style={{ color: "var(--subtle)", fontSize: 12 }}>Use Change Password</span>
+                    ) : isLockedSuperAdmin ? (
+                      <span style={{ color: "var(--subtle)", fontSize: 12 }}>—</span>
+                    ) : isResetting ? (
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <input
+                          type="password"
+                          className="ops-input"
+                          style={{ marginBottom: 0, width: 140 }}
+                          placeholder="New password"
+                          value={resetPasswordValue}
+                          onChange={(e) => setResetPasswordValue(e.target.value)}
+                          autoFocus
+                        />
+                        <button
+                          type="button"
+                          className="ops-btn"
+                          style={{ padding: "6px 12px", fontSize: 12 }}
+                          disabled={resetPasswordValue.length < 8 || resetStatus === "saving"}
+                          onClick={() => submitPasswordReset(s.id)}
+                        >
+                          {resetStatus === "saving" ? "Saving..." : "Set"}
+                        </button>
+                        <button
+                          type="button"
+                          className="ops-btn-ghost"
+                          style={{ padding: "6px 10px", fontSize: 12 }}
+                          onClick={() => {
+                            setResettingId(null);
+                            setResetPasswordValue("");
+                            setResetStatus("idle");
+                          }}
+                        >
+                          Cancel
+                        </button>
+                        {resetStatus === "error" && (
+                          <span style={{ color: "var(--red)", fontSize: 12 }}>Failed</span>
+                        )}
+                        {resetStatus === "saved" && (
+                          <span style={{ color: "var(--green)", fontSize: 12 }}>Saved</span>
+                        )}
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        className="ops-btn-ghost"
+                        style={{ padding: "6px 12px", fontSize: 12 }}
+                        onClick={() => {
+                          setResettingId(s.id);
+                          setResetPasswordValue("");
+                          setResetStatus("idle");
+                        }}
+                      >
+                        Reset Password
+                      </button>
+                    )}
                   </td>
                 </tr>
               );

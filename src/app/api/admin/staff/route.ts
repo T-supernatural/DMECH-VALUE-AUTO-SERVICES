@@ -11,6 +11,7 @@ const VALID_ROLES: StaffRole[] = [
   "workshop_lead",
   "sales_rep",
   "accountant",
+  "it_manager",
 ];
 
 // Wraps the same Admin API call the first staff account was seeded with by
@@ -19,7 +20,7 @@ const VALID_ROLES: StaffRole[] = [
 // write policy for creating other staff rows, by design (see 004's
 // migration comment); this route is the only path in.
 export async function POST(request: Request) {
-  const staff = await roleGuard(["super_admin"]);
+  const staff = await roleGuard(["super_admin", "it_manager"]);
   if (!staff) {
     return NextResponse.json({ error: "Not permitted." }, { status: 403 });
   }
@@ -36,6 +37,13 @@ export async function POST(request: Request) {
       { error: "Name, a valid email, an 8+ character password, and a role are required." },
       { status: 400 },
     );
+  }
+
+  // IT Manager can provision accounts but must never be able to create
+  // another super_admin -- that decision stays with an existing Super Admin
+  // or Managing Partner, not an account-provisioning role.
+  if (staff.role === "it_manager" && role === "super_admin") {
+    return NextResponse.json({ error: "IT Manager cannot assign the Super Admin role." }, { status: 403 });
   }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;

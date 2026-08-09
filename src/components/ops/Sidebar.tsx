@@ -39,6 +39,7 @@ const ALL_ROLES: StaffRole[] = [
   "workshop_lead",
   "sales_rep",
   "accountant",
+  "it_manager",
 ];
 
 const NAV: { section: string; items: NavItem[] }[] = [
@@ -116,7 +117,7 @@ const NAV: { section: string; items: NavItem[] }[] = [
   {
     section: "Settings",
     items: [
-      { href: "/ops/settings/staff", label: "Staff", icon: UserCog, roles: ["super_admin"] },
+      { href: "/ops/settings/staff", label: "Staff", icon: UserCog, roles: ["super_admin", "it_manager"] },
       {
         href: "/ops/settings/business",
         label: "Business",
@@ -127,13 +128,13 @@ const NAV: { section: string; items: NavItem[] }[] = [
         href: "/ops/settings/platform",
         label: "Platform",
         icon: Settings,
-        roles: ["super_admin", "managing_partner"],
+        roles: ["super_admin", "managing_partner", "it_manager"],
       },
       {
         href: "/ops/settings/audit-log",
         label: "Audit Log",
         icon: History,
-        roles: ["super_admin", "managing_partner"],
+        roles: ["super_admin", "managing_partner", "it_manager"],
       },
     ],
   },
@@ -147,6 +148,7 @@ const ROLE_LABEL: Record<StaffRole, string> = {
   workshop_lead: "Workshop Lead",
   sales_rep: "Sales Rep",
   accountant: "Accountant",
+  it_manager: "IT Manager",
 };
 
 export function Sidebar({ staff }: { staff: DmechUser }) {

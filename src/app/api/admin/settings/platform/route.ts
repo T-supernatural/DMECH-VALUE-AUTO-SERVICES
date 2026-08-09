@@ -17,7 +17,7 @@ const SIMPLE_KEYS = [
 ] as const;
 
 export async function PATCH(request: Request) {
-  const staff = await roleGuard(["super_admin", "managing_partner"]);
+  const staff = await roleGuard(["super_admin", "managing_partner", "it_manager"]);
   if (!staff) {
     return NextResponse.json({ error: "Not permitted to edit platform settings." }, { status: 403 });
   }

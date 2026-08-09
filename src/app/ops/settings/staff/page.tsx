@@ -3,10 +3,10 @@ import { TopBar } from "@/components/ops/TopBar";
 import { StaffManager } from "@/components/ops/StaffManager";
 import { roleGuard } from "@/lib/guards";
 import { createClient } from "@/lib/supabase/server";
-import type { DmechUser } from "@/types";
+import type { DmechUser, StaffRole } from "@/types";
 
 export default async function StaffSettingsPage() {
-  const staff = await roleGuard(["super_admin"]);
+  const staff = await roleGuard(["super_admin", "it_manager"]);
   if (!staff) redirect("/ops/dashboard");
 
   const supabase = await createClient();
@@ -20,7 +20,11 @@ export default async function StaffSettingsPage() {
     <>
       <TopBar title="Staff" />
       <div className="ops-content">
-        <StaffManager staff={(data as DmechUser[] | null) ?? []} currentUserId={staff.id} />
+        <StaffManager
+          staff={(data as DmechUser[] | null) ?? []}
+          currentUserId={staff.id}
+          currentUserRole={staff.role as StaffRole}
+        />
       </div>
     </>
   );

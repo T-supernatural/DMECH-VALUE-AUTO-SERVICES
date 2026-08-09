@@ -12,7 +12,7 @@ interface PartsCreditLimits {
 }
 
 export default async function PlatformSettingsPage() {
-  const staff = await roleGuard(["super_admin", "managing_partner"]);
+  const staff = await roleGuard(["super_admin", "managing_partner", "it_manager"]);
   if (!staff) redirect("/ops/dashboard");
 
   const [
