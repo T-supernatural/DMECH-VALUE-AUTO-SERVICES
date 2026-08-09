@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { DEFAULT_NAV_ACCESS_BY_ROLE, OPS_NAV_ITEMS, buildNavAccessForRole, getEffectiveNavAccess } from "@/lib/staff-permissions";
 import type { DmechUser, StaffRole } from "@/types";
 
 function initials(fullName: string): string {
@@ -17,7 +18,6 @@ const ROLE_OPTIONS: { value: StaffRole; label: string }[] = [
   { value: "workshop_lead", label: "Workshop Lead" },
   { value: "sales_rep", label: "Sales Rep" },
   { value: "accountant", label: "Accountant" },
-  { value: "it_manager", label: "IT Manager" },
 ];
 
 export function StaffManager({
@@ -35,6 +35,7 @@ export function StaffManager({
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<StaffRole>("sales_rep");
+  const [navAccess, setNavAccess] = useState<string[]>(() => DEFAULT_NAV_ACCESS_BY_ROLE.sales_rep);
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const [resettingId, setResettingId] = useState<string | null>(null);
@@ -46,6 +47,15 @@ export function StaffManager({
   const assignableRoles =
     currentUserRole === "it_manager" ? ROLE_OPTIONS.filter((r) => r.value !== "super_admin") : ROLE_OPTIONS;
 
+  function toggleNavAccess(itemId: string) {
+    setNavAccess((prev) => {
+      if (prev.includes(itemId)) {
+        return prev.filter((id) => id !== itemId);
+      }
+      return [...prev, itemId];
+    });
+  }
+
   async function addStaff() {
     setStatus("saving");
     setError(null);
@@ -53,7 +63,7 @@ export function StaffManager({
       const res = await fetch("/api/admin/staff", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ full_name: fullName, email, phone, password, role }),
+        body: JSON.stringify({ full_name: fullName, email, phone, password, role, nav_access: navAccess }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -67,6 +77,7 @@ export function StaffManager({
       setPhone("");
       setPassword("");
       setRole("sales_rep");
+      setNavAccess(DEFAULT_NAV_ACCESS_BY_ROLE.sales_rep);
       setStatus("idle");
     } catch {
       setError("Something went wrong.");
@@ -74,7 +85,7 @@ export function StaffManager({
     }
   }
 
-  async function updateStaff(id: string, updates: Partial<Pick<DmechUser, "role" | "is_active">>) {
+  async function updateStaff(id: string, updates: Partial<Pick<DmechUser, "role" | "is_active" | "metadata">>) {
     setRoster((prev) => prev.map((s) => (s.id === id ? { ...s, ...updates } : s)));
     await fetch(`/api/admin/staff/${id}`, {
       method: "PATCH",
@@ -176,7 +187,11 @@ export function StaffManager({
               id="staff-role"
               className="ops-input"
               value={role}
-              onChange={(e) => setRole(e.target.value as StaffRole)}
+              onChange={(e) => {
+                const nextRole = e.target.value as StaffRole;
+                setRole(nextRole);
+                setNavAccess(buildNavAccessForRole(nextRole));
+              }}
             >
               {assignableRoles.map((r) => (
                 <option key={r.value} value={r.value}>
@@ -184,6 +199,22 @@ export function StaffManager({
                 </option>
               ))}
             </select>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 12 }}>
+          <div className="ops-field-label" style={{ marginBottom: 8 }}>Sidebar access</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 8 }}>
+            {OPS_NAV_ITEMS.map((item) => (
+              <label key={item.id} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12 }}>
+                <input
+                  type="checkbox"
+                  checked={navAccess.includes(item.id)}
+                  onChange={() => toggleNavAccess(item.id)}
+                />
+                {item.label}
+              </label>
+            ))}
           </div>
         </div>
 
@@ -224,6 +255,10 @@ export function StaffManager({
           <tbody>
             {roster.map((s) => {
               const isSelf = s.id === currentUserId;
+              const savedNavAccess = getEffectiveNavAccess(s);
+              const updateNavAccess = async (next: string[]) => {
+                await updateStaff(s.id, { metadata: { ...(s.metadata ?? {}), nav_access: next } });
+              };
               // IT Manager can't touch a Super Admin account at all -- not
               // just barred from granting the role, but from editing or
               // deactivating one that already exists.
@@ -267,6 +302,25 @@ export function StaffManager({
                       disabled={isSelf || isLockedSuperAdmin}
                       onChange={(e) => updateStaff(s.id, { is_active: e.target.checked })}
                     />
+                  </td>
+                  <td>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      {OPS_NAV_ITEMS.map((item) => (
+                        <label key={`${s.id}-${item.id}`} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12 }}>
+                          <input
+                            type="checkbox"
+                            checked={savedNavAccess.includes(item.id)}
+                            onChange={async () => {
+                              const next = savedNavAccess.includes(item.id)
+                                ? savedNavAccess.filter((id) => id !== item.id)
+                                : [...savedNavAccess, item.id];
+                              await updateNavAccess(next);
+                            }}
+                          />
+                          {item.label}
+                        </label>
+                      ))}
+                    </div>
                   </td>
                   <td>
                     {isSelf ? (

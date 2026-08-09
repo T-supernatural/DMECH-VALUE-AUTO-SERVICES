@@ -11,8 +11,7 @@ export type StaffRole =
   | "it_manager"
   | "workshop_lead"
   | "sales_rep"
-  | "accountant"
-  | "it_manager";
+  | "accountant";
 
 export type UserRole = StaffRole | "customer";
 

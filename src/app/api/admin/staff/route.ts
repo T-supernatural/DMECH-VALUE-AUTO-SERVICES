@@ -31,6 +31,7 @@ export async function POST(request: Request) {
   const phone = typeof body?.phone === "string" ? body.phone.trim() : "";
   const password = typeof body?.password === "string" ? body.password : "";
   const role = body?.role as StaffRole;
+  const navAccess = Array.isArray(body?.nav_access) ? body.nav_access.filter((item: unknown) => typeof item === "string") : [];
 
   if (!fullName || !email || password.length < 8 || !VALID_ROLES.includes(role)) {
     return NextResponse.json(
@@ -78,6 +79,9 @@ export async function POST(request: Request) {
       role,
       is_active: true,
       must_change_password: true,
+      metadata: {
+        nav_access: navAccess.length > 0 ? navAccess : undefined,
+      },
     })
     .select()
     .single();

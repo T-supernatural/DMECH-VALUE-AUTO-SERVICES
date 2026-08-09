@@ -27,125 +27,51 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { OPS_NAV_ITEMS, getEffectiveNavAccess, type OpsNavItemId } from "@/lib/staff-permissions";
 import { createClient } from "@/lib/supabase/client";
 import type { DmechUser, StaffRole } from "@/types";
 
-type NavItem = { href: string; label: string; icon: LucideIcon; roles: StaffRole[] };
+const NAV_ICON_MAP = {
+  dashboard: LayoutDashboard,
+  customers: Users,
+  vehicles: Car,
+  parts: Package,
+  "dealer-partners": Handshake,
+  workshop: Wrench,
+  specialists: HardHat,
+  invoices: Receipt,
+  receipts: CircleDollarSign,
+  shipments: Ship,
+  customs: FileCheck,
+  "warranty-claims": ShieldCheck,
+  "reserve-fund": PiggyBank,
+  "business-reports": BarChart3,
+  "consignment-payables": HandCoins,
+  staff: UserCog,
+  business: Building2,
+  platform: Settings,
+  "audit-log": History,
+  "login-activity": KeyRound,
+} as const;
 
-const ALL_ROLES: StaffRole[] = [
-  "super_admin",
-  "managing_partner",
-  "sales_manager",
-  "ops_manager",
-  "it_manager",
-  "workshop_lead",
-  "sales_rep",
-  "accountant",
-];
+type SidebarNavItem = {
+  id: OpsNavItemId;
+  href: string;
+  label: string;
+  icon: LucideIcon;
+};
 
-const NAV: { section: string; items: NavItem[] }[] = [
-  {
-    section: "Overview",
-    items: [{ href: "/ops/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ALL_ROLES }],
-  },
-  {
-    section: "Customers",
-    items: [{ href: "/ops/customers", label: "Customers", icon: Users, roles: ALL_ROLES }],
-  },
-  {
-    section: "Inventory",
-    items: [
-      { href: "/ops/vehicles", label: "Vehicles", icon: Car, roles: ALL_ROLES },
-      { href: "/ops/parts", label: "Parts", icon: Package, roles: ALL_ROLES },
-      { href: "/ops/dealer-partners", label: "Dealer Partners", icon: Handshake, roles: ALL_ROLES },
-    ],
-  },
-  {
-    section: "Operations",
-    items: [
-      { href: "/ops/workshop", label: "Workshop", icon: Wrench, roles: ALL_ROLES },
-      { href: "/ops/specialists", label: "Specialists", icon: HardHat, roles: ALL_ROLES },
-    ],
-  },
-  {
-    section: "Finance",
-    items: [
-      { href: "/ops/invoices", label: "Invoices", icon: Receipt, roles: ALL_ROLES },
-      { href: "/ops/receipts", label: "Receipts", icon: CircleDollarSign, roles: ALL_ROLES },
-    ],
-  },
-  {
-    section: "Logistics",
-    items: [
-      { href: "/ops/shipments", label: "Shipments", icon: Ship, roles: ALL_ROLES },
-      { href: "/ops/customs", label: "Customs", icon: FileCheck, roles: ALL_ROLES },
-    ],
-  },
-  {
-    section: "Certified Program",
-    items: [
-      {
-        href: "/ops/warranty-claims",
-        label: "Warranty Claims",
-        icon: ShieldCheck,
-        roles: ["super_admin", "managing_partner", "accountant"],
-      },
-      {
-        href: "/ops/reports/reserve-fund",
-        label: "Reserve Fund",
-        icon: PiggyBank,
-        roles: ["super_admin", "managing_partner", "accountant"],
-      },
-    ],
-  },
-  {
-    section: "Reports",
-    items: [
-      {
-        href: "/ops/reports",
-        label: "Business Reports",
-        icon: BarChart3,
-        roles: ["super_admin", "managing_partner", "accountant"],
-      },
-      {
-        href: "/ops/reports/consignment-payables",
-        label: "Consignment Payables",
-        icon: HandCoins,
-        roles: ["super_admin", "managing_partner", "accountant"],
-      },
-    ],
-  },
-  {
-    section: "Settings",
-    items: [
-      { href: "/ops/settings/staff", label: "Staff", icon: UserCog, roles: ["super_admin", "it_manager"] },
-      {
-        href: "/ops/settings/business",
-        label: "Business",
-        icon: Building2,
-        roles: ["super_admin", "managing_partner"],
-      },
-      {
-        href: "/ops/settings/platform",
-        label: "Platform",
-        icon: Settings,
-        roles: ["super_admin", "managing_partner", "it_manager"],
-      },
-      {
-        href: "/ops/settings/audit-log",
-        label: "Audit Log",
-        icon: History,
-        roles: ["super_admin", "managing_partner", "it_manager"],
-      },
-      {
-        href: "/ops/settings/login-activity",
-        label: "Login Activity",
-        icon: KeyRound,
-        roles: ["super_admin", "managing_partner", "it_manager"],
-      },
-    ],
-  },
-];
+const NAV: Record<string, SidebarNavItem[]> = OPS_NAV_ITEMS.reduce<Record<string, SidebarNavItem[]>>((acc, item) => {
+  const existing = acc[item.section] ?? [];
+  existing.push({
+    id: item.id,
+    href: item.href,
+    label: item.label,
+    icon: NAV_ICON_MAP[item.id as keyof typeof NAV_ICON_MAP],
+  });
+  acc[item.section] = existing;
+  return acc;
+}, {});
 
 const ROLE_LABEL: Record<StaffRole, string> = {
   super_admin: "Super Admin",
@@ -162,6 +88,7 @@ export function Sidebar({ staff }: { staff: DmechUser }) {
   const pathname = usePathname();
   const router = useRouter();
   const role = staff.role as StaffRole;
+  const visibleNavIds = new Set<OpsNavItemId>(getEffectiveNavAccess(staff));
 
   async function logout() {
     const supabase = createClient();
@@ -188,12 +115,12 @@ export function Sidebar({ staff }: { staff: DmechUser }) {
       </a>
 
       <nav className="ops-nav">
-        {NAV.map((group) => {
-          const visible = group.items.filter((item) => item.roles.includes(role));
+        {Object.entries(NAV).map(([section, items]) => {
+          const visible = items.filter((item) => visibleNavIds.has(item.id));
           if (visible.length === 0) return null;
           return (
-            <div key={group.section} className="ops-nav-section">
-              <div className="ops-nav-section-label">{group.section}</div>
+            <div key={section} className="ops-nav-section">
+              <div className="ops-nav-section-label">{section}</div>
               {visible.map((item) => {
                 const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
                 return (
