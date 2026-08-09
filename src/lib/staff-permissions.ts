@@ -136,9 +136,13 @@ export function normalizeNavAccess(value: unknown): OpsNavItemId[] {
 
 export function getEffectiveNavAccess(staff: Pick<DmechUser, "role" | "metadata">): OpsNavItemId[] {
   const metadata = (staff.metadata ?? {}) as Record<string, unknown>;
-  const explicit = normalizeNavAccess(metadata.nav_access ?? metadata.navigation_access ?? metadata.sidebar_access);
+  const explicitValue = metadata.nav_access ?? metadata.navigation_access ?? metadata.sidebar_access;
+  const explicit = normalizeNavAccess(explicitValue);
+  const hasExplicit = Object.prototype.hasOwnProperty.call(metadata, "nav_access") ||
+    Object.prototype.hasOwnProperty.call(metadata, "navigation_access") ||
+    Object.prototype.hasOwnProperty.call(metadata, "sidebar_access");
 
-  if (explicit.length > 0) {
+  if (hasExplicit) {
     return explicit;
   }
 
