@@ -41,6 +41,7 @@ const NAV_ICON_MAP = {
   specialists: HardHat,
   invoices: Receipt,
   receipts: CircleDollarSign,
+  financing: CircleDollarSign,
   shipments: Ship,
   customs: FileCheck,
   "warranty-claims": ShieldCheck,

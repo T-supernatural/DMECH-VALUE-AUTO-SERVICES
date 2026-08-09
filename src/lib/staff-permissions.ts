@@ -38,6 +38,7 @@ export const DEFAULT_NAV_ACCESS_BY_ROLE: Record<StaffRole, OpsNavItemId[]> = {
     "specialists",
     "invoices",
     "receipts",
+    "financing",
     "shipments",
     "customs",
     "warranty-claims",
