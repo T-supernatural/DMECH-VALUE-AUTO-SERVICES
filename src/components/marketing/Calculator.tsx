@@ -115,6 +115,7 @@ export function Calculator({ ngnRate = 1580, marketPriceBenchmarks = {} }: Calcu
         condition,
         engineSize: engine,
         isEV,
+        isDiesel: fuel === "diesel",
         ngnRate,
       }),
     );
@@ -340,20 +341,27 @@ export function Calculator({ ngnRate = 1580, marketPriceBenchmarks = {} }: Calcu
 
           <div style={{ marginTop: 16 }}>
             <div className="calc-result-title">Full Breakdown — DMECH Import</div>
+            <div style={{ fontSize: 12, color: "#8a97a8", marginBottom: 4 }}>
+              HS Code {result.hsCode} — {isEV ? "electric" : fuel === "diesel" ? "diesel" : "petrol"} passenger vehicle
+            </div>
             <div className="calc-result-total">{formatNaira(result.totalLandedKobo)}</div>
             <div className="calc-breakdown">
               <div className="line">
-                <span className="line-label">Vehicle Price</span>
+                <span className="line-label">Vehicle Cost</span>
                 <span className="line-value">
                   {formatUsd(typeof price === "number" ? price : 0)}
                 </span>
               </div>
               <div className="line">
-                <span className="line-label">Shipping</span>
+                <span className="line-label">Freight (Shipping)</span>
                 <span className="line-value">{formatUsd(shipping)}</span>
               </div>
               <div className="line">
-                <span className="line-label">CIF Value</span>
+                <span className="line-label">Insurance ({result.insuranceRatePct}% of Cost+Freight)</span>
+                <span className="line-value">{formatUsd(result.insuranceUsd)}</span>
+              </div>
+              <div className="line">
+                <span className="line-label">CIF Value (Cost+Insurance+Freight)</span>
                 <span className="line-value">{formatNaira(result.cifKobo)}</span>
               </div>
               <div className="line">
@@ -373,7 +381,7 @@ export function Calculator({ ngnRate = 1580, marketPriceBenchmarks = {} }: Calcu
                 <span className="line-value">{formatNaira(result.nacKobo)}</span>
               </div>
               <div className="line">
-                <span className="line-label">CISS (1%)</span>
+                <span className="line-label">CISS (1% of Cost)</span>
                 <span className="line-value">{formatNaira(result.cissKobo)}</span>
               </div>
               <div className="line">

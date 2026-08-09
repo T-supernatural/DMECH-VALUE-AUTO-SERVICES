@@ -7,6 +7,21 @@ import { toKobo } from "@/lib/money";
 // customs-duty calculation is exactly the kind of thing that drifts out of
 // sync. Both the marketing calculator and the Ops Customs module must import
 // this instead of reimplementing the formula.
+//
+// Corrected against a real NCS worked-example walkthrough (fabric import,
+// HS 5407, but the CIF/duty/CISS/VAT mechanics are commodity-agnostic):
+// this file previously computed "CIF" as just Cost + Freight with no
+// Insurance line at all — which is CF, not CIF — and charged CISS on CIF
+// instead of Cost. Both are fixed below. HS 8703 (motor vehicles) is the
+// applicable heading; fuel-type sub-headings are the closest publicly
+// verifiable breakdown as of this fix, not a guess, but the exact
+// Nigeria-specific 8-digit national suffix isn't independently confirmed —
+// treat hsCode as "close enough to cite," not a customs-filing-grade code.
+const HS_CODE_PETROL = "8703.23";
+const HS_CODE_DIESEL = "8703.32";
+const HS_CODE_ELECTRIC = "8703.80";
+
+const DEFAULT_INSURANCE_RATE_PCT = 0.5;
 
 export type EngineSize = "small" | "medium" | "large"; // <2000cc | 2000-3999cc | 4000cc+
 export type VehicleCondition = "used" | "new";
@@ -17,12 +32,21 @@ export interface DutyInput {
   condition: VehicleCondition;
   engineSize: EngineSize;
   isEV: boolean;
+  isDiesel?: boolean;
   ngnRate: number; // naira per USD, from platform_config.ngn_usd_rate
+  insuranceRatePct?: number; // defaults to 0.5%, the standard NCS worked-example rate
 }
 
 export interface DutyBreakdown {
+  hsCode: string;
+  costUsd: number;
+  freightUsd: number;
+  cfUsd: number;
+  insuranceUsd: number;
+  insuranceRatePct: number;
   cifUsd: number;
   cifKobo: number;
+  costKobo: number;
   dutyKobo: number;
   dutyRatePct: number;
   levyKobo: number;
@@ -46,10 +70,19 @@ const CLEARING_FEE_NAIRA = 350_000;
 const TERMINAL_FEE_NAIRA = 180_000;
 
 export function calculateLandedCost(input: DutyInput): DutyBreakdown {
-  const { priceUsd, shippingUsd, condition, engineSize, isEV, ngnRate } = input;
+  const { priceUsd, shippingUsd, condition, engineSize, isEV, isDiesel, ngnRate } = input;
+  const insuranceRatePct = input.insuranceRatePct ?? DEFAULT_INSURANCE_RATE_PCT;
 
-  const cifUsd = priceUsd + shippingUsd;
+  const hsCode = isEV ? HS_CODE_ELECTRIC : isDiesel ? HS_CODE_DIESEL : HS_CODE_PETROL;
+
+  // CIF = Cost + Insurance + Freight. Insurance is billed on Cost + Freight
+  // combined (CF), not on Cost alone -- this line was missing entirely
+  // before, which made the old "CIF" actually just CF.
+  const cfUsd = priceUsd + shippingUsd;
+  const insuranceUsd = cfUsd * (insuranceRatePct / 100);
+  const cifUsd = cfUsd + insuranceUsd;
   const cifNaira = cifUsd * ngnRate;
+  const costNaira = priceUsd * ngnRate;
 
   const dutyRatePct = isEV ? 10 : 20;
   const dutyNaira = cifNaira * (dutyRatePct / 100);
@@ -59,7 +92,9 @@ export function calculateLandedCost(input: DutyInput): DutyBreakdown {
 
   const surchargeNaira = dutyNaira * 0.07;
   const nacNaira = cifNaira * 0.02;
-  const cissNaira = cifNaira * 0.01;
+  // CISS is assessed on Cost (FOB value), not CIF -- was wrongly based on
+  // CIF before.
+  const cissNaira = costNaira * 0.01;
   const etlsNaira = cifNaira * 0.005;
 
   const greenTaxRatePct = isEV ? 0 : engineSize === "small" ? 0 : engineSize === "medium" ? 2 : 4;
@@ -74,8 +109,15 @@ export function calculateLandedCost(input: DutyInput): DutyBreakdown {
     cifNaira + totalDutiesNaira + CLEARING_FEE_NAIRA + TERMINAL_FEE_NAIRA + dmechFeeNaira;
 
   return {
+    hsCode,
+    costUsd: priceUsd,
+    freightUsd: shippingUsd,
+    cfUsd,
+    insuranceUsd,
+    insuranceRatePct,
     cifUsd,
     cifKobo: toKobo(cifNaira),
+    costKobo: toKobo(costNaira),
     dutyKobo: toKobo(dutyNaira),
     dutyRatePct,
     levyKobo: toKobo(levyNaira),
