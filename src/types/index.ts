@@ -509,6 +509,18 @@ export interface AuditLogEntry {
   created_at: string;
 }
 
+export interface StaffLoginEvent {
+  id: string;
+  user_id: string | null;
+  email: string;
+  success: boolean;
+  device_id: string | null;
+  is_new_device: boolean;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+}
+
 export interface PlatformConfigRow<T = unknown> {
   key: string;
   value: T;

@@ -5,6 +5,18 @@ import { useRouter, useSearchParams } from "next/navigation";
 import "@/styles/ops.css";
 import { Logo } from "@/components/Logo";
 import { createClient } from "@/lib/supabase/client";
+import { getDeviceId } from "@/lib/device-id";
+
+// Fire-and-forget -- a login-event logging failure must never block or
+// fail the actual login.
+function logLoginEvent(email: string, success: boolean) {
+  fetch("/api/auth/login-event", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, success, device_id: getDeviceId() }),
+    keepalive: true,
+  }).catch(() => {});
+}
 
 function LoginForm() {
   const router = useRouter();
@@ -23,12 +35,14 @@ function LoginForm() {
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (signInError) {
+      logLoginEvent(email, false);
       // Generic on purpose — don't confirm whether the email has an account.
       setError("Invalid email or password.");
       setLoading(false);
       return;
     }
 
+    logLoginEvent(email, true);
     const next = searchParams.get("next") || "/ops/dashboard";
     router.push(next);
     router.refresh();
