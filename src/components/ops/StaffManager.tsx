@@ -13,6 +13,7 @@ const ROLE_OPTIONS: { value: StaffRole; label: string }[] = [
   { value: "managing_partner", label: "Managing Partner" },
   { value: "sales_manager", label: "Sales Manager" },
   { value: "ops_manager", label: "Ops Manager" },
+  { value: "it_manager", label: "IT Manager" },
   { value: "workshop_lead", label: "Workshop Lead" },
   { value: "sales_rep", label: "Sales Rep" },
   { value: "accountant", label: "Accountant" },

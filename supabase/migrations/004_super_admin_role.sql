@@ -12,8 +12,8 @@
 -- editor) and adjust — don't guess further.
 alter table users drop constraint if exists users_role_check;
 alter table users add constraint users_role_check check (role in (
-  'super_admin','managing_partner','sales_manager','ops_manager','workshop_lead',
-  'sales_rep','accountant','customer'
+  'super_admin','managing_partner','sales_manager','ops_manager','it_manager',
+  'workshop_lead','sales_rep','accountant','customer'
 ));
 
 -- Promote the seeded account — this feature exists for them specifically.
