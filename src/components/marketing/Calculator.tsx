@@ -365,8 +365,12 @@ export function Calculator({ ngnRate = 1580, marketPriceBenchmarks = {} }: Calcu
                 <span className="line-value">{formatNaira(result.cifKobo)}</span>
               </div>
               <div className="line">
-                <span className="line-label">Import Duty ({result.dutyRatePct}%{isEV ? " — EV rate" : ""})</span>
-                <span className="line-value">{formatNaira(result.dutyKobo)}</span>
+                <span className="line-label">Import Duty</span>
+                {result.evDutyExempt ? (
+                  <span className="line-value" style={{ color: "#22C55E" }}>EXEMPT (EV, pending IDEC)</span>
+                ) : (
+                  <span className="line-value">{formatNaira(result.dutyKobo)} ({result.dutyRatePct}%)</span>
+                )}
               </div>
               <div className="line">
                 <span className="line-label">Import Levy ({result.levyRatePct}%)</span>
@@ -401,8 +405,12 @@ export function Calculator({ ngnRate = 1580, marketPriceBenchmarks = {} }: Calcu
                 )}
               </div>
               <div className="line">
-                <span className="line-label">VAT (7.5%)</span>
-                <span className="line-value">{formatNaira(result.vatKobo)}</span>
+                <span className="line-label">VAT</span>
+                {result.evDutyExempt ? (
+                  <span className="line-value" style={{ color: "#22C55E" }}>EXEMPT (EV, pending IDEC)</span>
+                ) : (
+                  <span className="line-value">{formatNaira(result.vatKobo)} ({result.vatRatePct}%)</span>
+                )}
               </div>
               <div className="line">
                 <span className="line-label">Clearing &amp; Terminal</span>
@@ -436,6 +444,15 @@ export function Calculator({ ngnRate = 1580, marketPriceBenchmarks = {} }: Calcu
               vehicle&apos;s condition, mileage, accident history, and the day&apos;s exchange
               rate (calculated at ₦{ngnRate}/$). Get an exact quote below and a DMECH rep will
               confirm the real auction price and total.
+              {result.evDutyExempt && (
+                <>
+                  {" "}The import duty and VAT exemption shown reflects NCS&apos;s July 2026
+                  guidelines for qualifying electric vehicles, but it isn&apos;t automatic — it
+                  requires an Import Duty Exemption Certificate (IDEC) from the Federal Ministry
+                  of Finance, which DMECH applies for on your behalf. Standard rates apply until
+                  that certificate is issued.
+                </>
+              )}
             </span>
           </div>
 
