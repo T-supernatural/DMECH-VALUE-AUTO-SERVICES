@@ -4,7 +4,7 @@ import { staffGuard } from "@/lib/guards";
 import { logAudit } from "@/lib/audit";
 import type { StaffRole, AcquisitionChannel } from "@/types";
 
-const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager"];
+const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager", "it_manager"];
 
 // is_published deliberately NOT writable here — a brand-new vehicle hasn't
 // had its price, photos, or details reviewed yet. It's forced false below

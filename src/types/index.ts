@@ -8,10 +8,10 @@ export type StaffRole =
   | "managing_partner"
   | "sales_manager"
   | "ops_manager"
+  | "it_manager"
   | "workshop_lead"
   | "sales_rep"
-  | "accountant"
-  | "it_manager";
+  | "accountant";
 
 export type UserRole = StaffRole | "customer";
 

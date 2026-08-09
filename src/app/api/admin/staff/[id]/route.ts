@@ -4,7 +4,7 @@ import { roleGuard } from "@/lib/guards";
 import { logAudit } from "@/lib/audit";
 import type { StaffRole } from "@/types";
 
-const ALLOWED = ["role", "is_active"] as const;
+const ALLOWED = ["role", "is_active", "metadata"] as const;
 
 const VALID_ROLES: StaffRole[] = [
   "super_admin",
@@ -48,7 +48,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   }
 
   const supabase = createServiceClient();
-  const { data: before } = await supabase.from("users").select("role, is_active, auth_user_id").eq("id", id).maybeSingle();
+  const { data: before } = await supabase
+    .from("users")
+    .select("role, is_active, auth_user_id, metadata")
+    .eq("id", id)
+    .maybeSingle();
 
   // Same boundary enforced server-side, not just hidden in the UI: IT
   // Manager can't touch an *existing* Super Admin account either -- not
@@ -60,6 +64,18 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const updates: Record<string, unknown> = {};
   for (const key of ALLOWED) {
     if (key in body) updates[key] = body[key];
+  }
+
+  if ("metadata" in body && body.metadata && typeof body.metadata === "object") {
+    const currentMetadata = (before?.metadata as Record<string, unknown> | undefined) ?? {};
+    const incomingMetadata = body.metadata as Record<string, unknown>;
+    const metadata: Record<string, unknown> = { ...currentMetadata, ...incomingMetadata };
+    const navAccess = Array.isArray(incomingMetadata.nav_access)
+      ? incomingMetadata.nav_access.filter((item): item is string => typeof item === "string")
+      : undefined;
+
+    if (navAccess !== undefined) metadata.nav_access = navAccess;
+    updates.metadata = metadata;
   }
   // A password reset forces the same "set your own password on next login"
   // flow a brand-new account goes through -- an admin-chosen password is

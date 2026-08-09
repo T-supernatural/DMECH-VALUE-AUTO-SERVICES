@@ -5,7 +5,7 @@ import { staffGuard } from "@/lib/guards";
 import { createClient } from "@/lib/supabase/server";
 import type { StaffRole } from "@/types";
 
-const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager"];
+const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager", "it_manager"];
 
 export default async function NewVehiclePage() {
   const staff = await staffGuard();

@@ -8,7 +8,7 @@ import { formatNaira } from "@/lib/money";
 import { stageLabel, stageBadgeClass } from "@/lib/ops/vehicle-stage";
 import type { Vehicle, AcquisitionChannel, StaffRole } from "@/types";
 
-const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager"];
+const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager", "it_manager"];
 
 const CHANNEL_LABEL: Record<AcquisitionChannel, string> = {
   import: "Import",
