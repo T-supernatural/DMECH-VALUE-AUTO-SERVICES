@@ -41,7 +41,6 @@ const ALL_ROLES: StaffRole[] = [
   "workshop_lead",
   "sales_rep",
   "accountant",
-  "it_manager",
 ];
 
 const NAV: { section: string; items: NavItem[] }[] = [
@@ -157,7 +156,6 @@ const ROLE_LABEL: Record<StaffRole, string> = {
   workshop_lead: "Workshop Lead",
   sales_rep: "Sales Rep",
   accountant: "Accountant",
-  it_manager: "IT Manager",
 };
 
 export function Sidebar({ staff }: { staff: DmechUser }) {
