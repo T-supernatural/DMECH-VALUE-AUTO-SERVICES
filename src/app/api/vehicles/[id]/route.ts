@@ -23,7 +23,7 @@ const ALLOWED = [
   "use_categories",
 ] as const;
 
-const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager"];
+const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager", "it_manager"];
 
 // Freeform text fields prone to stray leading/trailing whitespace from
 // manual entry -- trimmed at the boundary so it can never reach the DB.

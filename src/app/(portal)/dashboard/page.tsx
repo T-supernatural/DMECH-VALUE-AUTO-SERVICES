@@ -69,7 +69,7 @@ export default async function PortalDashboardPage() {
               </div>
             ))
           )}
-        </div>
+        </div> 
 
         <div className="ops-panel">
           <div className="ops-panel-title">Your Instalment Plans</div>
