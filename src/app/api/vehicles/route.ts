@@ -14,7 +14,7 @@ const WRITABLE = [
   "make", "model", "year", "vin", "lot_number", "colour", "fuel_type", "engine_cc", "battery_range_km",
   "source_region", "source_detail", "condition", "use_categories", "acquisition_channel",
   "purchase_price_usd_cents", "shipping_cost_usd_cents", "customs_duty_kobo", "cost_basis_kobo",
-  "consignor_customer_id", "consignment_commission_pct", "trade_in_credit_kobo",
+  "consignor_customer_id", "consignment_commission_pct", "trade_in_credit_kobo", "history_report",
 ] as const;
 
 // Freeform text fields prone to stray leading/trailing whitespace from

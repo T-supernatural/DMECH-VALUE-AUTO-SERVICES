@@ -208,10 +208,87 @@ export function VehicleDetailModal({ vehicle, onClose, defaultDepositPct, defaul
                   <div className="history-text">Current status: {displayStatus(vehicle)}</div>
                 </div>
               </div>
-              <p style={{ fontSize: 12, color: "var(--subtle)", marginTop: 12 }}>
-                Full verified history report (accident records, mileage, prior ownership) is
-                shared once you reserve this vehicle.
-              </p>
+
+              {vehicle.history_report ? (
+                <>
+                  <div style={{ marginTop: 18, display: "grid", gap: 10 }}>
+                    <div className="spec-row">
+                      <span className="spec-label">Accident History</span>
+                      <span className="spec-value">
+                        {vehicle.history_report.has_accident_history
+                          ? vehicle.history_report.accident_status === "none"
+                            ? "No accident history"
+                            : vehicle.history_report.accident_status
+                          : "No accident history reported"}
+                      </span>
+                    </div>
+                    <div className="spec-row">
+                      <span className="spec-label">Repair Status</span>
+                      <span className="spec-value">
+                        {vehicle.history_report.repair_status === "not_repaired"
+                          ? "Not repaired"
+                          : vehicle.history_report.repair_status === "repaired"
+                            ? "Repaired"
+                            : "Repaired and inspected"}
+                      </span>
+                    </div>
+                    {(vehicle.history_report.front_damage_level !== "none" ||
+                      vehicle.history_report.rear_damage_level !== "none" ||
+                      vehicle.history_report.left_side_damage_level !== "none" ||
+                      vehicle.history_report.right_side_damage_level !== "none") && (
+                      <div className="spec-row">
+                        <span className="spec-label">Damage Areas</span>
+                        <span className="spec-value">
+                          {[
+                            vehicle.history_report.front_damage_level !== "none" ? `Front: ${vehicle.history_report.front_damage_level}` : null,
+                            vehicle.history_report.rear_damage_level !== "none" ? `Rear: ${vehicle.history_report.rear_damage_level}` : null,
+                            vehicle.history_report.left_side_damage_level !== "none" ? `Left: ${vehicle.history_report.left_side_damage_level}` : null,
+                            vehicle.history_report.right_side_damage_level !== "none" ? `Right: ${vehicle.history_report.right_side_damage_level}` : null,
+                          ]
+                            .filter(Boolean)
+                            .join(" • ")}
+                        </span>
+                      </div>
+                    )}
+                    {vehicle.history_report.accident_summary && (
+                      <div className="spec-row" style={{ display: "block" }}>
+                        <span className="spec-label">Summary</span>
+                        <span className="spec-value" style={{ display: "block", marginTop: 4 }}>
+                          {vehicle.history_report.accident_summary}
+                        </span>
+                      </div>
+                    )}
+                    {vehicle.history_report.inspection_notes && (
+                      <div className="spec-row" style={{ display: "block" }}>
+                        <span className="spec-label">Inspection Notes</span>
+                        <span className="spec-value" style={{ display: "block", marginTop: 4 }}>
+                          {vehicle.history_report.inspection_notes}
+                        </span>
+                      </div>
+                    )}
+                    {vehicle.history_report.before_after_photo_urls.length > 0 && (
+                      <div>
+                        <div className="spec-label" style={{ marginBottom: 8 }}>Before / After Evidence</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: 8 }}>
+                          {vehicle.history_report.before_after_photo_urls.map((photoUrl, index) => (
+                            <img
+                              key={`${photoUrl}-${index}`}
+                              src={photoUrl}
+                              alt="Vehicle history evidence"
+                              style={{ width: "100%", height: 100, objectFit: "cover", borderRadius: 8, border: "1px solid var(--border)" }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <p style={{ fontSize: 12, color: "var(--subtle)", marginTop: 12 }}>
+                  Full verified history report (accident records, mileage, prior ownership) is
+                  shared once you reserve this vehicle.
+                </p>
+              )}
             </div>
           )}
 

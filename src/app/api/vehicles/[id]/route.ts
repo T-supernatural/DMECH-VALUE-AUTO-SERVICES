@@ -21,6 +21,7 @@ const ALLOWED = [
   "seo_title",
   "seo_description",
   "use_categories",
+  "history_report",
 ] as const;
 
 const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager", "it_manager"];
