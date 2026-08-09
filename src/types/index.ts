@@ -197,6 +197,25 @@ export type FuelType = "petrol" | "diesel" | "hybrid" | "electric";
 export type SourceRegion = "usa" | "europe" | "china" | "nigeria";
 export type VehicleCondition = "used" | "new";
 
+export type DamageLevel = "none" | "light" | "moderate" | "heavy";
+export type AccidentStatus = "none" | "minor" | "major" | "unknown";
+export type RepairStatus = "not_repaired" | "repaired" | "repaired_and_inspected";
+
+export interface VehicleHistoryReport {
+  has_accident_history: boolean;
+  accident_status: AccidentStatus;
+  accident_summary: string | null;
+  repair_status: RepairStatus;
+  front_damage_level: DamageLevel;
+  rear_damage_level: DamageLevel;
+  left_side_damage_level: DamageLevel;
+  right_side_damage_level: DamageLevel;
+  before_after_photo_urls: string[];
+  inspection_notes: string | null;
+  verified_by: string | null;
+  verified_at: string | null;
+}
+
 // Buyer-persona tags — orthogonal to acquisition_channel/source_region (how
 // DMECH got the vehicle) and condition/fuel_type (what it is). A vehicle can
 // carry more than one (a pickup is both Construction and Logistics).
@@ -302,6 +321,7 @@ export interface Vehicle {
   trade_in_credit_kobo: number | null;
   trade_in_applied_to_instalment_id: string | null;
   title_verification: TitleVerificationCheck[];
+  history_report: VehicleHistoryReport | null;
 
   // Publish gate + catalog metadata (see migration 006)
   is_published: boolean;

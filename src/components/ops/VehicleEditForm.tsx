@@ -1,11 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { fromKobo, toKobo } from "@/lib/money";
 import { stageLabel } from "@/lib/ops/vehicle-stage";
 import { USE_CATEGORY_LABELS } from "@/types";
-import type { LifecycleStage, VehicleCondition, SourceRegion, VehicleUseCategory } from "@/types";
+import type { DamageLevel, LifecycleStage, VehicleCondition, SourceRegion, VehicleUseCategory, VehicleHistoryReport, AccidentStatus, RepairStatus } from "@/types";
+
+const DAMAGE_LEVELS: DamageLevel[] = ["none", "light", "moderate", "heavy"];
+const ACCIDENT_STATUS_OPTIONS: AccidentStatus[] = ["none", "minor", "major", "unknown"];
+const REPAIR_STATUS_OPTIONS: RepairStatus[] = ["not_repaired", "repaired", "repaired_and_inspected"];
+
+function normalizeHistoryReport(value: VehicleHistoryReport | null | undefined): VehicleHistoryReport {
+  return {
+    has_accident_history: Boolean(value?.has_accident_history),
+    accident_status: value?.accident_status ?? "none",
+    accident_summary: value?.accident_summary ?? null,
+    repair_status: value?.repair_status ?? "not_repaired",
+    front_damage_level: value?.front_damage_level ?? "none",
+    rear_damage_level: value?.rear_damage_level ?? "none",
+    left_side_damage_level: value?.left_side_damage_level ?? "none",
+    right_side_damage_level: value?.right_side_damage_level ?? "none",
+    before_after_photo_urls: Array.isArray(value?.before_after_photo_urls) ? value.before_after_photo_urls : [],
+    inspection_notes: value?.inspection_notes ?? null,
+    verified_by: value?.verified_by ?? null,
+    verified_at: value?.verified_at ?? null,
+  };
+}
 
 const USE_CATEGORY_OPTIONS = Object.entries(USE_CATEGORY_LABELS) as [VehicleUseCategory, string][];
 
@@ -23,6 +44,7 @@ interface Props {
   seoTitle: string | null;
   seoDescription: string | null;
   useCategories: VehicleUseCategory[];
+  historyReport?: VehicleHistoryReport | null;
 }
 
 type Status = "idle" | "saving" | "saved" | "error";
@@ -47,6 +69,7 @@ export function VehicleEditForm({
   seoTitle,
   seoDescription,
   useCategories: initialUseCategories,
+  historyReport,
 }: Props) {
   const router = useRouter();
   const [stage, setStage] = useState<LifecycleStage>(lifecycleStage);
@@ -61,11 +84,43 @@ export function VehicleEditForm({
   const [seoTitleValue, setSeoTitleValue] = useState(seoTitle ?? "");
   const [seoDescriptionValue, setSeoDescriptionValue] = useState(seoDescription ?? "");
   const [useCategories, setUseCategories] = useState<VehicleUseCategory[]>(initialUseCategories);
+  const [history, setHistory] = useState<VehicleHistoryReport>(normalizeHistoryReport(historyReport));
   const [status, setStatus] = useState<Status>("idle");
+  const [historyUploadBusy, setHistoryUploadBusy] = useState(false);
+  const historyInputRef = useRef<HTMLInputElement>(null);
 
   function toggleUseCategory(cat: VehicleUseCategory) {
     setUseCategories((prev) => (prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]));
   }
+
+  async function uploadHistoryEvidence(files: File[]) {
+    if (files.length === 0) return;
+    setHistoryUploadBusy(true);
+    try {
+      const formData = new FormData();
+      files.forEach((file) => formData.append("files", file));
+      const res = await fetch(`/api/vehicles/${vehicleId}/photos`, {
+        method: "POST",
+        body: formData,
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setStatus("error");
+        return;
+      }
+      const uploadedUrls = (json.photos ?? []).map((photo: { url: string }) => photo.url);
+      setHistory((prev) => ({
+        ...prev,
+        before_after_photo_urls: [...prev.before_after_photo_urls, ...uploadedUrls],
+      }));
+    } catch {
+      setStatus("error");
+    } finally {
+      setHistoryUploadBusy(false);
+      if (historyInputRef.current) historyInputRef.current.value = "";
+    }
+  }
+
   async function save() {
     setStatus("saving");
     try {
@@ -83,6 +138,10 @@ export function VehicleEditForm({
           lot_number: lotNumberValue || null,
           seo_title: seoTitleValue || null,
           seo_description: seoDescriptionValue || null,
+          history_report: {
+            ...history,
+            before_after_photo_urls: history.before_after_photo_urls ?? [],
+          },
         }),
       });
       if (!res.ok) {
@@ -225,7 +284,182 @@ export function VehicleEditForm({
         onChange={(e) => setSeoDescriptionValue(e.target.value)}
       />
 
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div style={{ borderTop: "1px solid var(--border)", marginTop: 18, paddingTop: 18 }}>
+        <div style={{ fontSize: 11, fontWeight: 600, color: "var(--subtle)", letterSpacing: ".5px", textTransform: "uppercase", marginBottom: 12 }}>
+          Vehicle History &amp; Accident Record
+        </div>
+
+        <label style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, fontSize: 13.5, color: "var(--text)" }}>
+          <input
+            type="checkbox"
+            checked={history.has_accident_history}
+            onChange={(e) => setHistory((prev) => ({ ...prev, has_accident_history: e.target.checked }))}
+          />
+          This vehicle has accident history
+        </label>
+
+        <label className="ops-field-label" htmlFor="veh-accident-status">
+          Accident Status
+        </label>
+        <select
+          id="veh-accident-status"
+          className="ops-input"
+          value={history.accident_status}
+          onChange={(e) => setHistory((prev) => ({ ...prev, accident_status: e.target.value as AccidentStatus }))}
+        >
+          {ACCIDENT_STATUS_OPTIONS.map((value) => (
+            <option key={value} value={value}>
+              {value === "none" ? "No history" : value === "minor" ? "Minor" : value === "major" ? "Major" : "Unknown"}
+            </option>
+          ))}
+        </select>
+
+        <label className="ops-field-label" htmlFor="veh-accident-summary">
+          Accident Summary
+        </label>
+        <textarea
+          id="veh-accident-summary"
+          className="ops-input"
+          rows={3}
+          value={history.accident_summary ?? ""}
+          onChange={(e) => setHistory((prev) => ({ ...prev, accident_summary: e.target.value || null }))}
+        />
+
+        <label className="ops-field-label" htmlFor="veh-repair-status">
+          Repair Status
+        </label>
+        <select
+          id="veh-repair-status"
+          className="ops-input"
+          value={history.repair_status}
+          onChange={(e) => setHistory((prev) => ({ ...prev, repair_status: e.target.value as RepairStatus }))}
+        >
+          {REPAIR_STATUS_OPTIONS.map((value) => (
+            <option key={value} value={value}>
+              {value === "not_repaired" ? "Not repaired" : value === "repaired" ? "Repaired" : "Repaired and inspected"}
+            </option>
+          ))}
+        </select>
+
+        <div className="ops-form-grid" style={{ marginTop: 16 }}>
+          {(["front", "rear", "left_side", "right_side"] as const).map((side) => (
+            <div key={side}>
+              <label className="ops-field-label" htmlFor={`veh-${side}`}>
+                {side.replace("_", " ").replace(/(^\w|_\w)/g, (m) => m.replace("_", " ").toUpperCase())} damage
+              </label>
+              <select
+                id={`veh-${side}`}
+                className="ops-input"
+                value={history[`${side}_damage_level` as keyof VehicleHistoryReport] as DamageLevel}
+                onChange={(e) => setHistory((prev) => ({ ...prev, [`${side}_damage_level`]: e.target.value as DamageLevel }))}
+              >
+                {DAMAGE_LEVELS.map((value) => (
+                  <option key={value} value={value}>
+                    {value === "none" ? "None" : value === "light" ? "Light" : value === "moderate" ? "Moderate" : "Heavy"}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+
+        <label className="ops-field-label" htmlFor="veh-history-notes">
+          Inspection Notes
+        </label>
+        <textarea
+          id="veh-history-notes"
+          className="ops-input"
+          rows={3}
+          value={history.inspection_notes ?? ""}
+          onChange={(e) => setHistory((prev) => ({ ...prev, inspection_notes: e.target.value || null }))}
+        />
+
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 8 }}>
+            Before / After evidence photos
+          </div>
+          <button
+            type="button"
+            className="ops-btn"
+            style={{ marginBottom: 8 }}
+            onClick={() => historyInputRef.current?.click()}
+            disabled={historyUploadBusy}
+          >
+            {historyUploadBusy ? "Uploading..." : "Upload evidence photos"}
+          </button>
+          <input
+            ref={historyInputRef}
+            type="file"
+            multiple
+            accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
+            onChange={(e) => uploadHistoryEvidence(Array.from(e.target.files ?? []))}
+            style={{ display: "none" }}
+          />
+        </div>
+
+        {history.before_after_photo_urls.length > 0 && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: 8, marginBottom: 12 }}>
+            {history.before_after_photo_urls.map((photoUrl, index) => (
+              <div key={`${photoUrl}-${index}`} style={{ position: "relative" }}>
+                <img
+                  src={photoUrl}
+                  alt="Vehicle history evidence"
+                  style={{ width: "100%", height: 90, objectFit: "cover", borderRadius: 8, border: "1px solid var(--border)" }}
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setHistory((prev) => ({
+                      ...prev,
+                      before_after_photo_urls: prev.before_after_photo_urls.filter((_, idx) => idx !== index),
+                    }))
+                  }
+                  aria-label="Remove evidence photo"
+                  style={{
+                    position: "absolute",
+                    top: 4,
+                    right: 4,
+                    border: "none",
+                    borderRadius: "50%",
+                    width: 20,
+                    height: 20,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: "rgba(12,16,23,.7)",
+                    color: "#fff",
+                    cursor: "pointer",
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <label className="ops-field-label" htmlFor="veh-history-photos">
+          Before / After photo URLs
+        </label>
+        <textarea
+          id="veh-history-photos"
+          className="ops-input"
+          rows={2}
+          value={history.before_after_photo_urls.join("\n")}
+          onChange={(e) =>
+            setHistory((prev) => ({
+              ...prev,
+              before_after_photo_urls: e.target.value
+                .split(/\n|,/)
+                .map((url) => url.trim())
+                .filter(Boolean),
+            }))
+          }
+          placeholder="Paste one URL per line"
+        />
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 18 }}>
         <button className="ops-btn" onClick={save} disabled={status === "saving"}>
           {status === "saving" ? "Saving..." : "Save Changes"}
         </button>
