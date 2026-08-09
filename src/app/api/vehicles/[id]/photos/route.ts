@@ -3,7 +3,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { staffGuard } from "@/lib/guards";
 import type { StaffRole, VehiclePhoto } from "@/types";
 
-const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager"];
+const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager", "it_manager"];
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_FILES = 100;
 
