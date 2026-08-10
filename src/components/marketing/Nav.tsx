@@ -7,24 +7,34 @@ import { Logo } from "@/components/Logo";
 
 // "Certified" is deliberately not a flat top-level link — DMECH Certified
 // Nigerian-Used vehicles are still vehicles (lives at /vehicles/certified),
-// not a separate destination competing with "Vehicles" in the nav. It's
-// surfaced instead via a banner on the Vehicles page itself.
+// not a separate destination competing with "Vehicles" in the nav; it's
+// surfaced instead via the Home page and Footer. "Reserve From Abroad" gets
+// its own top-level link though — it's a genuinely different offering
+// (reserving a specific vehicle DMECH doesn't own yet) rather than a filter
+// on existing inventory, so it needs to be findable on its own.
 const LINKS = [
   { href: "/vehicles", label: "Vehicles" },
+  { href: "/vehicles/sourcing", label: "Reserve From Abroad" },
   { href: "/financing", label: "Financing" },
   { href: "/service", label: "Services" },
   { href: "/about", label: "About" },
   { href: "/faq", label: "FAQ" },
 ];
 
-function isActive(pathname: string, href: string) {
-  return pathname === href || pathname.startsWith(`${href}/`);
+// Picks the single most specific matching link (longest href prefix) so
+// "/vehicles/sourcing" doesn't also light up the plain "Vehicles" link now
+// that both share the /vehicles/ path prefix.
+function activeHref(pathname: string): string | null {
+  const matches = LINKS.filter((l) => pathname === l.href || pathname.startsWith(`${l.href}/`));
+  if (matches.length === 0) return null;
+  return matches.reduce((longest, l) => (l.href.length > longest.length ? l.href : longest), matches[0].href);
 }
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const active = activeHref(pathname);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -49,7 +59,7 @@ export function Nav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={isActive(pathname, link.href) ? "active" : ""}
+                className={active === link.href ? "active" : ""}
               >
                 {link.label}
               </Link>
