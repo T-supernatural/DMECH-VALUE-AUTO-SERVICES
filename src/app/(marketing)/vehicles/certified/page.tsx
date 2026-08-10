@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Wrench, FileSearch, ClipboardCheck, ShieldCheck } from "lucide-react";
-import { getPublicVehicles, isCertified } from "@/lib/vehicles";
+import { getPublicVehicles, isCertified, displayStatus } from "@/lib/vehicles";
 import { Reveal } from "@/components/marketing/Reveal";
 
 export const metadata: Metadata = {
@@ -31,7 +31,7 @@ const CERTIFIED_FAQS = [
 
 export default async function CertifiedNigerianUsedPage() {
   const vehicles = await getPublicVehicles();
-  const nigerianUsed = vehicles.filter((v) => v.source_region === "nigeria");
+  const nigerianUsed = vehicles.filter((v) => v.source_region === "nigeria" && displayStatus(v) !== "Sold");
   const certifiedCount = nigerianUsed.filter(isCertified).length;
 
   return (

@@ -54,6 +54,7 @@ const STATUS_CLASS: Record<PublicDisplayStatus, string> = {
   Reserved: "status-available",
   "In Transit": "status-transit",
   "At Port": "status-port",
+  Sold: "status-sold",
 };
 
 interface Props {
@@ -157,7 +158,7 @@ export function VehicleMarketplace({
               const heroPhoto = publicPhotos(v)[0]?.url;
               return (
                 <Reveal key={v.id} delayMs={Math.min(i * 40, 400)}>
-                <div className="v-card" onClick={() => setSelected(v)}>
+                <div className={`v-card${status === "Sold" ? " is-sold" : ""}`} onClick={() => setSelected(v)}>
                   <div
                     className="v-card-img"
                     style={
@@ -195,7 +196,7 @@ export function VehicleMarketplace({
                         {status === "Available" ? "Ready to drive" : status}
                       </div>
                     </div>
-                    {v.sale_price_kobo && (
+                    {v.sale_price_kobo && status !== "Sold" && (
                       <div className="v-card-install">
                         From{" "}
                         <strong>
@@ -205,9 +206,15 @@ export function VehicleMarketplace({
                       </div>
                     )}
                     <div className="v-card-actions">
-                      <button className="v-card-btn btn-primary">
-                        {status === "Available" ? "Reserve Now" : "Notify on Arrival"}
-                      </button>
+                      {status === "Sold" ? (
+                        <button className="v-card-btn btn-outline" disabled style={{ cursor: "default", opacity: 0.7 }}>
+                          Sold
+                        </button>
+                      ) : (
+                        <button className="v-card-btn btn-primary">
+                          {status === "Available" ? "Reserve Now" : "Notify on Arrival"}
+                        </button>
+                      )}
                       <button className="v-card-btn btn-outline">Details</button>
                     </div>
                   </div>

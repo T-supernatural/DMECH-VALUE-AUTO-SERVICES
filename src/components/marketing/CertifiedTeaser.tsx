@@ -1,10 +1,13 @@
 import Link from "next/link";
-import { isCertified, type PublicVehicle } from "@/lib/vehicle-display";
+import { isCertified, displayStatus, type PublicVehicle } from "@/lib/vehicle-display";
 import { Reveal } from "@/components/marketing/Reveal";
 import { AnimatedCounter } from "@/components/marketing/AnimatedCounter";
 
 export function CertifiedTeaser({ vehicles }: { vehicles: PublicVehicle[] }) {
-  const nigerianUsed = vehicles.filter((v) => v.source_region === "nigeria");
+  // Sold vehicles stay visible elsewhere for social proof, but this count is
+  // a "buy one now" claim — a sold car inflating it would be exactly the
+  // kind of unsubstantiated number this program's honesty gate exists to avoid.
+  const nigerianUsed = vehicles.filter((v) => v.source_region === "nigeria" && displayStatus(v) !== "Sold");
   const certifiedCount = nigerianUsed.filter(isCertified).length;
 
   return (

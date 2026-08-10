@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { TopBar } from "@/components/ops/TopBar";
 import { SourcingListingForm } from "@/components/ops/SourcingListingForm";
+import { MarkAsPurchasedAction } from "@/components/ops/MarkAsPurchasedAction";
 import { staffGuard } from "@/lib/guards";
 import { createClient } from "@/lib/supabase/server";
 import { formatNaira, formatUsd, usdCentsToDollars } from "@/lib/money";
@@ -172,6 +173,7 @@ export default async function SourcingListingDetailPage({ params }: { params: Pr
           )}
         </div>
 
+        {canEdit && <MarkAsPurchasedAction listing={listing} />}
         {canEdit && <SourcingListingForm listing={listing} />}
       </div>
     </>

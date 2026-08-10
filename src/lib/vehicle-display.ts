@@ -9,12 +9,12 @@ import type { Vehicle, VehiclePhoto, WarrantyPolicy } from "@/types";
 
 export type PublicVehicle = Vehicle & { warranty_policies: WarrantyPolicy[] };
 
-export type PublicDisplayStatus = "In Transit" | "At Port" | "Available" | "Reserved";
+export type PublicDisplayStatus = "In Transit" | "At Port" | "Available" | "Reserved" | "Sold";
 
-// The public marketing site shows a simplified 4-state status rather than
-// the full 13-stage internal lifecycle_stage — matches the original
-// mockup's In Transit/At Port/Available vocabulary, plus Reserved (which the
-// mockup's simplified model didn't have, since the DB now models it).
+// The public marketing site shows a simplified status rather than the full
+// 13-stage internal lifecycle_stage — matches the original mockup's In
+// Transit/At Port/Available vocabulary, plus Reserved and Sold (which the
+// mockup's simplified model didn't have, since the DB now models both).
 export function displayStatus(vehicle: PublicVehicle): PublicDisplayStatus {
   switch (vehicle.lifecycle_stage) {
     case "shipped":
@@ -25,6 +25,8 @@ export function displayStatus(vehicle: PublicVehicle): PublicDisplayStatus {
       return "At Port";
     case "reserved":
       return "Reserved";
+    case "sold":
+      return "Sold";
     default:
       return "Available";
   }

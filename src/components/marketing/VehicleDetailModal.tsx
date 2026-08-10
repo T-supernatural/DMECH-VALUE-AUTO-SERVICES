@@ -57,6 +57,7 @@ export function VehicleDetailModal({ vehicle, onClose, defaultDepositPct, defaul
   const warranty = activeWarranty(vehicle);
   const photos = publicPhotos(vehicle);
   const price = vehicle.sale_price_kobo ?? 0;
+  const sold = displayStatus(vehicle) === "Sold";
   const deposit = plan === "dmech_direct" ? Math.max(defaultDepositPct, 30) : 25;
   const tenor = plan === "dmech_direct" ? defaultTenorMonths : 18;
   const depositAmount = (price * deposit) / 100;
@@ -127,6 +128,12 @@ export function VehicleDetailModal({ vehicle, onClose, defaultDepositPct, defaul
               {vehicle.colour} · {displayStatus(vehicle)}
               {price ? ` · ${formatNaira(price)}` : ""}
             </div>
+            {sold && (
+              <div style={{ marginTop: 10, padding: "10px 14px", background: "var(--border)", borderRadius: 8, fontSize: 12.5, color: "var(--muted)" }}>
+                This vehicle has already been sold — shown here as a recent example of what DMECH
+                delivers. Browse similar available vehicles or ask us to source another like it.
+              </div>
+            )}
           </div>
 
           {tab === "condition" && (
@@ -381,7 +388,12 @@ export function VehicleDetailModal({ vehicle, onClose, defaultDepositPct, defaul
                     <span className="spec-label">Monthly</span>
                     <span className="spec-value">{formatNaira(monthly)}/mo</span>
                   </div>
-                  {plan === "partner_finance" ? (
+                  {sold ? (
+                    <p style={{ fontSize: 12, color: "var(--subtle)", marginTop: 12 }}>
+                      This figure is illustrative for a sold vehicle. Ask us on WhatsApp for
+                      financing terms on a similar vehicle currently available.
+                    </p>
+                  ) : plan === "partner_finance" ? (
                     <p style={{ fontSize: 12, color: "var(--subtle)", marginTop: 12 }}>
                       DMECH is a registered Autochek dealer partner — Autochek handles this
                       financing directly.{" "}
@@ -418,12 +430,14 @@ export function VehicleDetailModal({ vehicle, onClose, defaultDepositPct, defaul
               className="v-card-btn btn-primary"
               style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
               href={whatsappHref(
-                `Hi DMECH, I'm interested in the ${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+                sold
+                  ? `Hi DMECH, I saw the ${vehicle.year} ${vehicle.make} ${vehicle.model} that already sold — do you have anything similar?`
+                  : `Hi DMECH, I'm interested in the ${vehicle.year} ${vehicle.make} ${vehicle.model}`,
               )}
               target="_blank"
               rel="noopener noreferrer"
             >
-              <MessageCircle size={16} strokeWidth={2} /> Ask on WhatsApp
+              <MessageCircle size={16} strokeWidth={2} /> {sold ? "Ask About Similar Vehicles" : "Ask on WhatsApp"}
             </a>
           </div>
         </div>

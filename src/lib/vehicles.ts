@@ -19,9 +19,11 @@ export {
 
 // Mirrors the "public read pipeline vehicles" RLS policy — shown all the
 // way from 'shipped' (pipeline-activity marketing value, like the original
-// mockup's In Transit/At Port cards) through 'reserved', but stops short of
-// 'sold'/'delivered' since those belong to a customer now, not DMECH's
-// marketing inventory.
+// mockup's In Transit/At Port cards) through 'reserved'. 'sold' is included
+// too (migration 021) so a sold vehicle gets a "Sold" badge on the
+// marketplace instead of silently vanishing — social proof that cars are
+// actually moving. 'delivered' stops short: once a vehicle has actually
+// reached its buyer, it's left DMECH's marketing story entirely.
 const PUBLIC_LIFECYCLE_STAGES = [
   "shipped",
   "in_transit",
@@ -30,6 +32,7 @@ const PUBLIC_LIFECYCLE_STAGES = [
   "cleared",
   "available",
   "reserved",
+  "sold",
 ] as const;
 
 /**

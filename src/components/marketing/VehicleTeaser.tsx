@@ -7,7 +7,10 @@ import { Reveal } from "@/components/marketing/Reveal";
 // Condensed Home-page version of the full /vehicles marketplace — top few
 // vehicles, no filters/modal, just a taste plus a link to the real page.
 export function VehicleTeaser({ vehicles }: { vehicles: PublicVehicle[] }) {
-  const top = vehicles.slice(0, 4);
+  // Sold vehicles are shown (with a badge) on the full /vehicles marketplace
+  // for social proof, but a "taste of what's buyable right now" teaser on
+  // Home shouldn't lead with something you can no longer get.
+  const top = vehicles.filter((v) => displayStatus(v) !== "Sold").slice(0, 4);
 
   return (
     <section className="section" style={{ background: "#fff" }}>
