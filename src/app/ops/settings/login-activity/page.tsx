@@ -46,7 +46,7 @@ export default async function LoginActivityPage({ searchParams }: PageProps) {
       <div className="ops-content">
         <p style={{ fontSize: 12, color: "var(--muted)", marginBottom: 14 }}>
           Every staff sign-in attempt, successful or not, with the IP and device it came from —
-          this is what makes "do we have a breach" an answerable question. Devices are recognized
+          this is what makes &quot;do we have a breach&quot; an answerable question. Devices are recognized
           by a per-browser id stored locally; clearing site data or using a new browser looks like
           a new device even for a real staff member. Most recent 200 entries{hasFilters ? " matching these filters" : ""}.
         </p>

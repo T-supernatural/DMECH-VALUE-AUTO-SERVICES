@@ -23,6 +23,7 @@ export default async function PlatformSettingsPage() {
     reservationHoldHours,
     maxSelfFinanceKobo,
     warrantyReserveContributionPct,
+    preorderDepositPct,
     approvalTierThresholds,
     partsCreditLimits,
     reminderDays,
@@ -34,6 +35,7 @@ export default async function PlatformSettingsPage() {
     getConfigValue("reservation_hold_hours", 48),
     getConfigValue("max_self_finance_kobo", 1_500_000_000),
     getConfigValue("warranty_reserve_contribution_pct", 5),
+    getConfigValue("preorder_deposit_pct", 20),
     getConfigValue<ApprovalTierThresholds>("approval_tier_thresholds_kobo", DEFAULT_TIER_THRESHOLDS),
     getConfigValue<PartsCreditLimits>("parts_credit_limits", { retail: 50_000_000, wholesale_auto: 200_000_000, wholesale_manual: 500_000_000 }),
     getConfigValue<number[]>("reminder_days", [1, 3, 7]),
@@ -51,6 +53,7 @@ export default async function PlatformSettingsPage() {
           reservationHoldHours={reservationHoldHours}
           maxSelfFinanceKobo={maxSelfFinanceKobo}
           warrantyReserveContributionPct={warrantyReserveContributionPct}
+          preorderDepositPct={preorderDepositPct}
           approvalTierThresholds={approvalTierThresholds}
           partsCreditLimits={partsCreditLimits}
           reminderDays={reminderDays}

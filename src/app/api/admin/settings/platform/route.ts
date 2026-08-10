@@ -14,6 +14,7 @@ const SIMPLE_KEYS = [
   "reservation_hold_hours",
   "max_self_finance_kobo",
   "warranty_reserve_contribution_pct",
+  "preorder_deposit_pct",
 ] as const;
 
 export async function PATCH(request: Request) {

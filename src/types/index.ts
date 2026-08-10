@@ -628,3 +628,92 @@ export interface Invoice {
   fetch_transmission_status: FetchTransmissionStatus;
   fetch_transmitted_at: string | null;
 }
+
+// ── Sourcing catalog + Pre-Orders ──────────────────────────────────────
+// A sourcing_listings row is a real, specific vehicle DMECH has spotted
+// abroad (Copart/IAAI, Europe, China EV sources) but does not yet own —
+// deliberately not a `vehicles` row until DMECH actually buys it.
+export type SourcingPlatform = "copart" | "iaai" | "europe_other" | "china_ev" | "other";
+export type SourcingListingStatus = "available" | "reserved" | "purchased" | "delisted";
+export type TitleStatus = "clean" | "salvage" | "rebuilt" | "certificate_of_destruction" | "unknown";
+
+export const SOURCING_PLATFORM_LABELS: Record<SourcingPlatform, string> = {
+  copart: "Copart (USA)",
+  iaai: "IAAI (USA)",
+  europe_other: "Europe",
+  china_ev: "China (EV)",
+  other: "Other",
+};
+
+export const TITLE_STATUS_LABELS: Record<TitleStatus, string> = {
+  clean: "Clean Title",
+  salvage: "Salvage Title",
+  rebuilt: "Rebuilt Title",
+  certificate_of_destruction: "Certificate of Destruction",
+  unknown: "Unknown",
+};
+
+export interface SourcingListingPhoto {
+  url: string;
+  sort_order: number;
+}
+
+export interface SourcingListing {
+  id: string;
+  source_platform: SourcingPlatform;
+  source_type: "manual" | "api_feed";
+  make: string;
+  model: string;
+  year: number;
+  trim: string | null;
+  vin: string | null;
+  lot_number: string | null;
+  title_status: TitleStatus | null;
+  primary_damage: string | null;
+  secondary_damage: string | null;
+  odometer_km: number | null;
+  run_and_drive: boolean | null;
+  fuel_type: FuelType | null;
+  condition_notes: string | null;
+  location_country: string;
+  location_city: string | null;
+  auction_date: string | null;
+  estimated_price_usd_cents: number;
+  estimated_shipping_usd_cents: number | null;
+  photos: SourcingListingPhoto[];
+  status: SourcingListingStatus;
+  fulfilled_vehicle_id: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// A customer's commitment against one sourcing_listing. The deposit is a
+// reservation fee, not a downpayment against a fixed price -- the final
+// total is only known once DMECH actually wins the auction.
+export type PreOrderStatus = "pending_deposit" | "deposit_paid" | "sourcing" | "purchased" | "cancelled" | "refunded";
+
+export const PRE_ORDER_STATUS_LABELS: Record<PreOrderStatus, string> = {
+  pending_deposit: "Pending Deposit",
+  deposit_paid: "Deposit Paid",
+  sourcing: "Sourcing",
+  purchased: "Purchased",
+  cancelled: "Cancelled",
+  refunded: "Refunded",
+};
+
+export interface PreOrder {
+  id: string;
+  customer_id: string;
+  sourcing_listing_id: string;
+  estimated_total_usd_cents: number;
+  deposit_pct: number;
+  deposit_amount_kobo: number;
+  deposit_paid: boolean;
+  deposit_paid_at: string | null;
+  deposit_payment_method: PaymentMethod | null;
+  status: PreOrderStatus;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}

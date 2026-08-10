@@ -19,6 +19,7 @@ interface Props {
   reservationHoldHours: number;
   maxSelfFinanceKobo: number;
   warrantyReserveContributionPct: number;
+  preorderDepositPct: number;
   approvalTierThresholds: ApprovalTierThresholds;
   partsCreditLimits: PartsCreditLimits;
   reminderDays: number[];
@@ -35,6 +36,7 @@ export function PlatformSettingsForm(props: Props) {
   const [holdHours, setHoldHours] = useState(String(props.reservationHoldHours));
   const [maxSelfFinanceNaira, setMaxSelfFinanceNaira] = useState(String(Math.round(fromKobo(props.maxSelfFinanceKobo))));
   const [reservePct, setReservePct] = useState(String(props.warrantyReserveContributionPct));
+  const [preorderDepositPct, setPreorderDepositPct] = useState(String(props.preorderDepositPct));
   const [tier1Naira, setTier1Naira] = useState(String(Math.round(fromKobo(props.approvalTierThresholds.tier1_max))));
   const [tier2Naira, setTier2Naira] = useState(String(Math.round(fromKobo(props.approvalTierThresholds.tier2_max))));
   const [tier3Naira, setTier3Naira] = useState(String(Math.round(fromKobo(props.approvalTierThresholds.tier3_max))));
@@ -58,6 +60,7 @@ export function PlatformSettingsForm(props: Props) {
           reservation_hold_hours: parseInt(holdHours, 10),
           max_self_finance_kobo: toKobo(parseFloat(maxSelfFinanceNaira)),
           warranty_reserve_contribution_pct: parseFloat(reservePct),
+          preorder_deposit_pct: parseFloat(preorderDepositPct),
           approval_tier_thresholds_kobo: {
             tier1_max: toKobo(parseFloat(tier1Naira)),
             tier2_max: toKobo(parseFloat(tier2Naira)),
@@ -119,6 +122,10 @@ export function PlatformSettingsForm(props: Props) {
             <div>
               <label className="ops-field-label" htmlFor="ps-reserve">Warranty Reserve Contribution (%)</label>
               <input id="ps-reserve" className="ops-input" type="number" value={reservePct} onChange={(e) => setReservePct(e.target.value)} />
+            </div>
+            <div>
+              <label className="ops-field-label" htmlFor="ps-preorder-deposit">Pre-Order Deposit (%)</label>
+              <input id="ps-preorder-deposit" className="ops-input" type="number" value={preorderDepositPct} onChange={(e) => setPreorderDepositPct(e.target.value)} />
             </div>
           </div>
           <label className="ops-field-label" htmlFor="ps-reminders">Payment Reminder Days (comma-separated)</label>

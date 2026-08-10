@@ -24,6 +24,8 @@ import {
   BarChart3,
   HandCoins,
   LogOut,
+  Globe,
+  ClipboardList,
   type LucideIcon,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
@@ -37,6 +39,8 @@ const NAV_ICON_MAP = {
   vehicles: Car,
   parts: Package,
   "dealer-partners": Handshake,
+  sourcing: Globe,
+  "pre-orders": ClipboardList,
   workshop: Wrench,
   specialists: HardHat,
   invoices: Receipt,

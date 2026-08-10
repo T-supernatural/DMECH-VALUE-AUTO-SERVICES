@@ -28,3 +28,8 @@ export function formatUsd(dollars: number): string {
 export function usdCentsToDollars(cents: number): number {
   return cents / 100;
 }
+
+/** Whole USD dollars -> integer cents for storage. */
+export function dollarsToUsdCents(dollars: number): number {
+  return Math.round(dollars * 100);
+}

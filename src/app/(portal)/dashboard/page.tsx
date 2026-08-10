@@ -5,7 +5,17 @@ import { customerGuard } from "@/lib/guards";
 import { createClient } from "@/lib/supabase/server";
 import { formatNaira } from "@/lib/money";
 import { stageLabel, stageBadgeClass } from "@/lib/ops/vehicle-stage";
-import type { ApprovalStatus, Instalment, Vehicle } from "@/types";
+import { PRE_ORDER_STATUS_LABELS } from "@/types";
+import type { ApprovalStatus, Instalment, PreOrder, Vehicle } from "@/types";
+
+const PRE_ORDER_BADGE: Record<string, string> = {
+  pending_deposit: "ops-badge-amber",
+  deposit_paid: "ops-badge-blue",
+  sourcing: "ops-badge-blue",
+  purchased: "ops-badge-green",
+  cancelled: "ops-badge-muted",
+  refunded: "ops-badge-muted",
+};
 
 const STATUS_COPY: Record<ApprovalStatus, { title: string; body: string; tone: string }> = {
   pending: {
@@ -31,14 +41,18 @@ export default async function PortalDashboardPage() {
   if (!customer) redirect("/verify");
 
   const supabase = await createClient();
-  const [vehiclesRes, instalmentsRes] = await Promise.all([
+  const [vehiclesRes, instalmentsRes, preOrdersRes] = await Promise.all([
     supabase.from("vehicles").select("*").eq("buyer_id", customer.id).is("deleted_at", null),
     supabase.from("instalments").select("*, vehicles!vehicle_id(make,model,year)").eq("customer_id", customer.id),
+    supabase.from("pre_orders").select("*, sourcing_listings(make,model,year)").eq("customer_id", customer.id),
   ]);
 
   const vehicles = (vehiclesRes.data as Vehicle[] | null) ?? [];
   const instalments = (instalmentsRes.data ?? []) as unknown as (Instalment & {
     vehicles: { make: string; model: string; year: number } | null;
+  })[];
+  const preOrders = (preOrdersRes.data ?? []) as unknown as (PreOrder & {
+    sourcing_listings: { make: string; model: string; year: number } | null;
   })[];
 
   const statusInfo = STATUS_COPY[customer.approval_status];
@@ -70,6 +84,25 @@ export default async function PortalDashboardPage() {
             ))
           )}
         </div> 
+
+        {preOrders.length > 0 && (
+          <div className="ops-panel">
+            <div className="ops-panel-title">Your Reservations</div>
+            {preOrders.map((po) => (
+              <div className="ops-info-row" key={po.id}>
+                <span className="ops-info-label">
+                  {po.sourcing_listings
+                    ? `${po.sourcing_listings.year} ${po.sourcing_listings.make} ${po.sourcing_listings.model}`
+                    : "Vehicle"}
+                </span>
+                <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span className="ops-info-value">{formatNaira(po.deposit_amount_kobo)} deposit</span>
+                  <span className={`ops-badge ${PRE_ORDER_BADGE[po.status]}`}>{PRE_ORDER_STATUS_LABELS[po.status]}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="ops-panel">
           <div className="ops-panel-title">Your Instalment Plans</div>
