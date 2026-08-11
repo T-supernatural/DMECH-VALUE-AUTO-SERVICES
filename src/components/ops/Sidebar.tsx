@@ -26,6 +26,7 @@ import {
   LogOut,
   Globe,
   ClipboardList,
+  MessageSquareText,
   type LucideIcon,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
@@ -41,6 +42,7 @@ const NAV_ICON_MAP = {
   "dealer-partners": Handshake,
   sourcing: Globe,
   "pre-orders": ClipboardList,
+  "vehicle-requests": MessageSquareText,
   workshop: Wrench,
   specialists: HardHat,
   invoices: Receipt,

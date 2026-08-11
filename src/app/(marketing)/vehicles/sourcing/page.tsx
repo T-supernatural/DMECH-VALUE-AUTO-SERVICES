@@ -48,8 +48,10 @@ export default async function SourcingCatalogPage() {
 
           {listings.length === 0 ? (
             <div style={{ padding: 40, textAlign: "center", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: 14 }}>
-              No vehicles available to reserve right now — check back soon, or{" "}
-              <Link href="/contact" style={{ color: "var(--blue)" }}>contact us</Link> to tell us what you&apos;re looking for.
+              <div style={{ marginBottom: 16 }}>No vehicles available to reserve right now — check back soon.</div>
+              <Link href="/vehicles/request?from=sourcing_empty" className="v-card-btn btn-primary" style={{ textDecoration: "none", display: "inline-block" }}>
+                Tell Us What You&apos;re Looking For →
+              </Link>
             </div>
           ) : (
             <div className="vehicle-grid">

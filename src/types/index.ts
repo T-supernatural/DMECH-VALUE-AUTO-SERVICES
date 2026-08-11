@@ -717,3 +717,47 @@ export interface PreOrder {
   created_at: string;
   updated_at: string;
 }
+
+// "Can't find what you want? Tell us" — a visitor describes a specific
+// vehicle they're after that isn't necessarily in `vehicles` or
+// `sourcing_listings` yet. Staff triage it through its own status workflow.
+export type VehicleRequestTimeline = "immediately" | "within_1_month" | "within_3_months" | "just_browsing";
+export type VehicleRequestSource = "dedicated_page" | "vehicles_empty" | "sourcing_empty";
+export type VehicleRequestStatus = "new" | "contacted" | "sourcing" | "fulfilled" | "closed";
+
+export const VEHICLE_REQUEST_TIMELINE_LABELS: Record<VehicleRequestTimeline, string> = {
+  immediately: "Ready now",
+  within_1_month: "Within a month",
+  within_3_months: "Within 3 months",
+  just_browsing: "Just browsing",
+};
+
+export const VEHICLE_REQUEST_STATUS_LABELS: Record<VehicleRequestStatus, string> = {
+  new: "New",
+  contacted: "Contacted",
+  sourcing: "Sourcing",
+  fulfilled: "Fulfilled",
+  closed: "Closed",
+};
+
+export interface VehicleRequest {
+  id: string;
+  full_name: string;
+  phone: string;
+  email: string | null;
+  make: string | null;
+  model: string | null;
+  year_min: number | null;
+  year_max: number | null;
+  budget_max_kobo: number | null;
+  fuel_type: FuelType | null;
+  source_region_preference: SourceRegion | null;
+  condition_preference: VehicleCondition | null;
+  timeline: VehicleRequestTimeline | null;
+  notes: string | null;
+  source: VehicleRequestSource;
+  status: VehicleRequestStatus;
+  staff_notes: string | null;
+  created_at: string;
+  updated_at: string;
+}

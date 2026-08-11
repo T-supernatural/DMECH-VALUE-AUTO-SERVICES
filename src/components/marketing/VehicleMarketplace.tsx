@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { formatNaira } from "@/lib/money";
 import {
   isCertified,
@@ -142,14 +143,22 @@ export function VehicleMarketplace({
               <Car size={32} strokeWidth={1.5} />
             </div>
             <div style={{ fontWeight: 600, marginBottom: 6 }}>New inventory added regularly</div>
-            <div style={{ fontSize: 14 }}>
+            <div style={{ fontSize: 14, marginBottom: 16 }}>
               We&apos;re currently onboarding our first verified vehicles, including our DMECH
               Certified Nigerian-used program. WhatsApp us for current stock and to be notified
               the moment new vehicles go live.
             </div>
+            <Link href="/vehicles/request?from=vehicles_empty" className="v-card-btn btn-primary" style={{ textDecoration: "none", display: "inline-block" }}>
+              Tell Us What You&apos;re Looking For →
+            </Link>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="vehicle-empty">No vehicles match this filter right now — check back soon.</div>
+          <div className="vehicle-empty">
+            <div style={{ marginBottom: 16 }}>No vehicles match this filter right now — check back soon.</div>
+            <Link href="/vehicles/request?from=vehicles_empty" className="v-card-btn btn-primary" style={{ textDecoration: "none", display: "inline-block" }}>
+              Tell Us What You&apos;re Looking For →
+            </Link>
+          </div>
         ) : (
           <div className="vehicle-grid">
             {filtered.map((v, i) => {

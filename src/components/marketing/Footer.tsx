@@ -19,6 +19,7 @@ export function Footer() {
           <Link href="/vehicles">Vehicle Import</Link>
           <Link href="/vehicles/sourcing">Reserve From Abroad</Link>
           <Link href="/vehicles/certified">Certified Nigerian-Used</Link>
+          <Link href="/vehicles/request">Request a Vehicle</Link>
           <Link href="/financing">Instalment Plans</Link>
           <Link href="/#calculator">Cost Calculator</Link>
           <Link href="/service">Vehicle Service</Link>
