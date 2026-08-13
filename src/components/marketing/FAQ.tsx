@@ -1,6 +1,4 @@
-"use client";
-
-import { useState } from "react";
+import { FaqAccordion } from "@/components/marketing/FaqAccordion";
 
 const FAQS = [
   {
@@ -54,27 +52,13 @@ const FAQS = [
 ];
 
 export function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
   return (
     <section className="section" id="faq">
       <div className="section-inner">
         <div className="section-eyebrow">Questions</div>
         <div className="section-title">Frequently Asked Questions</div>
         <div className="section-subtitle">Everything you need to know before you import.</div>
-        <div>
-          {FAQS.map((item, i) => (
-            <div className={`faq-item ${openIndex === i ? "open" : ""}`} key={item.q}>
-              <button className="faq-q" onClick={() => setOpenIndex(openIndex === i ? null : i)}>
-                {item.q}
-                <span className="faq-icon">+</span>
-              </button>
-              <div className="faq-a">
-                <div className="faq-a-inner">{item.a}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <FaqAccordion items={FAQS} />
       </div>
     </section>
   );

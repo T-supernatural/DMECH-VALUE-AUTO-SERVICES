@@ -4,6 +4,7 @@ import { Car } from "lucide-react";
 import { createServiceClient } from "@/lib/supabase/server";
 import { formatUsd, usdCentsToDollars } from "@/lib/money";
 import { ReserveVehicleButton } from "@/components/marketing/ReserveVehicleButton";
+import { Reveal } from "@/components/marketing/Reveal";
 import { SOURCING_PLATFORM_LABELS, TITLE_STATUS_LABELS } from "@/types";
 import type { SourcingListing } from "@/types";
 
@@ -39,7 +40,7 @@ export default async function SourcingListingDetailPage({ params }: PageProps) {
     <div className="page-fade">
       <section className="section" style={{ paddingTop: 48 }}>
         <div className="section-inner" style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: 40 }}>
-          <div>
+          <Reveal>
             <div className="v-card-img" style={{ height: 320, borderRadius: 14, marginBottom: 16 }}>
               {listing.photos[0]?.url ? (
                 // eslint-disable-next-line @next/next/no-img-element -- pasted external auction-photo URL
@@ -79,9 +80,9 @@ export default async function SourcingListingDetailPage({ params }: PageProps) {
             {listing.condition_notes && (
               <p style={{ fontSize: 14, color: "var(--text)", marginBottom: 24 }}>{listing.condition_notes}</p>
             )}
-          </div>
+          </Reveal>
 
-          <div>
+          <Reveal delayMs={150}>
             <div style={{ position: "sticky", top: 100, border: "1px solid var(--border)", borderRadius: 14, padding: 24, background: "var(--surface)" }}>
               <div className="v-card-price" style={{ fontSize: 26 }}>{formatUsd(usdCentsToDollars(listing.estimated_price_usd_cents))}</div>
               <div className="v-card-source" style={{ marginBottom: 4 }}>Estimated purchase price</div>
@@ -97,7 +98,7 @@ export default async function SourcingListingDetailPage({ params }: PageProps) {
                 total.
               </p>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
     </div>

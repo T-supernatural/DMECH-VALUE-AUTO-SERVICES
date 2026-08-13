@@ -13,7 +13,7 @@ export function CTASection({
   whatsappMessage = "Hi DMECH, I want to import a vehicle",
 }: CTASectionProps) {
   return (
-    <section className="cta-section" id="contact">
+    <section className="cta-section dark-gradient" id="contact">
       <h2>{heading}</h2>
       <p>{body}</p>
       <div className="cta-buttons">

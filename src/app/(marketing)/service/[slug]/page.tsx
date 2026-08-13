@@ -33,68 +33,74 @@ export default async function ServiceCategoryPage({
     <div className="page-fade">
       <section className="section" style={{ background: "#fff", paddingBottom: 0 }}>
         <div className="section-inner">
-          <Link href="/service" className="teaser-link" style={{ fontSize: 13 }}>
-            ← All Services
-          </Link>
+          <Reveal>
+            <Link href="/service" className="teaser-link" style={{ fontSize: 13 }}>
+              ← All Services
+            </Link>
+          </Reveal>
         </div>
       </section>
 
       <section className="section" style={{ background: "#fff" }}>
         <div className="section-inner center">
-          <div style={{ color: "var(--blue)", marginBottom: 8, display: "flex", justifyContent: "center" }}>
-            <page.icon size={40} strokeWidth={1.5} />
-          </div>
-          <div className="section-eyebrow">Workshop · Lagos</div>
-          <div className="section-title">{page.name}</div>
-          <div className="section-subtitle" style={{ maxWidth: 620, margin: "0 auto" }}>
-            {page.intro}
-          </div>
-          {slug === "ev-service" && (
-            <Link href="/ev-workshop" className="teaser-link" style={{ fontSize: 13 }}>
-              See our full high-voltage &amp; battery certification capability →
-            </Link>
-          )}
+          <Reveal>
+            <div style={{ color: "var(--blue)", marginBottom: 8, display: "flex", justifyContent: "center" }}>
+              <page.icon size={40} strokeWidth={1.5} />
+            </div>
+            <div className="section-eyebrow">Workshop · Lagos</div>
+            <div className="section-title">{page.name}</div>
+            <div className="section-subtitle" style={{ maxWidth: 620, margin: "0 auto" }}>
+              {page.intro}
+            </div>
+            {slug === "ev-service" && (
+              <Link href="/ev-workshop" className="teaser-link" style={{ fontSize: 13 }}>
+                See our full high-voltage &amp; battery certification capability →
+              </Link>
+            )}
+          </Reveal>
         </div>
       </section>
 
       <section className="section">
         <div className="section-inner">
-          <div className="section-title" style={{ fontSize: 22, textAlign: "center" }}>
-            What&apos;s Covered
-          </div>
-          <ul
-            style={{
-              listStyle: "none",
-              padding: 0,
-              maxWidth: 560,
-              margin: "24px auto 0",
-            }}
-          >
-            {page.covers.map((item) => (
-              <li
-                key={item}
-                style={{
-                  display: "flex",
-                  gap: 10,
-                  alignItems: "flex-start",
-                  padding: "12px 0",
-                  borderBottom: "1px solid var(--border)",
-                  fontSize: 14,
-                  color: "var(--text)",
-                }}
-              >
-                <span style={{ color: "var(--green)", flexShrink: 0, display: "flex", marginTop: 2 }}>
-                  <Check size={16} strokeWidth={2.5} />
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
-          <div style={{ textAlign: "center", marginTop: 32 }}>
-            <Link href="/service" className="cta-main">
-              Book This Service →
-            </Link>
-          </div>
+          <Reveal>
+            <div className="section-title" style={{ fontSize: 22, textAlign: "center" }}>
+              What&apos;s Covered
+            </div>
+            <ul
+              style={{
+                listStyle: "none",
+                padding: 0,
+                maxWidth: 560,
+                margin: "24px auto 0",
+              }}
+            >
+              {page.covers.map((item) => (
+                <li
+                  key={item}
+                  style={{
+                    display: "flex",
+                    gap: 10,
+                    alignItems: "flex-start",
+                    padding: "12px 0",
+                    borderBottom: "1px solid var(--border)",
+                    fontSize: 14,
+                    color: "var(--text)",
+                  }}
+                >
+                  <span style={{ color: "var(--green)", flexShrink: 0, display: "flex", marginTop: 2 }}>
+                    <Check size={16} strokeWidth={2.5} />
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <div style={{ textAlign: "center", marginTop: 32 }}>
+              <Link href="/service" className="cta-main">
+                Book This Service →
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
 

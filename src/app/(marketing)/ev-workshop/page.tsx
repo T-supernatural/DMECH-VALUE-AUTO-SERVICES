@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Battery, Thermometer, Cpu, Wrench, ShieldCheck, FileCheck, MessageCircle } from "lucide-react";
 import { Reveal } from "@/components/marketing/Reveal";
+import { FaqAccordion } from "@/components/marketing/FaqAccordion";
 import { whatsappHref } from "@/lib/contact";
 
 export const metadata: Metadata = {
@@ -70,14 +71,16 @@ export default function EvWorkshopPage() {
 
       <section className="section" style={{ background: "#fff" }}>
         <div className="section-inner">
-          <div className="section-eyebrow">Why EVs Are Different</div>
-          <div className="section-title">An Electrical Problem, Not A Mechanical One</div>
-          <div className="section-subtitle" style={{ maxWidth: 680 }}>
-            A combustion fault is mechanical — worn parts, leaks, timing. An EV fault usually
-            isn&apos;t. High-voltage battery packs, thermal control, and motor/inverter
-            electronics need diagnostic tooling and safety training that a general workshop was
-            never built for. That gap is exactly where DMECH has invested.
-          </div>
+          <Reveal>
+            <div className="section-eyebrow">Why EVs Are Different</div>
+            <div className="section-title">An Electrical Problem, Not A Mechanical One</div>
+            <div className="section-subtitle" style={{ maxWidth: 680 }}>
+              A combustion fault is mechanical — worn parts, leaks, timing. An EV fault usually
+              isn&apos;t. High-voltage battery packs, thermal control, and motor/inverter
+              electronics need diagnostic tooling and safety training that a general workshop was
+              never built for. That gap is exactly where DMECH has invested.
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -103,12 +106,18 @@ export default function EvWorkshopPage() {
         </div>
       </section>
 
+      <section className="section photo-banner pb-battery center" style={{ padding: "48px 20px" }}>
+        <div className="section-inner">
+          <div className="section-eyebrow">Battery Certification &amp; Inspection</div>
+          <div className="section-title" style={{ fontSize: 26 }}>A Market Gap With No One Else In It</div>
+        </div>
+      </section>
+
       <section className="section" style={{ background: "#fff" }}>
         <div className="section-inner">
+          <Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center" }}>
             <div>
-              <div className="section-eyebrow">Battery Certification &amp; Inspection</div>
-              <div className="section-title">A Market Gap With No One Else In It</div>
               <p style={{ color: "var(--muted)", lineHeight: 1.7, marginBottom: 20 }}>
                 There is currently no recognised independent EV battery certifier in Nigeria — no
                 published protocol, no standard an importer, insurer, or lender can rely on. A
@@ -154,25 +163,17 @@ export default function EvWorkshopPage() {
               </div>
             </div>
           </div>
+          </Reveal>
         </div>
       </section>
 
       <section className="section">
         <div className="section-inner">
-          <div className="section-eyebrow">EV Workshop FAQ</div>
-          <div className="section-title">Common Questions</div>
-          <div>
-            {EV_FAQS.map((item) => (
-              <div className="faq-item open" key={item.q} style={{ marginBottom: 16 }}>
-                <div className="faq-q" style={{ cursor: "default" }}>
-                  {item.q}
-                </div>
-                <div className="faq-a" style={{ maxHeight: "none" }}>
-                  <div className="faq-a-inner">{item.a}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Reveal>
+            <div className="section-eyebrow">EV Workshop FAQ</div>
+            <div className="section-title">Common Questions</div>
+            <FaqAccordion items={EV_FAQS} />
+          </Reveal>
         </div>
       </section>
     </div>

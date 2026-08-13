@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Wrench, FileSearch, ClipboardCheck, ShieldCheck } from "lucide-react";
 import { getPublicVehicles, isCertified, displayStatus } from "@/lib/vehicles";
 import { Reveal } from "@/components/marketing/Reveal";
+import { FaqAccordion } from "@/components/marketing/FaqAccordion";
 
 export const metadata: Metadata = {
   title: "DMECH Certified Nigerian-Used — DMECH Services Limited",
@@ -38,9 +39,11 @@ export default async function CertifiedNigerianUsedPage() {
     <div className="page-fade">
       <section className="section" style={{ background: "#fff", paddingBottom: 0 }}>
         <div className="section-inner">
-          <Link href="/vehicles" className="teaser-link" style={{ fontSize: 13 }}>
-            ← All Vehicles
-          </Link>
+          <Reveal>
+            <Link href="/vehicles" className="teaser-link" style={{ fontSize: 13 }}>
+              ← All Vehicles
+            </Link>
+          </Reveal>
         </div>
       </section>
 
@@ -144,20 +147,11 @@ export default async function CertifiedNigerianUsedPage() {
 
       <section className="section" style={{ background: "#fff" }}>
         <div className="section-inner">
-          <div className="section-eyebrow">Certified Program FAQ</div>
-          <div className="section-title">Common Questions</div>
-          <div>
-            {CERTIFIED_FAQS.map((item) => (
-              <div className="faq-item open" key={item.q} style={{ marginBottom: 16 }}>
-                <div className="faq-q" style={{ cursor: "default" }}>
-                  {item.q}
-                </div>
-                <div className="faq-a" style={{ maxHeight: "none" }}>
-                  <div className="faq-a-inner">{item.a}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Reveal>
+            <div className="section-eyebrow">Certified Program FAQ</div>
+            <div className="section-title">Common Questions</div>
+            <FaqAccordion items={CERTIFIED_FAQS} />
+          </Reveal>
         </div>
       </section>
     </div>

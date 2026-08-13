@@ -7,10 +7,14 @@ import { Logo } from "@/components/Logo";
 import { createClient } from "@/lib/supabase/client";
 import type { Customer } from "@/types";
 
+// Hrefs are real top-level routes, not /portal/* -- (portal) is a Next.js
+// route group (no URL segment of its own), so the actual pages live at
+// /dashboard, /payments, /documents. See src/middleware.ts for the same
+// note.
 const NAV = [
-  { href: "/portal/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/portal/payments", label: "Payments", icon: Wallet },
-  { href: "/portal/documents", label: "Documents", icon: FileText },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/payments", label: "Payments", icon: Wallet },
+  { href: "/documents", label: "Documents", icon: FileText },
 ];
 
 // Deliberately much shorter than the Ops Sidebar — a customer only ever
@@ -36,7 +40,7 @@ export function PortalNav({ customer }: { customer: Customer }) {
 
   return (
     <aside className="ops-sidebar">
-      <a href="/portal/dashboard" className="ops-sidebar-logo">
+      <a href="/dashboard" className="ops-sidebar-logo">
         <Logo variant="sidebar" />
       </a>
 

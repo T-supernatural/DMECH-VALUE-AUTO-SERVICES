@@ -11,10 +11,13 @@ import {
   type PublicVehicle,
   type PublicDisplayStatus,
 } from "@/lib/vehicle-display";
-import { Zap, CheckCircle2, Car, X, type LucideIcon } from "lucide-react";
+import { Zap, CheckCircle2, Car, X, Scale, type LucideIcon } from "lucide-react";
 import { VehicleDetailModal } from "@/components/marketing/VehicleDetailModal";
+import { VehicleCompareModal } from "@/components/marketing/VehicleCompareModal";
 import { Reveal } from "@/components/marketing/Reveal";
 import { USE_CATEGORY_LABELS, type VehicleUseCategory } from "@/types";
+
+const MAX_COMPARE = 3;
 
 type Filter =
   | "all"
@@ -76,7 +79,20 @@ export function VehicleMarketplace({
     (initialFilterKey && isValidFilter(initialFilterKey) && initialFilterKey) || "all",
   );
   const [selected, setSelected] = useState<PublicVehicle | null>(null);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [compareOpen, setCompareOpen] = useState(false);
   const activeUseCategory = filter in USE_CATEGORY_LABELS ? (filter as VehicleUseCategory) : null;
+
+  function toggleCompare(e: React.MouseEvent, id: string) {
+    e.stopPropagation();
+    setCompareIds((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      if (prev.length >= MAX_COMPARE) return prev;
+      return [...prev, id];
+    });
+  }
+
+  const compareVehicles = vehicles.filter((v) => compareIds.includes(v.id));
 
   const filtered = vehicles.filter((v) => {
     if (filter === "all") return true;
@@ -188,6 +204,32 @@ export function VehicleMarketplace({
                         <CheckCircle2 size={13} strokeWidth={2} /> Certified
                       </div>
                     )}
+                    {status !== "Sold" && (
+                      <button
+                        onClick={(e) => toggleCompare(e, v.id)}
+                        aria-pressed={compareIds.includes(v.id)}
+                        title={compareIds.includes(v.id) ? "Remove from comparison" : "Add to comparison"}
+                        style={{
+                          position: "absolute",
+                          bottom: 10,
+                          right: 10,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                          padding: "5px 9px",
+                          borderRadius: 20,
+                          fontSize: 11,
+                          fontWeight: 600,
+                          border: "1px solid rgba(255,255,255,.5)",
+                          cursor: "pointer",
+                          background: compareIds.includes(v.id) ? "var(--blue)" : "rgba(15,25,35,.55)",
+                          color: "#fff",
+                        }}
+                      >
+                        <Scale size={12} strokeWidth={2} />
+                        {compareIds.includes(v.id) ? "Comparing" : "Compare"}
+                      </button>
+                    )}
                   </div>
                   <div className="v-card-body">
                     <div className="v-card-name">
@@ -241,6 +283,57 @@ export function VehicleMarketplace({
           onClose={() => setSelected(null)}
           defaultDepositPct={defaultDepositPct}
           defaultTenorMonths={defaultTenorMonths}
+        />
+      )}
+
+      {compareIds.length >= 2 && !compareOpen && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 20,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 150,
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            background: "var(--dark)",
+            color: "#fff",
+            borderRadius: 40,
+            padding: "10px 10px 10px 20px",
+            boxShadow: "0 12px 32px rgba(0,0,0,.25)",
+          }}
+        >
+          <span style={{ fontSize: 13, fontWeight: 600 }}>
+            {compareIds.length} vehicle{compareIds.length > 1 ? "s" : ""} selected
+          </span>
+          <button
+            onClick={() => setCompareIds([])}
+            style={{ background: "none", border: "none", color: "#8BADC0", fontSize: 12, cursor: "pointer" }}
+          >
+            Clear
+          </button>
+          <button
+            onClick={() => setCompareOpen(true)}
+            className="v-card-btn btn-primary"
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 30, padding: "8px 16px" }}
+          >
+            Compare <Scale size={14} strokeWidth={2} />
+          </button>
+        </div>
+      )}
+
+      {compareOpen && compareVehicles.length >= 2 && (
+        <VehicleCompareModal
+          vehicles={compareVehicles}
+          onClose={() => setCompareOpen(false)}
+          onRemove={(id) =>
+            setCompareIds((prev) => {
+              const next = prev.filter((x) => x !== id);
+              if (next.length < 2) setCompareOpen(false);
+              return next;
+            })
+          }
         />
       )}
     </section>

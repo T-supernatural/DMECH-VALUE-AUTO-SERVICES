@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { TopBar } from "@/components/ops/TopBar";
 import { DocumentUploadManager } from "@/components/ops/DocumentUploadManager";
+import { Reveal } from "@/components/marketing/Reveal";
 import { customerGuard } from "@/lib/guards";
 
 export default async function PortalDocumentsPage() {
@@ -11,7 +12,9 @@ export default async function PortalDocumentsPage() {
     <>
       <TopBar title="Documents" />
       <div className="ops-content">
-        <DocumentUploadManager customerId={customer.id} canUpload />
+        <Reveal>
+          <DocumentUploadManager customerId={customer.id} canUpload />
+        </Reveal>
       </div>
     </>
   );

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { VehicleRequestForm } from "@/components/marketing/VehicleRequestForm";
+import { Reveal } from "@/components/marketing/Reveal";
 import type { VehicleRequestSource } from "@/types";
 
 export const metadata: Metadata = {
@@ -22,19 +23,23 @@ export default async function VehicleRequestPage({ searchParams }: PageProps) {
 
   return (
     <div className="page-fade">
-      <section className="section" style={{ paddingTop: 48 }}>
+      <section className="section photo-banner pb-cargo center">
         <div className="section-inner">
           <div className="section-eyebrow">Can&apos;t Find It?</div>
-          <h1 style={{ fontFamily: "'Space Grotesk'", fontSize: 34, marginBottom: 10 }}>
-            Tell Us What You&apos;re Looking For
-          </h1>
-          <p style={{ color: "var(--muted)", maxWidth: 600, marginBottom: 32 }}>
+          <div className="section-title">Tell Us What You&apos;re Looking For</div>
+          <div className="section-subtitle" style={{ margin: "0 auto" }}>
             Not every vehicle we can source is already listed. Describe what you need — make,
             model, budget, timeline — and our team will look for it, whether that&apos;s in our
             existing network or a fresh search abroad.
-          </p>
+          </div>
+        </div>
+      </section>
 
-          <VehicleRequestForm source={source} />
+      <section className="section">
+        <div className="section-inner">
+          <Reveal>
+            <VehicleRequestForm source={source} />
+          </Reveal>
         </div>
       </section>
     </div>

@@ -270,3 +270,14 @@
 @media(prefers-reduced-motion:reduce){
   .ops-route-loading-wheel{animation:none}
 }
+
+/* Reveal.tsx (src/components/marketing/Reveal.tsx) reused here for the
+   customer portal -- same component, just needs its CSS reachable from a
+   file the portal actually imports (portal pages don't import
+   marketing.css). Portal panels get the same scroll-in motion the
+   marketing site already has, instead of appearing with zero animation. */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+}

@@ -5,7 +5,6 @@ import { VehicleTeaser } from "@/components/marketing/VehicleTeaser";
 import { CertifiedTeaser } from "@/components/marketing/CertifiedTeaser";
 import { TrustTeaser } from "@/components/marketing/TrustTeaser";
 import { EVSpotlight } from "@/components/marketing/EVSpotlight";
-import { Reveal } from "@/components/marketing/Reveal";
 import { FinancingTeaser } from "@/components/marketing/FinancingTeaser";
 import { CTASection } from "@/components/marketing/CTASection";
 import { getPublicVehicles } from "@/lib/vehicles";
@@ -36,9 +35,7 @@ export default async function SalesPage() {
       <VehicleTeaser vehicles={vehicles} />
       <CertifiedTeaser vehicles={vehicles} />
       <TrustTeaser />
-      <Reveal>
-        <EVSpotlight />
-      </Reveal>
+      <EVSpotlight />
       <FinancingTeaser />
       <CTASection />
     </main>

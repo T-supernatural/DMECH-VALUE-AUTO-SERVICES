@@ -11,11 +11,8 @@ export function CertifiedTeaser({ vehicles }: { vehicles: PublicVehicle[] }) {
   const certifiedCount = nigerianUsed.filter(isCertified).length;
 
   return (
-    <section
-      className="section"
-      style={{ background: "linear-gradient(135deg,#0F1923,#0A2818)", position: "relative" }}
-    >
-      <div className="section-inner">
+    <section className="section dark-gradient glow-green">
+      <div className="section-inner" style={{ position: "relative" }}>
         <Reveal>
           <div className="certified-teaser-grid">
             <div>

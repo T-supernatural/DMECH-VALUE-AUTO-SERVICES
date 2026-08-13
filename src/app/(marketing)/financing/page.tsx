@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { InstalmentPlans } from "@/components/marketing/InstalmentPlans";
-import { Reveal } from "@/components/marketing/Reveal";
 
 export const metadata: Metadata = {
   title: "Financing & Instalment Plans — DMECH Services Limited",
@@ -25,9 +24,7 @@ export default function FinancingPage() {
           </Link>
         </div>
       </section>
-      <Reveal>
-        <InstalmentPlans />
-      </Reveal>
+      <InstalmentPlans />
     </div>
   );
 }
