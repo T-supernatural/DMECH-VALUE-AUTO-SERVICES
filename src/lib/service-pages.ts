@@ -150,7 +150,7 @@ export const SERVICE_PAGES: ServicePageData[] = [
     seoDescription:
       "Electric vehicle servicing in Lagos — battery health checks, charging issues, and EV-specific maintenance. Book with DMECH's workshop.",
     intro:
-      "EVs need a different kind of care than a combustion engine. As Nigeria's EV market grows, our workshop is building the expertise to service them properly — battery health, charging systems, and EV-specific components.",
+      "EVs need a different kind of care than a combustion engine — it's an electrical and thermal problem, not a mechanical one. We built our high-voltage capability by extending a decade of diagnostic discipline into battery health, thermal management, and EV-specific components.",
     covers: [
       "Battery health check",
       "Charging system diagnosis",

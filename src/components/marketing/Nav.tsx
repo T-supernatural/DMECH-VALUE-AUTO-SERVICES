@@ -12,11 +12,18 @@ import { Logo } from "@/components/Logo";
 // its own top-level link though — it's a genuinely different offering
 // (reserving a specific vehicle DMECH doesn't own yet) rather than a filter
 // on existing inventory, so it needs to be findable on its own.
+//
+// Order matters here: Services and EV & Battery lead because that's DMECH's
+// actual strategic weight (a decade-old diagnostic/workshop business now
+// extending into high-voltage EV capability) — vehicle import is real but
+// deliberately not the lead story. Previously Vehicles led; that inverted
+// the company's own stated priority.
 const LINKS = [
+  { href: "/service", label: "Services" },
+  { href: "/ev-workshop", label: "EV & Battery" },
   { href: "/vehicles", label: "Vehicles" },
   { href: "/vehicles/sourcing", label: "Reserve From Abroad" },
   { href: "/financing", label: "Financing" },
-  { href: "/service", label: "Services" },
   { href: "/about", label: "About" },
   { href: "/faq", label: "FAQ" },
 ];

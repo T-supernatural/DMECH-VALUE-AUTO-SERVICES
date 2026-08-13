@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/marketing/Hero";
+import { CapabilityBand } from "@/components/marketing/CapabilityBand";
 import { UseCategoryTeaser } from "@/components/marketing/UseCategoryTeaser";
 import { VehicleTeaser } from "@/components/marketing/VehicleTeaser";
 import { CertifiedTeaser } from "@/components/marketing/CertifiedTeaser";
@@ -12,9 +13,9 @@ import { getPublicVehicles } from "@/lib/vehicles";
 import { getConfigValue } from "@/lib/platform-config";
 
 export const metadata: Metadata = {
-  title: "DMECH Services Limited — Import. Drive. Thrive.",
+  title: "DMECH Services Limited — We Keep It Running.",
   description:
-    "Import your vehicle from the USA, Europe, or China with transparent pricing and instalment plans, or buy a DMECH Certified Nigerian-used vehicle with a real warranty.",
+    "Nigeria's diagnostic and EV specialists since 2016 — mechanical and auto-electrical repair, high-voltage EV service, battery certification, plus vehicle import, sales, and financing.",
 };
 
 export default async function MarketingHome() {
@@ -27,6 +28,7 @@ export default async function MarketingHome() {
   return (
     <main className="page-fade">
       <Hero ngnRate={ngnRate} marketPriceBenchmarks={marketPriceBenchmarks} />
+      <CapabilityBand />
       <UseCategoryTeaser />
       <VehicleTeaser vehicles={vehicles} />
       <CertifiedTeaser vehicles={vehicles} />

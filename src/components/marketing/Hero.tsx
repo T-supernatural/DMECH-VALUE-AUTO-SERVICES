@@ -19,12 +19,12 @@ export function Hero({ ngnRate, marketPriceBenchmarks }: HeroProps) {
             <span className="pulse" /> Import duties reduced — effective July 1, 2026
           </div>
           <h1>
-            Import Your Vehicle. <span>Pay Your Way.</span>
+            Know Your Landed Cost. <span>Instantly.</span>
           </h1>
           <p>
-            DMECH handles everything — from sourcing your vehicle in the USA or Europe to
-            clearing it at Lagos ports. Transparent pricing, verified history, and instalment
-            plans that start while your car is still on the water.
+            An accurate, itemised import estimate before you commit — duties, shipping, and
+            fees, no guesswork. Backed by a decade of DMECH workshop expertise, we also source,
+            ship, clear, and service every vehicle we import.
           </p>
           <div className="hero-stats">
             <div>

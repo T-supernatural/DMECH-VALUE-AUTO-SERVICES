@@ -29,7 +29,7 @@ export function HowItWorks() {
     <section className="section" id="how" style={{ background: "#fff" }}>
       <div className="section-inner">
         <Reveal>
-          <div className="section-eyebrow">How It Works</div>
+          <div className="section-eyebrow">How Vehicle Import Works</div>
           <div className="section-title">From Auction to Your Driveway</div>
           <div className="section-subtitle">
             We handle the entire process. You choose the car, we handle the rest.

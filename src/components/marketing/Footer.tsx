@@ -10,19 +10,21 @@ export function Footer() {
         <div>
           <Logo variant="footer" />
           <div className="footer-about">
-            DMECH Services Limited — Nigeria&apos;s trusted vehicle import, sales,
-            financing, and automotive service hub. Import. Drive. Thrive.
+            DMECH Services Limited — a decade of mechanical and auto-electrical diagnostic
+            expertise since 2016, now extending into high-voltage EV service and battery
+            certification. We Keep It Running.
           </div>
         </div>
         <div className="footer-col">
           <h4>Services</h4>
+          <Link href="/service">Vehicle Service</Link>
+          <Link href="/ev-workshop">EV &amp; Battery Certification</Link>
           <Link href="/vehicles">Vehicle Import</Link>
           <Link href="/vehicles/sourcing">Reserve From Abroad</Link>
           <Link href="/vehicles/certified">Certified Nigerian-Used</Link>
           <Link href="/vehicles/request">Request a Vehicle</Link>
           <Link href="/financing">Instalment Plans</Link>
           <Link href="/#calculator">Cost Calculator</Link>
-          <Link href="/service">Vehicle Service</Link>
         </div>
         <div className="footer-col">
           <h4>Company</h4>

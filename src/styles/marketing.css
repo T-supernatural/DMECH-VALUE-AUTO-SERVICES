@@ -413,6 +413,7 @@ footer{background:var(--dark);color:#fff;padding:50px 20px 30px}
 .photo-banner.pb-carlot{background-image:url('/splash/03-car-lot.jpg')}
 .photo-banner.pb-workshop{background-image:url('/splash/04-workshop.jpg')}
 .photo-banner.pb-transport{background-image:url('/splash/06-car-transport.jpg')}
+.photo-banner.pb-ev{background-image:url('/splash/05-ev-charging.jpg')}
 
 /* Route loading state (src/app/(marketing)/loading.tsx) — a car driving
    back and forth along a dashed road, shown by Next.js while a client-side

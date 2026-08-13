@@ -26,10 +26,10 @@ const OG_IMAGE = "/splash/01_cars_road.jpg";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "DMECH Services Limited",
-  description: "Import. Drive. Thrive.",
+  description: "We Keep It Running.",
   openGraph: {
     title: "DMECH Services Limited",
-    description: "Import. Drive. Thrive.",
+    description: "We Keep It Running.",
     siteName: "DMECH Services Limited",
     url: SITE_URL,
     images: [{ url: OG_IMAGE, width: 1080, height: 720 }],
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "DMECH Services Limited",
-    description: "Import. Drive. Thrive.",
+    description: "We Keep It Running.",
     images: [OG_IMAGE],
   },
 };

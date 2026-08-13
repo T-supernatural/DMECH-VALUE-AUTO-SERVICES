@@ -49,6 +49,11 @@ export default async function ServiceCategoryPage({
           <div className="section-subtitle" style={{ maxWidth: 620, margin: "0 auto" }}>
             {page.intro}
           </div>
+          {slug === "ev-service" && (
+            <Link href="/ev-workshop" className="teaser-link" style={{ fontSize: 13 }}>
+              See our full high-voltage &amp; battery certification capability →
+            </Link>
+          )}
         </div>
       </section>
 

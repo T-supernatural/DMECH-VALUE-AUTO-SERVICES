@@ -58,8 +58,8 @@ export function EVSpotlight() {
             },
             {
               icon: Wrench,
-              title: "We Service What We Sell",
-              body: "EV support in Nigeria is thin — so DMECH built it in. Our hub services and maintains the EVs we import, so you're never stranded.",
+              title: "Real High-Voltage Capability",
+              body: "EV support in Nigeria is thin — DMECH built it from a decade of diagnostic discipline. Battery management, thermal control, and inverter/motor diagnostics, not just duty savings.",
             },
           ].map((card) => (
             <div
@@ -114,7 +114,7 @@ export function EVSpotlight() {
           </div>
         </div>
 
-        <div style={{ textAlign: "center", marginTop: 28 }}>
+        <div style={{ textAlign: "center", marginTop: 28, display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
           <Link
             href="/vehicles?filter=ev"
             className="calc-btn"
@@ -129,6 +129,9 @@ export function EVSpotlight() {
             }}
           >
             Browse EV Inventory <Zap size={16} strokeWidth={2.5} />
+          </Link>
+          <Link href="/ev-workshop" style={{ color: "#7DD3FC", fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
+            See our high-voltage workshop &amp; battery certification →
           </Link>
         </div>
       </div>
