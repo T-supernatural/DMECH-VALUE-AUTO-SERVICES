@@ -1,7 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, Wrench, BatteryCharging, ShieldCheck } from "lucide-react";
+import { ArrowRight, Wrench, BatteryCharging, ShieldCheck, Users } from "lucide-react";
 
 const CAPSULE_ITEMS = [
+  {
+    icon: Users,
+    title: "Consultation",
+    desc: "Free initial consultation to scope your vehicle needs.",
+  },
   {
     icon: Wrench,
     title: "Mechanical & Auto-Electrical Diagnostics",
