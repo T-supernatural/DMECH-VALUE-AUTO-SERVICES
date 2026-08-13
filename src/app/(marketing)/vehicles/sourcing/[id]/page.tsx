@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Car } from "lucide-react";
 import { createServiceClient } from "@/lib/supabase/server";
 import { formatUsd, usdCentsToDollars } from "@/lib/money";
 import { ReserveVehicleButton } from "@/components/marketing/ReserveVehicleButton";
+import { SourcingListingGallery } from "@/components/marketing/SourcingListingGallery";
 import { Reveal } from "@/components/marketing/Reveal";
 import { SOURCING_PLATFORM_LABELS, TITLE_STATUS_LABELS } from "@/types";
 import type { SourcingListing } from "@/types";
@@ -41,22 +41,7 @@ export default async function SourcingListingDetailPage({ params }: PageProps) {
       <section className="section" style={{ paddingTop: 48 }}>
         <div className="section-inner" style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: 40 }}>
           <Reveal>
-            <div className="v-card-img" style={{ height: 320, borderRadius: 14, marginBottom: 16 }}>
-              {listing.photos[0]?.url ? (
-                // eslint-disable-next-line @next/next/no-img-element -- pasted external auction-photo URL
-                <img src={listing.photos[0].url} alt={`${listing.make} ${listing.model}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              ) : (
-                <Car size={64} strokeWidth={1.25} />
-              )}
-            </div>
-            {listing.photos.length > 1 && (
-              <div style={{ display: "flex", gap: 8, marginBottom: 24, overflowX: "auto" }}>
-                {listing.photos.slice(1).map((photo, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element -- pasted external auction-photo URL
-                  <img key={i} src={photo.url} alt="" style={{ width: 90, height: 68, objectFit: "cover", borderRadius: 8, flexShrink: 0 }} />
-                ))}
-              </div>
-            )}
+            <SourcingListingGallery photos={listing.photos} alt={`${listing.make} ${listing.model}`} />
 
             <h1 style={{ fontFamily: "'Space Grotesk'", fontSize: 30, marginBottom: 6 }}>
               {listing.make} {listing.model} {listing.year}{listing.trim ? ` ${listing.trim}` : ""}

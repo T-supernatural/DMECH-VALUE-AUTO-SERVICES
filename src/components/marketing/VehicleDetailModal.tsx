@@ -13,6 +13,7 @@ import {
   type PublicVehicle,
 } from "@/lib/vehicle-display";
 import { whatsappHref, AUTOCHEK_URL } from "@/lib/contact";
+import { ImageLightbox } from "@/components/marketing/ImageLightbox";
 
 type Tab = "condition" | "specs" | "history" | "financing" | "certification";
 
@@ -41,17 +42,18 @@ export function VehicleDetailModal({ vehicle, onClose, defaultDepositPct, defaul
   const [tab, setTab] = useState<Tab>("condition");
   const [plan, setPlan] = useState<"dmech_direct" | "partner_finance">("dmech_direct");
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
   const titleId = "vehicle-modal-title";
 
   useEffect(() => {
     closeRef.current?.focus();
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape" && !lightboxOpen) onClose();
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onClose]);
+  }, [onClose, lightboxOpen]);
 
   const certified = isCertified(vehicle);
   const warranty = activeWarranty(vehicle);
@@ -93,7 +95,8 @@ export function VehicleDetailModal({ vehicle, onClose, defaultDepositPct, defaul
               <img
                 src={photos[photoIndex]?.url}
                 alt={`${vehicle.make} ${vehicle.model}`}
-                style={{ width: "100%", height: 220, objectFit: "cover", borderRadius: 10, display: "block" }}
+                onClick={() => setLightboxOpen(true)}
+                style={{ width: "100%", height: 220, objectFit: "cover", borderRadius: 10, display: "block", cursor: "zoom-in" }}
               />
               {photos.length > 1 && (
                 <div style={{ display: "flex", gap: 6, marginTop: 8, overflowX: "auto" }}>
@@ -442,6 +445,16 @@ export function VehicleDetailModal({ vehicle, onClose, defaultDepositPct, defaul
           </div>
         </div>
       </div>
+
+      {lightboxOpen && photos.length > 0 && (
+        <ImageLightbox
+          urls={photos.map((p) => p.url)}
+          index={photoIndex}
+          alt={`${vehicle.make} ${vehicle.model}`}
+          onClose={() => setLightboxOpen(false)}
+          onIndexChange={setPhotoIndex}
+        />
+      )}
     </div>
   );
 }
