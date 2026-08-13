@@ -36,6 +36,14 @@ nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.06)}
    already vetted for the marketing splash) so the gradient/glow treatment below
    is kept exactly, just with imagery showing through it rather than flat color. */
 .hero{padding:50px 20px 50px;background-image:linear-gradient(135deg,rgba(15,25,35,.88) 0%,rgba(22,40,64,.85) 50%,rgba(26,48,80,.9) 100%),url('/splash/01_cars_road.jpg');background-size:cover;background-position:center;position:relative;overflow:hidden}
+.hero.hero-workshop{background-image:linear-gradient(135deg,rgba(15,25,35,.88) 0%,rgba(22,40,64,.85) 50%,rgba(26,48,80,.9) 100%),url('/splash/04-workshop.jpg')}
+.hero-capsule{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px;backdrop-filter:blur(8px)}
+.hero-capsule-eyebrow{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#5CB8F0;margin-bottom:18px}
+.hero-capsule-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.hero-capsule-item:last-child{border-bottom:none}
+.hero-capsule-item-icon{color:#22C55E;flex-shrink:0;margin-top:2px}
+.hero-capsule-item-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:2px}
+.hero-capsule-item-desc{font-size:12.5px;color:#8BADC0;line-height:1.5}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 800px 500px at 20% 50%,rgba(24,153,231,.08),transparent),radial-gradient(ellipse 600px 400px at 80% 30%,rgba(230,141,76,.05),transparent)}
 /* Headlight glow — two soft radial beams over the parked car's headlights in
    01_cars_road.jpg, slow-pulsing on an offset cycle like an idling engine.

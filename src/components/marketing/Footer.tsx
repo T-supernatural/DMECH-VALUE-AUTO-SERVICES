@@ -19,12 +19,13 @@ export function Footer() {
           <h4>Services</h4>
           <Link href="/service">Vehicle Service</Link>
           <Link href="/ev-workshop">EV &amp; Battery Certification</Link>
+          <Link href="/sales">Buy a Vehicle</Link>
           <Link href="/vehicles">Vehicle Import</Link>
           <Link href="/vehicles/sourcing">Reserve From Abroad</Link>
           <Link href="/vehicles/certified">Certified Nigerian-Used</Link>
           <Link href="/vehicles/request">Request a Vehicle</Link>
           <Link href="/financing">Instalment Plans</Link>
-          <Link href="/#calculator">Cost Calculator</Link>
+          <Link href="/sales#calculator">Cost Calculator</Link>
         </div>
         <div className="footer-col">
           <h4>Company</h4>

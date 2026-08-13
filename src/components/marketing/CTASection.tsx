@@ -1,18 +1,25 @@
 import { MessageCircle, Phone } from "lucide-react";
 import { CONTACT, whatsappHref } from "@/lib/contact";
 
-export function CTASection() {
+interface CTASectionProps {
+  heading?: string;
+  body?: string;
+  whatsappMessage?: string;
+}
+
+export function CTASection({
+  heading = "Ready to Import Your Next Vehicle?",
+  body = "Talk to us today. Whether you know exactly what you want or need guidance, we'll walk you through every step.",
+  whatsappMessage = "Hi DMECH, I want to import a vehicle",
+}: CTASectionProps) {
   return (
     <section className="cta-section" id="contact">
-      <h2>Ready to Import Your Next Vehicle?</h2>
-      <p>
-        Talk to us today. Whether you know exactly what you want or need guidance, we&apos;ll
-        walk you through every step.
-      </p>
+      <h2>{heading}</h2>
+      <p>{body}</p>
       <div className="cta-buttons">
         <a
           className="cta-main cta-wa"
-          href={whatsappHref("Hi DMECH, I want to import a vehicle")}
+          href={whatsappHref(whatsappMessage)}
           target="_blank"
           rel="noopener noreferrer"
         >

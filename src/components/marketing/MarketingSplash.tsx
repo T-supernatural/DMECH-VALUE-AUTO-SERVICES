@@ -27,7 +27,7 @@ export function MarketingSplash() {
       <div className="msplash-scrim" />
       <div className="msplash-content">
         <Logo variant="splash" />
-        <div className="msplash-tagline">Import. Drive. Thrive.</div>
+        <div className="msplash-tagline">We Keep It Running.</div>
         <div className="msplash-bar-wrap">
           <div className="msplash-bar" />
         </div>

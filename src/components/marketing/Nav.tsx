@@ -7,23 +7,27 @@ import { Logo } from "@/components/Logo";
 
 // "Certified" is deliberately not a flat top-level link — DMECH Certified
 // Nigerian-Used vehicles are still vehicles (lives at /vehicles/certified),
-// not a separate destination competing with "Vehicles" in the nav; it's
-// surfaced instead via the Home page and Footer. "Reserve From Abroad" gets
-// its own top-level link though — it's a genuinely different offering
+// not a separate destination competing with "Buy a Vehicle" in the nav;
+// it's surfaced instead via /sales and the Footer. "Reserve From Abroad"
+// gets its own top-level link though — it's a genuinely different offering
 // (reserving a specific vehicle DMECH doesn't own yet) rather than a filter
 // on existing inventory, so it needs to be findable on its own.
 //
-// Order matters here: Services and EV & Battery lead because that's DMECH's
-// actual strategic weight (a decade-old diagnostic/workshop business now
-// extending into high-voltage EV capability) — vehicle import is real but
-// deliberately not the lead story. Previously Vehicles led; that inverted
-// the company's own stated priority.
+// "Vehicles" and "Financing" were consolidated into one "Buy a Vehicle"
+// link pointing at /sales — the calculator, listings, certified program,
+// and financing plans all live there now as one hub (exactly how they used
+// to appear together on Home before Home became identity-led), so two
+// separate nav entries for the same destination just added clutter.
+//
+// Order matters here too: Services and EV & Battery lead because that's
+// DMECH's actual strategic weight (a decade-old diagnostic/workshop
+// business now extending into high-voltage EV capability) — vehicle import
+// is real but deliberately not the lead story.
 const LINKS = [
   { href: "/service", label: "Services" },
   { href: "/ev-workshop", label: "EV & Battery" },
-  { href: "/vehicles", label: "Vehicles" },
+  { href: "/sales", label: "Buy a Vehicle" },
   { href: "/vehicles/sourcing", label: "Reserve From Abroad" },
-  { href: "/financing", label: "Financing" },
   { href: "/about", label: "About" },
   { href: "/faq", label: "FAQ" },
 ];
