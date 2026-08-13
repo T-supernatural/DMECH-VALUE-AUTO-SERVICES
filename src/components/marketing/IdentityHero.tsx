@@ -1,10 +1,6 @@
 import Link from "next/link";
-import { Wrench, BatteryCharging, ShieldCheck } from "lucide-react";
+import { ArrowRight, Wrench, BatteryCharging, ShieldCheck } from "lucide-react";
 
-// Home's hero — identity-led, no calculator (that lives on /sales now).
-// Reuses the .hero two-column treatment (headlight glow, badge, big
-// headline) but with a workshop photo instead of the cars-on-road one, and
-// a capability checklist card instead of the calculator on the right.
 const CAPSULE_ITEMS = [
   {
     icon: Wrench,
@@ -25,60 +21,46 @@ const CAPSULE_ITEMS = [
 
 export function IdentityHero() {
   return (
-    <section className="hero hero-workshop">
-      <div className="hero-headlights" aria-hidden="true">
-        <span className="hero-headlight-glow hl-1" />
-        <span className="hero-headlight-glow hl-2" />
-      </div>
-      <div className="hero-inner">
+    <section className="identity-hero">
+      <div className="identity-hero-inner">
         <div>
-          <div className="hero-badge">
-            <span className="pulse" /> Since 2016
+          <div className="identity-hero-badge">
+            <span className="identity-hero-badge-dot" />
+            Nigeria&apos;s Diagnostic &amp; EV Specialists Since 2016
           </div>
           <h1>
-            We Keep It <span>Running.</span>
+            We Keep It <em>Running.</em>
           </h1>
           <p>
             A decade of mechanical and auto-electrical diagnostic discipline — now extending into
             high-voltage EV service and battery certification most Nigerian workshops simply
             don&apos;t have.
           </p>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Link
-              href="/service"
-              className="calc-btn"
-              style={{ maxWidth: 220, display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none" }}
-            >
-              Book a Diagnostic
+          <div className="identity-hero-actions">
+            <Link href="/service" className="identity-hero-cta">
+              Book a Diagnostic <ArrowRight size={16} strokeWidth={2.25} />
             </Link>
-            <Link
-              href="/sales"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                color: "#7DD3FC",
-                fontSize: 14,
-                fontWeight: 600,
-                textDecoration: "none",
-              }}
-            >
+            <Link href="/sales" className="identity-hero-link">
               Buy or Import a Vehicle →
             </Link>
           </div>
         </div>
-        <div className="hero-capsule">
-          <div className="hero-capsule-eyebrow">What We Actually Do</div>
-          {CAPSULE_ITEMS.map((item) => (
-            <div className="hero-capsule-item" key={item.title}>
-              <span className="hero-capsule-item-icon">
-                <item.icon size={18} strokeWidth={2} />
-              </span>
-              <div>
-                <div className="hero-capsule-item-title">{item.title}</div>
-                <div className="hero-capsule-item-desc">{item.desc}</div>
+
+        <div className="identity-hero-capsule">
+          <div className="identity-hero-capsule-inner">
+            <div className="identity-hero-capsule-eyebrow">What We Actually Do</div>
+            {CAPSULE_ITEMS.map((item) => (
+              <div className="identity-hero-capsule-item" key={item.title}>
+                <span className="identity-hero-capsule-icon">
+                  <item.icon size={17} strokeWidth={2} />
+                </span>
+                <div>
+                  <div className="identity-hero-capsule-title">{item.title}</div>
+                  <div className="identity-hero-capsule-desc">{item.desc}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

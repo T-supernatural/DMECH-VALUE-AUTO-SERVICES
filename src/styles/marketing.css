@@ -3,6 +3,95 @@
    ops platform); this file is everything section-specific. Port, not a
    redesign — kept close to the original mockup's class names and layout. */
 
+/* ── HOME — elevated/premium redesign (preview pass) ────────────────────
+   Deliberately its own class namespace (identity-hero / capability- /
+   origin- / gateway-), not a rework of .hero/.trust-card/.teaser-card —
+   those are shared by Sales and a dozen other pages that aren't part of
+   this pass yet. Same brand blue/orange throughout; the "elevation" is
+   type scale, imagery, spacing rhythm, and a considered neutral palette,
+   not a new color system. */
+
+.identity-hero{padding:130px 20px 110px;position:relative;overflow:hidden;background-image:linear-gradient(135deg,rgba(10,17,24,.92) 0%,rgba(16,29,46,.88) 50%,rgba(20,37,60,.93) 100%),url('/splash/04-workshop.jpg');background-size:cover;background-position:center}
+.identity-hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 900px 600px at 12% 35%,rgba(24,153,231,.12),transparent 70%),radial-gradient(ellipse 700px 500px at 88% 65%,rgba(230,141,76,.09),transparent 70%)}
+.identity-hero-inner{max-width:1200px;margin:0 auto;position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
+.identity-hero-badge{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:7px 16px 7px 8px;font-size:12px;font-weight:600;letter-spacing:.3px;color:#B9CEDE;margin-bottom:28px}
+.identity-hero-badge-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--orange));flex-shrink:0}
+.identity-hero h1{font-family:'Space Grotesk';font-size:clamp(38px,5.4vw,66px);font-weight:700;line-height:1.06;letter-spacing:-.02em;color:#fff;text-wrap:balance;margin-bottom:24px}
+.identity-hero h1 em{font-style:normal;color:var(--orange)}
+.identity-hero p{font-size:18px;color:#A9C2D6;line-height:1.75;max-width:520px;margin-bottom:36px}
+.identity-hero-actions{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.identity-hero-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--blue);color:#fff;border:none;border-radius:11px;padding:16px 30px;font-size:15px;font-weight:700;text-decoration:none;transition:background .2s,transform .2s;box-shadow:0 12px 30px -10px rgba(24,153,231,.5)}
+.identity-hero-cta:hover{background:#1280C8;transform:translateY(-1px)}
+.identity-hero-link{display:inline-flex;align-items:center;gap:6px;color:#DCE8F2;font-size:14.5px;font-weight:600;text-decoration:none;border-bottom:1px solid rgba(220,232,242,.3);padding-bottom:2px;transition:border-color .2s,color .2s}
+.identity-hero-link:hover{color:#fff;border-color:#fff}
+
+.identity-hero-capsule{position:relative;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:8px;backdrop-filter:blur(10px)}
+.identity-hero-capsule::before{content:'';position:absolute;top:0;left:20px;right:20px;height:2px;background:linear-gradient(90deg,var(--blue),var(--orange));border-radius:2px}
+.identity-hero-capsule-inner{padding:24px 20px}
+.identity-hero-capsule-eyebrow{font-size:11.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6FA9D6;margin-bottom:20px}
+.identity-hero-capsule-item{display:flex;align-items:flex-start;gap:14px;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.identity-hero-capsule-item:last-child{border-bottom:none;padding-bottom:4px}
+.identity-hero-capsule-icon{width:36px;height:36px;border-radius:10px;background:rgba(24,153,231,.14);color:#5CB8F0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.identity-hero-capsule-title{font-size:14.5px;font-weight:700;color:#fff;margin-bottom:3px}
+.identity-hero-capsule-desc{font-size:12.5px;color:#8BA6BC;line-height:1.55}
+
+@media(max-width:900px){
+  .identity-hero{padding:88px 20px 60px}
+  .identity-hero-inner{grid-template-columns:1fr;gap:36px}
+}
+
+/* Capability band — numbered priority cards (the numbering is real: it's
+   DMECH's actual strategic order, not decoration), each with a real photo
+   rather than an icon-only tile. */
+.capability-section{padding:96px 20px}
+.capability-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:44px}
+.capability-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:box-shadow .3s,transform .3s;text-decoration:none;color:inherit;display:block}
+.capability-card:hover{box-shadow:0 20px 44px -16px rgba(15,25,35,.18);transform:translateY(-3px)}
+.capability-card-photo{height:150px;background-size:cover;background-position:center;position:relative}
+.capability-card-index{position:absolute;top:14px;left:14px;width:34px;height:34px;border-radius:10px;background:rgba(12,20,28,.55);backdrop-filter:blur(4px);color:#fff;font-family:'Space Grotesk';font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;letter-spacing:.5px}
+.capability-card-body{padding:24px 22px 26px}
+.capability-card-title{font-family:'Space Grotesk';font-size:18px;font-weight:700;color:var(--dark);margin-bottom:9px;letter-spacing:-.01em}
+.capability-card-desc{font-size:14px;color:var(--muted);line-height:1.65}
+.capability-card-link{display:inline-flex;align-items:center;gap:5px;margin-top:14px;font-size:13px;font-weight:700;color:var(--blue)}
+@media(max-width:900px){
+  .capability-grid{grid-template-columns:1fr;gap:18px}
+  .capability-section{padding:64px 20px}
+}
+
+/* Origin — editorial photo/text split instead of a centered paragraph
+   block. --bg-tint gives this section a considered, faintly warm neutral
+   instead of stark white, breaking up the page's vertical rhythm. */
+.origin-section{padding:100px 20px;background:#F6F4F1}
+.origin-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:.85fr 1.15fr;gap:64px;align-items:center}
+.origin-photo{border-radius:20px;overflow:hidden;height:420px;background-size:cover;background-position:center;position:relative;box-shadow:0 30px 60px -24px rgba(15,25,35,.25)}
+.origin-photo-badge{position:absolute;left:20px;bottom:20px;background:rgba(12,20,28,.72);backdrop-filter:blur(6px);color:#fff;border-radius:12px;padding:12px 16px}
+.origin-photo-badge-year{font-family:'Space Grotesk';font-size:22px;font-weight:700;line-height:1}
+.origin-photo-badge-label{font-size:11px;color:#A9C2D6;margin-top:3px;letter-spacing:.3px}
+.origin-eyebrow{font-size:11px;font-weight:700;color:var(--orange);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.origin-title{font-family:'Space Grotesk';font-size:clamp(26px,3vw,38px);font-weight:700;color:var(--dark);letter-spacing:-.01em;line-height:1.15;text-wrap:balance;margin-bottom:20px}
+.origin-body p{font-size:15.5px;color:var(--muted);line-height:1.8;margin-bottom:16px;max-width:620px}
+@media(max-width:900px){
+  .origin-inner{grid-template-columns:1fr;gap:32px}
+  .origin-photo{height:260px}
+  .origin-section{padding:64px 20px}
+}
+
+/* Sales gateway — the bridge into /sales, given real visual weight instead
+   of a bordered box so it reads as a deliberate second path, not an
+   afterthought between two content sections. */
+.gateway-section{padding:0 20px 96px}
+.gateway-card{max-width:1200px;margin:0 auto;background:linear-gradient(120deg,#0F1923 0%,#16283A 60%,#12202E 100%);border-radius:24px;padding:52px 48px;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;position:relative;overflow:hidden}
+.gateway-card::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 500px 320px at 85% 20%,rgba(230,141,76,.10),transparent 70%)}
+.gateway-icon{width:56px;height:56px;border-radius:14px;background:rgba(24,153,231,.16);color:#5CB8F0;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.gateway-title{font-family:'Space Grotesk';font-size:23px;font-weight:700;color:#fff;margin-bottom:6px;position:relative}
+.gateway-desc{font-size:14.5px;color:#9FB6C6;max-width:420px;position:relative}
+.gateway-cta{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--dark);border-radius:11px;padding:15px 26px;font-size:14.5px;font-weight:700;text-decoration:none;flex-shrink:0;position:relative;transition:transform .2s}
+.gateway-cta:hover{transform:translateY(-1px)}
+@media(max-width:700px){
+  .gateway-card{padding:36px 26px;flex-direction:column;text-align:center}
+  .gateway-desc{max-width:none}
+}
+
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 20px;transition:box-shadow .3s}
 nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.06)}
