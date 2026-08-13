@@ -69,6 +69,15 @@ export async function PATCH(request: Request) {
     );
   }
 
+  if (Array.isArray(body.ticker_items)) {
+    updates.push(
+      service
+        .from("platform_config")
+        .update({ value: body.ticker_items, updated_by: staff.id, updated_at: new Date().toISOString() })
+        .eq("key", "ticker_items"),
+    );
+  }
+
   const results = await Promise.all(updates);
   const failed = results.find((r) => (r as { error: unknown }).error);
   if (failed) {

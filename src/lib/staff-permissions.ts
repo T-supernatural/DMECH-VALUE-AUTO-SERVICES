@@ -23,6 +23,7 @@ export const OPS_NAV_ITEMS = [
   { id: "staff", href: "/ops/settings/staff", label: "Staff", section: "Settings" },
   { id: "business", href: "/ops/settings/business", label: "Business", section: "Settings" },
   { id: "platform", href: "/ops/settings/platform", label: "Platform", section: "Settings" },
+  { id: "announcements", href: "/ops/settings/announcements", label: "Announcements", section: "Settings" },
   { id: "audit-log", href: "/ops/settings/audit-log", label: "Audit Log", section: "Settings" },
   { id: "login-activity", href: "/ops/settings/login-activity", label: "Login Activity", section: "Settings" },
 ] as const;
@@ -54,6 +55,7 @@ export const DEFAULT_NAV_ACCESS_BY_ROLE: Record<StaffRole, OpsNavItemId[]> = {
     "staff",
     "business",
     "platform",
+    "announcements",
     "audit-log",
     "login-activity",
   ],
@@ -106,6 +108,7 @@ export const DEFAULT_NAV_ACCESS_BY_ROLE: Record<StaffRole, OpsNavItemId[]> = {
     "customs",
     "staff",
     "platform",
+    "announcements",
     "audit-log",
     "login-activity",
   ],
