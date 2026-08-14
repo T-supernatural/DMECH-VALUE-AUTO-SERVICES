@@ -88,7 +88,9 @@ export function VehicleMarketplace({
     setCompareIds((prev) => {
       if (prev.includes(id)) return prev.filter((x) => x !== id);
       if (prev.length >= MAX_COMPARE) return prev;
-      return [...prev, id];
+      const next = [...prev, id];
+      if (next.length >= 2) setCompareOpen(true);
+      return next;
     });
   }
 
@@ -227,7 +229,7 @@ export function VehicleMarketplace({
                         }}
                       >
                         <Scale size={12} strokeWidth={2} />
-                        {compareIds.includes(v.id) ? "Comparing" : "Compare"}
+                          {compareIds.includes(v.id) ? "Selected" : "Compare"}
                       </button>
                     )}
                   </div>
@@ -286,7 +288,7 @@ export function VehicleMarketplace({
         />
       )}
 
-      {compareIds.length >= 2 && !compareOpen && (
+      {compareIds.length >= 1 && !compareOpen && (
         <div
           style={{
             position: "fixed",
@@ -316,9 +318,11 @@ export function VehicleMarketplace({
           <button
             onClick={() => setCompareOpen(true)}
             className="v-card-btn btn-primary"
-            style={{ display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 30, padding: "8px 16px" }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 30, padding: "8px 16px", opacity: compareIds.length < 2 ? 0.6 : 1 }}
+            disabled={compareIds.length < 2}
+            aria-disabled={compareIds.length < 2}
           >
-            Compare <Scale size={14} strokeWidth={2} />
+            {compareIds.length < 2 ? `Select ${2 - compareIds.length} more to compare` : "Compare"} <Scale size={14} strokeWidth={2} />
           </button>
         </div>
       )}

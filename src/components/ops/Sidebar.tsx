@@ -59,6 +59,7 @@ const NAV_ICON_MAP = {
   platform: Settings,
   "audit-log": History,
   "login-activity": KeyRound,
+  announcements: MessageSquareText,
 } as const;
 
 type SidebarNavItem = {
