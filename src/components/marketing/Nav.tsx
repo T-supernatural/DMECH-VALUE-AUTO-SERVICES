@@ -78,7 +78,7 @@ export function Nav() {
                 {link.label}
               </Link>
             ))}
-            <Link href="/register" className="nav-cta">
+            <Link href="/register-whatsapp" className="nav-cta">
               Get Started
             </Link>
           </div>
@@ -104,7 +104,7 @@ export function Nav() {
             {link.label}
           </Link>
         ))}
-        <Link href="/register" onClick={() => setMenuOpen(false)}>
+        <Link href="/register-whatsapp" onClick={() => setMenuOpen(false)}>
           Get Started
         </Link>
       </div>
