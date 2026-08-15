@@ -740,17 +740,20 @@ Dashboards for:
 
 ---
 
-## Timeline Summary
+## Timeline Summary (REVISED)
 
-| Phase | Duration | Start | End |
-|-------|----------|-------|-----|
-| Phase 0 | 1 week | Week 1 | Week 1 |
-| Phase 1 | 3-4 weeks | Week 2 | Week 5 |
-| Phase 2 | 4 weeks | Week 6 | Week 9 |
-| Phase 3 | 3 weeks | Week 10 | Week 12 |
-| Phase 4 | 3-4 weeks | Week 13 | Week 16 |
-| Phase 5 | 2-3 weeks | Week 17 | Week 19 |
-| **Total** | **~19 weeks** | **Week 1** | **Week 19** |
+**New Strategy:** Phase 1A+1B (Rules Foundation) → Phase 2 (WhatsApp) → Phase 1C-E (Wrap-up)
+
+| Phase | Duration | Start | End | Notes |
+|-------|----------|-------|-----|-------|
+| Phase 0 | 1 week | Week 1 | Week 1 | ✅ COMPLETE |
+| Phase 1A-1B | 2 weeks | Week 2 | Week 3 | Business Rules Foundation |
+| Phase 2 | 4 weeks | Week 4 | Week 7 | WhatsApp-First (HIGH IMPACT) |
+| Phase 1C-E | 3 weeks | Week 8 | Week 10 | Documentation & Testing |
+| Phase 3 | 3 weeks | Week 11 | Week 13 | UX Clarity & Operations |
+| Phase 4 | 3-4 weeks | Week 14 | Week 17 | Analytics & Dashboards |
+| Phase 5 | 2-3 weeks | Week 18 | Week 20 | Trust & Polish |
+| **Total** | **~20 weeks** | **Week 1** | **Week 20** | Prioritized for customer value |
 
 ---
 
@@ -779,6 +782,24 @@ Dashboards for:
 
 ---
 
-**Document Status:** Planning  
-**Last Review:** 2026-08-15  
-**Next Review:** After Phase 0 completion
+## ⚡ REVISED EXECUTION STRATEGY (APPROVED)
+
+**Decision:** Execute Phase 1A+1B → Jump to Phase 2 (WhatsApp) → Complete Phase 1C-E
+
+**See:** `docs/PHASE_EXECUTION_PLAN.md` for complete day-by-day breakdown
+
+**Timeline:**
+- **Weeks 2-3:** Phase 1A (product scope) + Phase 1B (centralize business rules)
+- **Weeks 4-7:** Phase 2 (WhatsApp-first integration using centralized rules)
+- **Weeks 8-10:** Phase 1C-E (comprehensive documentation and testing wrap-up)
+- **Week 11+:** Phases 3, 4, 5 as planned
+
+**Why This Order:**
+1. Business rules MUST be centralized before WhatsApp code can use them (dependency)
+2. Phase 2 creates immediate customer value (competitive advantage)
+3. Documentation is better after full system is built (more complete and accurate)
+4. Risk is lower: rules are thoroughly tested before WhatsApp relies on them
+5. Team stays motivated with visible customer-facing progress
+
+**Next Action:** Start Phase 1A today (2-3 days to complete)
+**Phase 2 Kick-off:** Week 4 (immediately after Phase 1B complete)
