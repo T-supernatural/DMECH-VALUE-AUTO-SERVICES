@@ -164,10 +164,10 @@ async function handleRegistrationMessage(phone: string, code: string, customerNa
   await service.from('pending_whatsapp_registrations').delete().eq('code', code);
 
   // Send welcome message
-  const loginUrl = `${appUrl}/dashboard?token=${sessionToken}`;
+  const trackUrl = `${appUrl}/track/${sessionToken}`;
   await sendTextMessage(
     phone,
-    `✅ Welcome ${customerName || 'to DMECH'}! 🎉\n\nYou can now:\n✓ Browse our vehicles\n✓ Check pricing & financing\n✓ Track orders\n\nLogin here: ${loginUrl}`
+    `✅ Welcome ${customerName || 'to DMECH'}! 🎉\n\nYou can now:\n✓ Browse our vehicles\n✓ Check pricing & financing\n✓ Track orders\n\nTrack your account here: ${trackUrl}`
   );
 }
 
@@ -256,10 +256,10 @@ async function handleLoginOTP(phone: string, otpId: string): Promise<void> {
   });
 
   // Send login link
-  const loginUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dmech.app'}/dashboard?token=${sessionToken}`;
+  const trackUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dmech.app'}/track/${sessionToken}`;
   await sendTextMessage(
     phone,
-    `✅ Login successful!\n\nClick here to access your dashboard:\n${loginUrl}\n\nThis link expires in 30 days.`
+    `✅ Login successful!\n\nTrack your account here:\n${trackUrl}\n\nThis link expires in 30 days.`
   );
 }
 
@@ -309,9 +309,9 @@ async function handleRegistrationOTP(phone: string, otpId: string): Promise<void
   });
 
   // Send welcome message
-  const loginUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dmech.app'}/dashboard?token=${sessionToken}`;
+  const trackUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dmech.app'}/track/${sessionToken}`;
   await sendTextMessage(
     phone,
-    `✅ Welcome to DMECH! 🎉\n\nYou're all set. Access your account:\n${loginUrl}\n\nStart by browsing our available vehicles.`
+    `✅ Welcome to DMECH! 🎉\n\nYou're all set. Track your account:\n${trackUrl}\n\nStart by browsing our available vehicles.`
   );
 }

@@ -29,7 +29,7 @@ export default function RegisterWhatsAppPage() {
         if (data.done && data.token) {
           clearInterval(interval);
           localStorage.setItem('whatsapp_session_token', data.token);
-          router.push('/dashboard');
+          router.push(`/track/${data.token}`);
         }
       } catch (err) {
         console.error('Registration status poll failed:', err);
