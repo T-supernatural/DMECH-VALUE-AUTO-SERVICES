@@ -5,6 +5,10 @@
 
 import crypto from 'crypto';
 import { createServiceClient } from '@/lib/supabase/server';
+import { formatNaira } from '@/lib/money';
+import { stageLabel } from '@/lib/ops/vehicle-stage';
+import { getConfigValue } from '@/lib/platform-config';
+import type { LifecycleStage } from '@/types';
 import { WHATSAPP_CONFIG } from './config';
 import { logWhatsAppMessage, sendTextMessage } from './messaging';
 
@@ -67,11 +71,13 @@ export async function handleIncomingMessage(message: WebhookMessage, contacts: a
     created_at: new Date(parseInt(message.timestamp) * 1000).toISOString(),
   });
 
-  // Try to match customer by phone
+  // Try to match customer by phone -- excludes soft-deleted customers so a
+  // deleted account can't keep using its old WhatsApp identity.
   const { data: customer } = await service
     .from('customers')
     .select('id')
     .eq('phone', senderPhone)
+    .is('deleted_at', null)
     .limit(1)
     .single();
 
@@ -98,13 +104,116 @@ export async function handleIncomingMessage(message: WebhookMessage, contacts: a
     return;
   }
 
+  // Structured commands -- Meta's policy (effective Jan 15, 2026) permits
+  // automation scoped to defined business tasks like these; this is the
+  // deterministic v1 version (keyword match, no LLM involved yet), where
+  // every reply is read straight off real DMECH data, never guessed at.
+  // Requires a known customer, same as the auto-reply below.
+  if (customer) {
+    const command = messageText.trim().toUpperCase();
+    if (command === 'STATUS' || command === 'TRACK') {
+      await handleStatusCommand(senderPhone, customer.id);
+      return;
+    }
+    if (command === 'PAYMENT' || command === 'BALANCE') {
+      await handlePaymentCommand(senderPhone, customer.id);
+      return;
+    }
+    if (command === 'FINANCE' || command === 'FINANCING') {
+      await handleFinanceCommand(senderPhone);
+      return;
+    }
+    if (command === 'HELP') {
+      await handleHelpCommand(senderPhone);
+      return;
+    }
+  }
+
   // For other messages, send auto-reply
   if (customer) {
     await sendTextMessage(
       senderPhone,
-      '👋 Thanks for reaching out! A DMECH specialist will reply within 30 minutes. For urgent matters, call us: 0800-DMECH-00'
+      '👋 Thanks for reaching out! A DMECH specialist will reply within 30 minutes. For urgent matters, call us: 0800-DMECH-00\n\nType HELP to see what I can look up for you right away.'
     );
   }
+}
+
+/**
+ * STATUS / TRACK -- the customer's vehicle(s) and lifecycle stage
+ */
+async function handleStatusCommand(phone: string, customerId: string): Promise<void> {
+  const service = createServiceClient();
+  const { data: vehicles } = await service
+    .from('vehicles')
+    .select('make, model, year, lifecycle_stage')
+    .eq('buyer_id', customerId)
+    .is('deleted_at', null);
+
+  if (!vehicles || vehicles.length === 0) {
+    await sendTextMessage(
+      phone,
+      "You don't have any vehicles linked to your account yet. Browse our stock and let us know when you're ready to reserve one!"
+    );
+    return;
+  }
+
+  const lines = vehicles.map(
+    (v) => `• ${v.year} ${v.make} ${v.model} — ${stageLabel(v.lifecycle_stage as LifecycleStage)}`
+  );
+  await sendTextMessage(phone, `📦 Your vehicle status:\n\n${lines.join('\n')}`);
+}
+
+/**
+ * PAYMENT / BALANCE -- the customer's next due or overdue payment
+ */
+async function handlePaymentCommand(phone: string, customerId: string): Promise<void> {
+  const service = createServiceClient();
+  const { data: payments } = await service
+    .from('payments')
+    .select('amount_kobo, due_date, status')
+    .eq('customer_id', customerId)
+    .in('status', ['pending', 'overdue', 'partial'])
+    .order('due_date', { ascending: true })
+    .limit(1);
+
+  const next = payments?.[0];
+  if (!next) {
+    await sendTextMessage(phone, "✅ You're all caught up — no pending payments right now.");
+    return;
+  }
+
+  const dueDate = new Date(next.due_date).toLocaleDateString('en-NG', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+  const label = next.status === 'overdue' ? '⚠️ Overdue payment' : 'Next payment due';
+  await sendTextMessage(phone, `${label}: ${formatNaira(next.amount_kobo)} on ${dueDate}`);
+}
+
+/**
+ * FINANCE / FINANCING -- reads real platform settings, not a hardcoded script
+ */
+async function handleFinanceCommand(phone: string): Promise<void> {
+  const [depositPct, tenorMonths] = await Promise.all([
+    getConfigValue('default_deposit_pct', 40),
+    getConfigValue('default_tenor_months', 6),
+  ]);
+
+  await sendTextMessage(
+    phone,
+    `💰 DMECH Direct Finance:\n\n• Deposit: ${depositPct}% upfront\n• Balance spread over ${tenorMonths} months\n• We also work with partner financing options\n\nReply with the vehicle you're interested in and we'll work out the exact numbers.`
+  );
+}
+
+/**
+ * HELP -- lists the commands this version actually supports
+ */
+async function handleHelpCommand(phone: string): Promise<void> {
+  await sendTextMessage(
+    phone,
+    `Here's what I can help with right now:\n\nSTATUS — your vehicle(s) and where they are\nPAYMENT — your next payment due\nFINANCE — how DMECH financing works\n\nAnything else, just ask and a DMECH specialist will step in.`
+  );
 }
 
 /**
@@ -211,11 +320,12 @@ async function handleOTPMessage(phone: string, otp: string): Promise<void> {
 async function handleLoginOTP(phone: string, otpId: string): Promise<void> {
   const service = createServiceClient();
 
-  // Get or create customer
+  // Get or create customer -- excludes soft-deleted customers
   const { data: customer } = await service
     .from('customers')
     .select('id, full_name')
     .eq('phone', phone)
+    .is('deleted_at', null)
     .limit(1)
     .single();
 
@@ -270,7 +380,13 @@ async function handleRegistrationOTP(phone: string, otpId: string): Promise<void
   const service = createServiceClient();
 
   // Check if customer already exists
-  const { data: existing } = await service.from('customers').select('id').eq('phone', phone).limit(1).single();
+  const { data: existing } = await service
+    .from('customers')
+    .select('id')
+    .eq('phone', phone)
+    .is('deleted_at', null)
+    .limit(1)
+    .single();
 
   if (existing) {
     // Customer already registered, treat as login

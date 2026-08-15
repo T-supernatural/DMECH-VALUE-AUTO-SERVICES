@@ -22,12 +22,13 @@ export async function POST(request: NextRequest) {
 
     const normalized = normalizePhoneNumber(phone);
 
-    // Check if customer exists
+    // Check if customer exists -- excludes soft-deleted customers
     const service = createServiceClient();
     const { data: customer } = await service
       .from('customers')
       .select('id')
       .eq('phone', normalized)
+      .is('deleted_at', null)
       .limit(1)
       .single();
 

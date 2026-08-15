@@ -81,7 +81,7 @@ export default async function TrackOrderPage({ params }: { params: Promise<{ tok
 
   const service = createServiceClient();
   const [customerRes, vehiclesRes, instalmentsRes, preOrdersRes, paymentsRes] = await Promise.all([
-    service.from("customers").select("full_name").eq("id", session.customerId).single(),
+    service.from("customers").select("full_name").eq("id", session.customerId).is("deleted_at", null).single(),
     service.from("vehicles").select("*").eq("buyer_id", session.customerId).is("deleted_at", null),
     service
       .from("instalments")
@@ -94,7 +94,13 @@ export default async function TrackOrderPage({ params }: { params: Promise<{ tok
     service.from("payments").select("*").eq("customer_id", session.customerId).order("due_date", { ascending: true }),
   ]);
 
-  const firstName = (customerRes.data?.full_name as string | undefined)?.split(" ")[0] || "there";
+  // Customer record missing (deleted, or otherwise gone) -- same fallback
+  // as an expired token rather than showing a broken or stale page.
+  if (!customerRes.data) {
+    return <ExpiredView />;
+  }
+
+  const firstName = (customerRes.data.full_name as string | undefined)?.split(" ")[0] || "there";
   const vehicles = (vehiclesRes.data as Vehicle[] | null) ?? [];
   const instalments = (instalmentsRes.data ?? []) as unknown as (Instalment & {
     vehicles: { make: string; model: string; year: number } | null;

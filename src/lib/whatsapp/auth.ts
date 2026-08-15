@@ -148,6 +148,7 @@ export async function verifyWhatsAppOTP(
     .from('customers')
     .select('*')
     .eq('phone', normalizedPhone)
+    .is('deleted_at', null)
     .limit(1)
     .single();
 
