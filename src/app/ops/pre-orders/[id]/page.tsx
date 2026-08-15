@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { TopBar } from "@/components/ops/TopBar";
-import { PreOrderStatusSelect, RecordDepositAction } from "@/components/ops/PreOrderActions";
+import { PreOrderStatusSelect, RecordDepositAction, RecordBalancePaymentAction } from "@/components/ops/PreOrderActions";
 import { staffGuard } from "@/lib/guards";
 import { createClient } from "@/lib/supabase/server";
 import { formatNaira, formatUsd, usdCentsToDollars } from "@/lib/money";
@@ -104,6 +104,45 @@ export default async function PreOrderDetailPage({ params }: { params: Promise<{
               </>
             )}
           </div>
+
+          {preOrder.status === "purchased" && preOrder.balance_amount_kobo != null && (
+            <div className="ops-panel">
+              <div className="ops-panel-title">Balance</div>
+              <div className="ops-info-row">
+                <span className="ops-info-label">Balance Due</span>
+                <span className="ops-info-value">{formatNaira(preOrder.balance_amount_kobo)}</span>
+              </div>
+              <div className="ops-info-row">
+                <span className="ops-info-label">Balance Paid</span>
+                <span className={`ops-badge ${preOrder.balance_paid ? "ops-badge-green" : "ops-badge-amber"}`}>
+                  {preOrder.balance_paid ? "Yes" : "Not yet"}
+                </span>
+              </div>
+              {preOrder.balance_paid && (
+                <>
+                  <div className="ops-info-row">
+                    <span className="ops-info-label">Method</span>
+                    <span className="ops-info-value">
+                      {preOrder.balance_payment_method ? PAYMENT_METHOD_LABEL[preOrder.balance_payment_method] : "—"}
+                    </span>
+                  </div>
+                  <div className="ops-info-row">
+                    <span className="ops-info-label">Paid Date</span>
+                    <span className="ops-info-value">
+                      {preOrder.balance_paid_at
+                        ? new Date(preOrder.balance_paid_at).toLocaleDateString("en-NG", { month: "short", day: "numeric", year: "numeric" })
+                        : "—"}
+                    </span>
+                  </div>
+                </>
+              )}
+              {!preOrder.balance_paid && (
+                <p style={{ fontSize: 12, color: "var(--amber)", marginTop: 8 }}>
+                  This vehicle can&apos;t be marked delivered until the balance is recorded as paid.
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         <p style={{ fontSize: 12, color: "var(--muted)", marginBottom: 16 }}>
@@ -124,6 +163,12 @@ export default async function PreOrderDetailPage({ params }: { params: Promise<{
                 <div>
                   <label className="ops-field-label">Deposit</label>
                   <RecordDepositAction preOrderId={preOrder.id} />
+                </div>
+              )}
+              {preOrder.status === "purchased" && !preOrder.balance_paid && preOrder.balance_amount_kobo != null && (
+                <div>
+                  <label className="ops-field-label">Balance</label>
+                  <RecordBalancePaymentAction preOrderId={preOrder.id} />
                 </div>
               )}
             </div>

@@ -714,6 +714,13 @@ export interface PreOrder {
   deposit_paid: boolean;
   deposit_paid_at: string | null;
   deposit_payment_method: PaymentMethod | null;
+  // Set once the linked sourcing listing is marked purchased -- the amount
+  // left after the deposit, against the real final sale price rather than
+  // the reservation-time estimate. Null until then.
+  balance_amount_kobo: number | null;
+  balance_paid: boolean;
+  balance_paid_at: string | null;
+  balance_payment_method: PaymentMethod | null;
   status: PreOrderStatus;
   notes: string | null;
   created_at: string;

@@ -92,3 +92,55 @@ export function RecordDepositAction({ preOrderId }: { preOrderId: string }) {
     </span>
   );
 }
+
+export function RecordBalancePaymentAction({ preOrderId }: { preOrderId: string }) {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [method, setMethod] = useState<PaymentMethod>("bank_transfer");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function recordBalance() {
+    setLoading(true);
+    setError(null);
+    const res = await fetch(`/api/pre-orders/${preOrderId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ balance_paid: true, balance_payment_method: method }),
+    });
+    const json = await res.json().catch(() => null);
+    setLoading(false);
+    if (!res.ok) {
+      setError(json?.error || "Something went wrong.");
+      return;
+    }
+    setOpen(false);
+    router.refresh();
+  }
+
+  if (!open) {
+    return (
+      <button type="button" className="ops-btn" onClick={() => setOpen(true)}>
+        Record Balance Payment
+      </button>
+    );
+  }
+
+  return (
+    <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <select className="ops-input" style={{ marginBottom: 0, width: "auto" }} value={method} onChange={(e) => setMethod(e.target.value as PaymentMethod)}>
+        <option value="bank_transfer">Bank Transfer</option>
+        <option value="paystack">Paystack</option>
+        <option value="pos">POS</option>
+        <option value="cash">Cash</option>
+      </select>
+      <button type="button" className="ops-btn" onClick={recordBalance} disabled={loading}>
+        {loading ? "..." : "Confirm"}
+      </button>
+      <button type="button" className="ops-btn-ghost" onClick={() => setOpen(false)} disabled={loading}>
+        Cancel
+      </button>
+      {error && <span style={{ color: "var(--red)", fontSize: 12 }}>{error}</span>}
+    </span>
+  );
+}

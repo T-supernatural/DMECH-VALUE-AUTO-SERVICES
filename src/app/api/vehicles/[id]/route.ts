@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import { staffGuard } from "@/lib/guards";
 import { logAudit } from "@/lib/audit";
+import { formatNaira } from "@/lib/money";
 import type { StaffRole } from "@/types";
 
 // Mirrors oro-energy-management-hub's equipment PATCH route: role check,
@@ -56,6 +57,38 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   // service-role: vehicles has no staff UPDATE RLS policy (only SELECT) —
   // the RLS-respecting client would silently update 0 rows here.
   const supabase = createServiceClient();
+
+  // Reserve From Abroad's leverage mechanism: a pre-ordered vehicle can't
+  // be marked delivered while the customer still owes the balance from
+  // when DMECH bought it. Without this, "balance before delivery" would
+  // just be a UI convention staff could ignore.
+  if (updates.lifecycle_stage === "delivered") {
+    const { data: listing } = await supabase
+      .from("sourcing_listings")
+      .select("id")
+      .eq("fulfilled_vehicle_id", id)
+      .maybeSingle();
+
+    if (listing) {
+      const { data: unpaidPreOrder } = await supabase
+        .from("pre_orders")
+        .select("id, balance_amount_kobo")
+        .eq("sourcing_listing_id", listing.id)
+        .eq("status", "purchased")
+        .eq("balance_paid", false)
+        .gt("balance_amount_kobo", 0)
+        .maybeSingle();
+
+      if (unpaidPreOrder) {
+        return NextResponse.json(
+          {
+            error: `This vehicle has an unpaid balance of ${formatNaira(unpaidPreOrder.balance_amount_kobo)} on its pre-order. Record the balance payment before marking it delivered.`,
+          },
+          { status: 409 },
+        );
+      }
+    }
+  }
 
   const { data, error } = await supabase
     .from("vehicles")

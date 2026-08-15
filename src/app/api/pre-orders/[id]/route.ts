@@ -28,6 +28,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if ("deposit_payment_method" in body && body.deposit_payment_method && !VALID_PAYMENT_METHODS.includes(body.deposit_payment_method)) {
     return NextResponse.json({ error: "Invalid payment method." }, { status: 400 });
   }
+  if ("balance_payment_method" in body && body.balance_payment_method && !VALID_PAYMENT_METHODS.includes(body.balance_payment_method)) {
+    return NextResponse.json({ error: "Invalid payment method." }, { status: 400 });
+  }
 
   const updates: Record<string, unknown> = {};
   for (const key of ["status", "notes"] as const) {
@@ -42,6 +45,13 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     updates.deposit_paid_at = new Date().toISOString();
     updates.deposit_payment_method = body.deposit_payment_method ?? null;
     if (!("status" in body)) updates.status = "deposit_paid";
+  }
+  // Same "record + timestamp" pattern as the deposit above -- this is what
+  // clears the vehicles PATCH route's delivery gate for this pre-order.
+  if (body.balance_paid === true) {
+    updates.balance_paid = true;
+    updates.balance_paid_at = new Date().toISOString();
+    updates.balance_payment_method = body.balance_payment_method ?? null;
   }
   updates.updated_at = new Date().toISOString();
 

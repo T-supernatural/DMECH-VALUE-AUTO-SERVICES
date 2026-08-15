@@ -140,7 +140,13 @@ export default async function PortalDashboardPage() {
                       : "Vehicle"}
                   </span>
                   <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span className="ops-info-value">{formatNaira(po.deposit_amount_kobo)} deposit</span>
+                    {po.status === "purchased" && po.balance_amount_kobo != null ? (
+                      <span className="ops-info-value">
+                        {po.balance_paid ? "Balance paid" : `${formatNaira(po.balance_amount_kobo)} balance due`}
+                      </span>
+                    ) : (
+                      <span className="ops-info-value">{formatNaira(po.deposit_amount_kobo)} deposit</span>
+                    )}
                     <span className={`ops-badge ${PRE_ORDER_BADGE[po.status]}`}>{PRE_ORDER_STATUS_LABELS[po.status]}</span>
                   </span>
                 </div>

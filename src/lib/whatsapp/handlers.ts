@@ -144,13 +144,23 @@ export async function handleIncomingMessage(message: WebhookMessage, contacts: a
  */
 async function handleStatusCommand(phone: string, customerId: string): Promise<void> {
   const service = createServiceClient();
-  const { data: vehicles } = await service
-    .from('vehicles')
-    .select('make, model, year, lifecycle_stage')
-    .eq('buyer_id', customerId)
-    .is('deleted_at', null);
+  const [{ data: vehicles }, { data: unpaidPreOrders }] = await Promise.all([
+    service.from('vehicles').select('make, model, year, lifecycle_stage').eq('buyer_id', customerId).is('deleted_at', null),
+    service
+      .from('pre_orders')
+      .select('balance_amount_kobo, sourcing_listings(make, model, year)')
+      .eq('customer_id', customerId)
+      .eq('status', 'purchased')
+      .eq('balance_paid', false)
+      .gt('balance_amount_kobo', 0),
+  ]);
 
-  if (!vehicles || vehicles.length === 0) {
+  const lines: string[] = [];
+  if (vehicles && vehicles.length > 0) {
+    lines.push(...vehicles.map((v) => `• ${v.year} ${v.make} ${v.model} — ${stageLabel(v.lifecycle_stage as LifecycleStage)}`));
+  }
+
+  if (lines.length === 0 && (!unpaidPreOrders || unpaidPreOrders.length === 0)) {
     await sendTextMessage(
       phone,
       "You don't have any vehicles linked to your account yet. Browse our stock and let us know when you're ready to reserve one!"
@@ -158,10 +168,18 @@ async function handleStatusCommand(phone: string, customerId: string): Promise<v
     return;
   }
 
-  const lines = vehicles.map(
-    (v) => `• ${v.year} ${v.make} ${v.model} — ${stageLabel(v.lifecycle_stage as LifecycleStage)}`
-  );
-  await sendTextMessage(phone, `📦 Your vehicle status:\n\n${lines.join('\n')}`);
+  let reply = lines.length > 0 ? `📦 Your vehicle status:\n\n${lines.join('\n')}` : '';
+
+  if (unpaidPreOrders && unpaidPreOrders.length > 0) {
+    const balanceLines = unpaidPreOrders.map((po) => {
+      const listing = po.sourcing_listings as unknown as { make: string; model: string; year: number } | null;
+      const vehicleLabel = listing ? `${listing.year} ${listing.make} ${listing.model}` : 'your vehicle';
+      return `⚠️ Balance due on ${vehicleLabel}: ${formatNaira(po.balance_amount_kobo as number)} — this must clear before delivery.`;
+    });
+    reply += (reply ? '\n\n' : '') + balanceLines.join('\n');
+  }
+
+  await sendTextMessage(phone, reply);
 }
 
 /**

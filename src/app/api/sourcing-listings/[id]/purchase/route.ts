@@ -3,7 +3,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { staffGuard } from "@/lib/guards";
 import { logAudit } from "@/lib/audit";
 import { queueNotification } from "@/lib/notifications";
-import { dollarsToUsdCents } from "@/lib/money";
+import { dollarsToUsdCents, toKobo } from "@/lib/money";
 import type { StaffRole, SourcingListing, SourceRegion, VehiclePhoto } from "@/types";
 
 const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager"];
@@ -40,10 +40,15 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const actualPriceUsd = typeof body?.actual_purchase_price_usd === "number" ? body.actual_purchase_price_usd : null;
   const actualShippingUsd = typeof body?.actual_shipping_usd === "number" ? body.actual_shipping_usd : null;
   const vin = typeof body?.vin === "string" && body.vin.trim() ? body.vin.trim() : null;
+  const finalSalePriceNaira = typeof body?.final_sale_price_naira === "number" ? body.final_sale_price_naira : null;
 
   if (!actualPriceUsd || actualPriceUsd <= 0) {
     return NextResponse.json({ error: "Enter the actual purchase price paid at auction." }, { status: 400 });
   }
+  if (!finalSalePriceNaira || finalSalePriceNaira <= 0) {
+    return NextResponse.json({ error: "Enter the final sale price to the customer." }, { status: 400 });
+  }
+  const finalSalePriceKobo = toKobo(finalSalePriceNaira);
 
   const supabase = createServiceClient();
 
@@ -81,6 +86,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       condition: "used",
       purchase_price_usd_cents: dollarsToUsdCents(actualPriceUsd),
       shipping_cost_usd_cents: actualShippingUsd ? dollarsToUsdCents(actualShippingUsd) : null,
+      sale_price_kobo: finalSalePriceKobo,
       photos,
       acquisition_channel: "import",
     })
@@ -111,12 +117,20 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   // an already-reserved listing) and let each customer know.
   const { data: preOrders } = await supabase
     .from("pre_orders")
-    .select("id, customer_id")
+    .select("id, customer_id, deposit_amount_kobo")
     .eq("sourcing_listing_id", id)
     .not("status", "in", "(cancelled,refunded,purchased)");
 
   for (const po of preOrders ?? []) {
-    await supabase.from("pre_orders").update({ status: "purchased", updated_at: new Date().toISOString() }).eq("id", po.id);
+    // Balance is what's left after the deposit already collected -- this
+    // is what the customer must clear before the vehicle can be marked
+    // delivered (enforced in the vehicles PATCH route), not just a number
+    // for reference.
+    const balanceAmountKobo = Math.max(0, finalSalePriceKobo - po.deposit_amount_kobo);
+    await supabase
+      .from("pre_orders")
+      .update({ status: "purchased", balance_amount_kobo: balanceAmountKobo, updated_at: new Date().toISOString() })
+      .eq("id", po.id);
     const { data: customer } = await supabase
       .from("customers")
       .select("user_id, phone")
@@ -133,6 +147,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         make: listing.make,
         model: listing.model,
         year: listing.year,
+        balanceAmountKobo,
       },
     });
   }

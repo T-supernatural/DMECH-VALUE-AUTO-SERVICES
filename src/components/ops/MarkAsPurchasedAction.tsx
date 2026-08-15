@@ -13,6 +13,7 @@ export function MarkAsPurchasedAction({ listing }: { listing: SourcingListing })
     listing.estimated_shipping_usd_cents ? String(usdCentsToDollars(listing.estimated_shipping_usd_cents)) : "",
   );
   const [vin, setVin] = useState(listing.vin ?? "");
+  const [salePriceNaira, setSalePriceNaira] = useState("");
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -27,6 +28,7 @@ export function MarkAsPurchasedAction({ listing }: { listing: SourcingListing })
           actual_purchase_price_usd: parseFloat(priceUsd) || 0,
           actual_shipping_usd: shippingUsd ? parseFloat(shippingUsd) : null,
           vin: vin || null,
+          final_sale_price_naira: parseFloat(salePriceNaira) || 0,
         }),
       });
       const json = await res.json();
@@ -72,9 +74,24 @@ export function MarkAsPurchasedAction({ listing }: { listing: SourcingListing })
       <input id="mp-shipping" className="ops-input" type="number" value={shippingUsd} onChange={(e) => setShippingUsd(e.target.value)} />
       <label className="ops-field-label" htmlFor="mp-vin">VIN (optional, if now confirmed)</label>
       <input id="mp-vin" className="ops-input" value={vin} onChange={(e) => setVin(e.target.value)} />
+      <label className="ops-field-label" htmlFor="mp-sale-price">Final Sale Price To Customer (₦)</label>
+      <input
+        id="mp-sale-price"
+        className="ops-input"
+        type="number"
+        value={salePriceNaira}
+        onChange={(e) => setSalePriceNaira(e.target.value)}
+      />
+      {listing.status === "reserved" && (
+        <p style={{ fontSize: 12, color: "var(--muted)", marginTop: -6, marginBottom: 12 }}>
+          This becomes the vehicle&apos;s sale price and sets what&apos;s left for the customer to
+          pay after their deposit — the balance must clear before this vehicle can be marked
+          delivered.
+        </p>
+      )}
 
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 4 }}>
-        <button className="ops-btn" onClick={markPurchased} disabled={status === "saving" || !priceUsd}>
+        <button className="ops-btn" onClick={markPurchased} disabled={status === "saving" || !priceUsd || !salePriceNaira}>
           {status === "saving" ? "Creating Vehicle..." : "Confirm Purchase"}
         </button>
         <button className="ops-btn" style={{ background: "transparent", color: "var(--muted)" }} onClick={() => setOpen(false)} disabled={status === "saving"}>
