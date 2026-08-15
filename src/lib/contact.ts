@@ -7,8 +7,8 @@
 export const CONTACT = {
   phoneDisplay: "0800-DMECH-00",
   phoneHref: "08000000000",
-  whatsappDisplay: "0800 000 0000",
-  whatsappNumber: "2348000000000",
+  whatsappDisplay: "09118064105",
+  whatsappNumber: "2349118064105",
   hours: "Mon–Sat: 8am – 6pm",
   addressLine1: "Sangotedo, Ajah Axis,",
   addressLine2: "Lagos, Nigeria",

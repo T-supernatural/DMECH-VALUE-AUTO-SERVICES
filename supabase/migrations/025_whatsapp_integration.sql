@@ -15,9 +15,8 @@ CREATE TABLE IF NOT EXISTS whatsapp_otp_codes (
   CHECK (expires_at > created_at)
 );
 
-CREATE INDEX idx_whatsapp_otp_phone_unused 
-  ON whatsapp_otp_codes(phone_number) 
-  WHERE used_at IS NULL AND expires_at > NOW();
+CREATE INDEX idx_whatsapp_otp_phone_unused
+  ON whatsapp_otp_codes(phone_number, used_at, expires_at);
 
 -- 2. WhatsApp sessions (authentication tokens)
 CREATE TABLE IF NOT EXISTS whatsapp_sessions (
@@ -34,9 +33,8 @@ CREATE TABLE IF NOT EXISTS whatsapp_sessions (
 
 CREATE INDEX idx_whatsapp_sessions_token ON whatsapp_sessions(session_token);
 CREATE INDEX idx_whatsapp_sessions_customer ON whatsapp_sessions(customer_id);
-CREATE INDEX idx_whatsapp_sessions_active 
-  ON whatsapp_sessions(customer_id) 
-  WHERE revoked_at IS NULL AND expires_at > NOW();
+CREATE INDEX idx_whatsapp_sessions_active
+  ON whatsapp_sessions(customer_id, revoked_at, expires_at);
 
 -- 3. All WhatsApp messages (for audit and support)
 CREATE TABLE IF NOT EXISTS whatsapp_messages (

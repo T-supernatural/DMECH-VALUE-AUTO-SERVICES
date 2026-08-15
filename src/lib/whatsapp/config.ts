@@ -18,8 +18,8 @@ export const WHATSAPP_CONFIG = {
   // Webhook URL (must be publicly accessible HTTPS)
   webhookUrl: process.env.WHATSAPP_WEBHOOK_URL || 'https://dmech.app/api/webhooks/whatsapp',
 
-  // DMECH Business WhatsApp Number (for testing, use dummy)
-  dmechPhoneNumber: process.env.WHATSAPP_DMECH_PHONE || '2348000000000', // Test number
+  // DMECH Business WhatsApp Number
+  dmechPhoneNumber: process.env.WHATSAPP_DMECH_PHONE || '2349118064105',
   dmechPhoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID || '1234567890',
 
   // Feature flags
