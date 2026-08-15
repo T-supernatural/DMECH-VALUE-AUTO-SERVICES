@@ -83,3 +83,39 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
   return NextResponse.json({ vehicle: data });
 }
+
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
+  const staff = await staffGuard();
+  if (!staff) {
+    return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
+  }
+  if (!EDIT_ROLES.includes(staff.role as StaffRole)) {
+    return NextResponse.json({ error: "Not permitted to delete vehicles." }, { status: 403 });
+  }
+
+  const { id } = await params;
+  const supabase = createServiceClient();
+
+  const { data, error } = await supabase
+    .from("vehicles")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", id)
+    .is("deleted_at", null)
+    .select("id")
+    .single();
+
+  if (error || !data) {
+    return NextResponse.json({ error: "Vehicle not found or already deleted." }, { status: 404 });
+  }
+
+  await logAudit({
+    userId: staff.id,
+    action: "delete",
+    tableName: "vehicles",
+    recordId: id,
+    oldValue: { deleted_at: null },
+    newValue: { deleted_at: new Date().toISOString() },
+  });
+
+  return NextResponse.json({ success: true, deletedId: id });
+}

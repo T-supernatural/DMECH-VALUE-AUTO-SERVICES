@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { TopBar } from "@/components/ops/TopBar";
-import { ClickableRow } from "@/components/ops/ClickableRow";
+import { VehicleTableActions } from "@/components/ops/VehicleTableActions";
 import { staffGuard } from "@/lib/guards";
 import { createClient } from "@/lib/supabase/server";
-import { formatNaira } from "@/lib/money";
-import { stageLabel, stageBadgeClass } from "@/lib/ops/vehicle-stage";
 import type { Vehicle, AcquisitionChannel, StaffRole } from "@/types";
 
 const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager", "it_manager"];
@@ -48,46 +46,7 @@ export default async function OpsVehiclesPage() {
             No vehicles in the system yet.
           </div>
         ) : (
-          <div className="ops-table-wrap">
-            <table className="ops-table">
-              <thead>
-                <tr>
-                  <th>Vehicle</th>
-                  <th>Stage</th>
-                  <th>Channel</th>
-                  <th>Price</th>
-                  <th>Certification</th>
-                </tr>
-              </thead>
-              <tbody>
-                {vehicles.map((v) => (
-                  <ClickableRow key={v.id} href={`/ops/vehicles/${v.id}`}>
-                    <td>
-                      {v.make} {v.model} {v.year}
-                    </td>
-                    <td>
-                      <span className={`ops-badge ${stageBadgeClass(v.lifecycle_stage)}`}>
-                        {stageLabel(v.lifecycle_stage)}
-                      </span>
-                    </td>
-                    <td>{CHANNEL_LABEL[v.acquisition_channel]}</td>
-                    <td>{v.sale_price_kobo ? formatNaira(v.sale_price_kobo) : "—"}</td>
-                    <td>
-                      {v.certification_status === "certified" ? (
-                        <span className="ops-badge ops-badge-green">Certified</span>
-                      ) : (
-                        <span style={{ color: "var(--subtle)", fontSize: 12 }}>
-                          {v.certification_status === "pending_inspection"
-                            ? "Pending"
-                            : "Uncertified"}
-                        </span>
-                      )}
-                    </td>
-                  </ClickableRow>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <VehicleTableActions vehicles={vehicles} channelLabelMap={CHANNEL_LABEL} />
         )}
       </div>
     </>

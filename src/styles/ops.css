@@ -118,6 +118,16 @@
 .ops-btn:disabled{opacity:.6;cursor:not-allowed}
 .ops-btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:9px 18px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;transition:border-color .2s,color .2s}
 .ops-btn-ghost:hover{border-color:var(--muted);color:var(--text)}
+.ops-btn-danger{background:#fff1f2;color:#b91c1c;border:1px solid #fecdd3;border-radius:8px;padding:9px 18px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s,border-color .2s,color .2s}
+.ops-btn-danger:hover{background:#fee2e2;border-color:#fca5a5;color:#991b1b}
+.ops-btn-danger:disabled{opacity:.6;cursor:not-allowed}
+.ops-row-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.ops-check-all{display:flex;align-items:center;gap:8px;padding:0 4px}
+.ops-select-cell{width:36px}
+.ops-select-box{accent-color:var(--red);width:16px;height:16px;cursor:pointer}
+.ops-table-actions-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--card2)}
+.ops-table-actions-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ops-table-actions-right{display:flex;align-items:center;gap:8px}
 
 /* Filter bars (e.g. Audit Log) -- a plain GET <form>, no client JS needed */
 .ops-filter-bar{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:18px}
