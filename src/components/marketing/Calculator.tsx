@@ -364,6 +364,33 @@ export function Calculator({ ngnRate = 1580, marketPriceBenchmarks = {} }: Calcu
                 <span className="line-label">CIF Value (Cost+Insurance+Freight)</span>
                 <span className="line-value">{formatNaira(result.cifKobo)}</span>
               </div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#6B8DA0", letterSpacing: 0.5, textTransform: "uppercase", margin: "10px 0 2px" }}>
+                Auction &amp; Pre-Shipment Fees (USA)
+              </div>
+              <div className="line">
+                <span className="line-label">Buyer&apos;s Fee (Auction Premium)</span>
+                <span className="line-value">{formatUsd(result.buyerFeeUsd)}</span>
+              </div>
+              <div className="line">
+                <span className="line-label">Virtual Bid Fee</span>
+                <span className="line-value">{formatUsd(result.virtualBidFeeUsd)}</span>
+              </div>
+              <div className="line">
+                <span className="line-label">Gate Fee</span>
+                <span className="line-value">{formatUsd(result.auctionGateFeeUsd)}</span>
+              </div>
+              <div className="line">
+                <span className="line-label">Environmental Fee</span>
+                <span className="line-value">{formatUsd(result.environmentalFeeUsd)}</span>
+              </div>
+              <div className="line">
+                <span className="line-label">Title-Handling Fee</span>
+                <span className="line-value">{formatUsd(result.titleFeeUsd)}</span>
+              </div>
+              <div className="line">
+                <span className="line-label">Inland Haul to Port</span>
+                <span className="line-value">{formatUsd(result.inlandHaulUsd)}</span>
+              </div>
               <div className="line">
                 <span className="line-label">Import Duty</span>
                 {result.evDutyExempt ? (
@@ -442,8 +469,10 @@ export function Calculator({ ngnRate = 1580, marketPriceBenchmarks = {} }: Calcu
             <span>
               <strong>This is an estimate.</strong> Final cost depends on the specific
               vehicle&apos;s condition, mileage, accident history, and the day&apos;s exchange
-              rate (calculated at ₦{ngnRate}/$). Get an exact quote below and a DMECH rep will
-              confirm the real auction price and total.
+              rate (calculated at ₦{ngnRate}/$). Auction &amp; pre-shipment fees are based on
+              published Copart/IAAI buyer-fee schedules and typical inland transport rates — the
+              real amounts depend on the specific lot, yard location, and auction. Get an exact
+              quote below and a DMECH rep will confirm the real auction price and total.
               {result.evDutyExempt && (
                 <>
                   {" "}The import duty and VAT exemption shown reflects NCS&apos;s July 2026
