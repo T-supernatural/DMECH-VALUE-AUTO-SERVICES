@@ -19,12 +19,15 @@ import { Logo } from "@/components/Logo";
 // to appear together on Home before Home became identity-led), so two
 // separate nav entries for the same destination just added clutter.
 //
-// Order matters here too: Services and EV & Battery lead because that's
-// DMECH's actual strategic weight (a decade-old diagnostic/workshop
-// business now extending into high-voltage EV capability) — vehicle import
-// is real but deliberately not the lead story.
+// Order matters here too: Services, Fleet, and EV & Battery lead because
+// that's DMECH's actual strategic weight (a decade-old diagnostic/workshop
+// business now extending into corporate SLA contracts and high-voltage EV
+// capability) — vehicle import is real but deliberately not the lead story.
+// Fleet sits right after Services since it's the same diagnostic identity
+// applied at corporate scale, not a separate offering.
 const LINKS = [
   { href: "/service", label: "Services" },
+  { href: "/fleet", label: "Fleet" },
   { href: "/ev-workshop", label: "EV & Battery" },
   { href: "/sales", label: "Buy a Vehicle" },
   { href: "/vehicles/sourcing", label: "Reserve From Abroad" },

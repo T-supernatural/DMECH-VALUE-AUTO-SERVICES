@@ -1,5 +1,50 @@
-import { FileText, Search, Target, TriangleAlert, CircleCheck, X, Check } from "lucide-react";
+import { FileText, Search, Target } from "lucide-react";
 import { Reveal } from "@/components/marketing/Reveal";
+
+const COMPARISON = [
+  {
+    row: "Diagnosis",
+    workshop: "Experience and trial replacement",
+    dealership: "Computerised, marque-specific",
+    dmech: "Computerised and evidence-shown, across mixed marques",
+  },
+  {
+    row: "Parts",
+    workshop: "Unverified, source unstated",
+    dealership: "Genuine, often long lead times",
+    dmech: "Genuine and traceable, with direct import channels",
+  },
+  {
+    row: "Quotation",
+    workshop: "Verbal, revised during the job",
+    dealership: "Written, premium-priced",
+    dmech: "Written and fixed; variations re-approved, never absorbed",
+  },
+  {
+    row: "Records",
+    workshop: "None",
+    dealership: "Held by the dealer",
+    dmech: "Per-asset history, auditable by you at any time",
+  },
+  {
+    row: "Warranty",
+    workshop: "Informal or none",
+    dealership: "Yes, within their terms",
+    dmech: "Written workmanship warranty; failures come back to us",
+  },
+  {
+    row: "Fleet support",
+    workshop: "Ad hoc",
+    dealership: "Limited to their marque",
+    dmech: "SLA contracts with monthly uptime and cost reporting",
+  },
+  {
+    row: "Vehicle mix",
+    workshop: "Anything, unevenly",
+    dealership: "Their marque only",
+    dmech: "Mixed fleets, imports, and older vehicles by design",
+  },
+];
 
 export function Trust() {
   return (
@@ -51,65 +96,27 @@ export function Trust() {
             </div>
           </Reveal>
         </div>
-        <div className="vs-row">
-          <div className="vs-card them">
-            <div className="vs-head">
-              <TriangleAlert size={18} strokeWidth={2} /> Typical Roadside Dealer
-            </div>
-            <div className="vs-item">
-              <span className="ic">
-                <X size={16} strokeWidth={2.5} />
-              </span>
-              <span>Hidden markups and inflated &quot;clearing fees&quot;</span>
-            </div>
-            <div className="vs-item">
-              <span className="ic">
-                <X size={16} strokeWidth={2.5} />
-              </span>
-              <span>No vehicle history — you gamble on accidents &amp; mileage</span>
-            </div>
-            <div className="vs-item">
-              <span className="ic">
-                <X size={16} strokeWidth={2.5} />
-              </span>
-              <span>Full cash upfront, no financing options</span>
-            </div>
-            <div className="vs-item">
-              <span className="ic">
-                <X size={16} strokeWidth={2.5} />
-              </span>
-              <span>No accountability after money changes hands</span>
-            </div>
-          </div>
-          <div className="vs-card us">
-            <div className="vs-head">
-              <CircleCheck size={18} strokeWidth={2} /> The DMECH Way
-            </div>
-            <div className="vs-item">
-              <span className="ic">
-                <Check size={16} strokeWidth={2.5} />
-              </span>
-              <span>Every cost itemised before you commit</span>
-            </div>
-            <div className="vs-item">
-              <span className="ic">
-                <Check size={16} strokeWidth={2.5} />
-              </span>
-              <span>Verified history report on every vehicle</span>
-            </div>
-            <div className="vs-item">
-              <span className="ic">
-                <Check size={16} strokeWidth={2.5} />
-              </span>
-              <span>Flexible instalments — pay while it ships</span>
-            </div>
-            <div className="vs-item">
-              <span className="ic">
-                <Check size={16} strokeWidth={2.5} />
-              </span>
-              <span>Ongoing service &amp; support at our hub</span>
-            </div>
-          </div>
+        <div className="dmech-table-wrap">
+          <table className="dmech-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Informal Workshop</th>
+                <th>Franchise Dealership</th>
+                <th className="col-us">DMECH</th>
+              </tr>
+            </thead>
+            <tbody>
+              {COMPARISON.map((row) => (
+                <tr key={row.row}>
+                  <td>{row.row}</td>
+                  <td>{row.workshop}</td>
+                  <td>{row.dealership}</td>
+                  <td className="col-us">{row.dmech}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </section>

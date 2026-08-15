@@ -18,6 +18,7 @@ export function Footer() {
         <div className="footer-col">
           <h4>Services</h4>
           <Link href="/service">Vehicle Service</Link>
+          <Link href="/fleet">DMECH Fleet</Link>
           <Link href="/ev-workshop">EV &amp; Battery Certification</Link>
           <Link href="/sales">Buy a Vehicle</Link>
           <Link href="/vehicles">Vehicle Import</Link>

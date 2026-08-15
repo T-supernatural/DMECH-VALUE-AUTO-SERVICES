@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Search, Gauge, BadgeCheck, Handshake, Rocket, Wrench, PackageSearch, Truck, Car, Lightbulb } from "lucide-react";
 import { HowItWorks } from "@/components/marketing/HowItWorks";
 import { Trust } from "@/components/marketing/Trust";
 import { Testimonials } from "@/components/marketing/Testimonials";
@@ -10,6 +11,71 @@ export const metadata: Metadata = {
   description:
     "Ten years of mechanical and auto-electrical diagnostic expertise since 2016, now extending into high-voltage EV service, battery certification, and vehicle import.",
 };
+
+const COMMITMENTS = [
+  {
+    icon: Search,
+    title: "Diagnose, Don't Guess",
+    desc: "Evidence before intervention. We do not replace a part to find out whether it was the part. If we cannot show you the reading, we have not finished the diagnosis.",
+  },
+  {
+    icon: Gauge,
+    title: "Torque To Spec",
+    desc: "Manufacturer specification is the floor, not the ceiling. Shortcuts are not efficiency — they are deferred failures with our name on them.",
+  },
+  {
+    icon: BadgeCheck,
+    title: "Genuine Or Nothing",
+    desc: "Verified parts, traceable to source. Where a genuine part is unavailable we say so, name the alternative, and let you decide.",
+  },
+  {
+    icon: Handshake,
+    title: "Own The Outcome",
+    desc: "We warrant our workmanship. If it comes back, it comes back to us, and we carry it. Accountability is the product.",
+  },
+  {
+    icon: Rocket,
+    title: "Forward Drive",
+    desc: "The vehicle parc is changing — hybrids, EVs, telematics, connected diagnostics. We invest ahead of the curve so our clients never have to catch up alone.",
+  },
+];
+
+const DIVISIONS = [
+  {
+    icon: Wrench,
+    title: "DMECH Service",
+    tag: "Repair & maintenance",
+    desc: "Computerised diagnostics, mechanical and electrical repair, and scheduled maintenance. Written diagnosis and fixed quotation before any work begins.",
+    href: "/service",
+  },
+  {
+    icon: PackageSearch,
+    title: "DMECH Parts",
+    tag: "Supply & import",
+    desc: "Genuine parts and accessories with traceable sourcing, direct international import, and trade supply to workshops.",
+  },
+  {
+    icon: Truck,
+    title: "DMECH Fleet",
+    tag: "Corporate contracts",
+    desc: "SLA-backed maintenance contracts for corporate, institutional, and logistics fleets, with monthly uptime and cost reporting.",
+    href: "/fleet",
+  },
+  {
+    icon: Car,
+    title: "DMECH Motors",
+    tag: "Sourcing & sales",
+    desc: "Vehicle sourcing, sales, and import — new, foreign-used, and locally-used — with independent pre-purchase inspection.",
+    href: "/sales",
+  },
+  {
+    icon: Lightbulb,
+    title: "DMECH Advisory",
+    tag: "Consultancy",
+    desc: "Fleet policy and lifecycle strategy, maintenance-cost audits, and readiness assessment for EV, hybrid, and telematics adoption.",
+    href: "/contact",
+  },
+];
 
 export default function AboutPage() {
   return (
@@ -51,6 +117,76 @@ export default function AboutPage() {
               </Link>
             </p>
           </Reveal>
+        </div>
+      </section>
+
+      <section className="section" style={{ background: "#fff" }}>
+        <div className="section-inner">
+          <div className="section-eyebrow" style={{ textAlign: "center" }}>
+            What Makes Us Different
+          </div>
+          <div className="section-title" style={{ textAlign: "center", fontSize: 26 }}>
+            The Five Commitments Behind Every Job
+          </div>
+          <div className="section-subtitle" style={{ textAlign: "center", margin: "0 auto" }}>
+            Every repair should begin with evidence, not assumption. Everything below follows from
+            that.
+          </div>
+          <div className="trust-grid cols-5" style={{ marginTop: 24 }}>
+            {COMMITMENTS.map((c, i) => (
+              <Reveal key={c.title} delayMs={i * 70}>
+                <div className="trust-card">
+                  <div className="trust-icon">
+                    <c.icon size={24} strokeWidth={1.75} />
+                  </div>
+                  <div className="trust-title">{c.title}</div>
+                  <div className="trust-desc">{c.desc}</div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="section-inner">
+          <div className="section-eyebrow" style={{ textAlign: "center" }}>
+            Five Divisions, One Accountable Partner
+          </div>
+          <div className="section-title" style={{ textAlign: "center", fontSize: 26 }}>
+            What We Do
+          </div>
+          <div className="section-subtitle" style={{ textAlign: "center", margin: "0 auto" }}>
+            One accountable partner across the full life of a vehicle — from the inspection before
+            you buy it to the strategy that decides when you replace it.
+          </div>
+          <div className="trust-grid cols-5" style={{ marginTop: 24 }}>
+            {DIVISIONS.map((d, i) => {
+              const card = (
+                <div className="trust-card">
+                  <div className="trust-icon">
+                    <d.icon size={24} strokeWidth={1.75} />
+                  </div>
+                  <div className="trust-title">{d.title}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--blue)", marginBottom: 8 }}>
+                    {d.tag}
+                  </div>
+                  <div className="trust-desc">{d.desc}</div>
+                </div>
+              );
+              return (
+                <Reveal key={d.title} delayMs={i * 70}>
+                  {d.href ? (
+                    <Link href={d.href} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+                      {card}
+                    </Link>
+                  ) : (
+                    card
+                  )}
+                </Reveal>
+              );
+            })}
+          </div>
         </div>
       </section>
 

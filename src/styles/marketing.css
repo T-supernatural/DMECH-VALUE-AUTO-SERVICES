@@ -250,6 +250,37 @@ nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.06)}
 .vs-item .ic{flex-shrink:0;font-weight:700;display:flex;margin-top:2px}
 .vs-card.them .ic{color:var(--red)}.vs-card.us .ic{color:var(--green)}
 
+/* Five-item grid variant (Five Commitments, What We Do, 5-step How We Work)
+   — a bare single class, not e.g. .trust-grid.cols-5, matching the
+   .contact-grid trick above: same specificity as trust-grid/steps-grid's
+   own mobile overrides, declared before the RESPONSIVE block, so those
+   overrides still win at narrow widths instead of a compound selector
+   out-specificity-ing them. */
+.cols-5{grid-template-columns:repeat(5,1fr)}
+.cols-3{grid-template-columns:repeat(3,1fr)}
+
+/* DATA TABLES — Fleet reporting standard, PASS/ADVISORY/FAIL inspection
+   standard, market comparison. No <table> pattern existed on the
+   marketing site before this. */
+.dmech-table-wrap{overflow-x:auto;margin-top:28px;border:1px solid var(--border);border-radius:14px}
+.dmech-table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+.dmech-table th{text-align:left;font-family:'Space Grotesk';font-size:11.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);padding:14px 18px;background:var(--bg);border-bottom:1px solid var(--border)}
+.dmech-table td{padding:14px 18px;border-bottom:1px solid var(--border);color:var(--dark);vertical-align:top}
+.dmech-table tr:last-child td{border-bottom:none}
+.dmech-table td:first-child{font-weight:600;white-space:nowrap}
+.dmech-table th.col-us,.dmech-table td.col-us{background:var(--green-d)}
+.dmech-table th.col-us{color:var(--green)}
+.dmech-table .status-pass{color:var(--green);font-weight:700}
+.dmech-table .status-advisory{color:var(--amber);font-weight:700}
+.dmech-table .status-fail{color:var(--red);font-weight:700}
+
+/* FLEET — orange-accented stat strip, matching the source profile
+   document's "SLA | 100% | Monthly" layout. */
+.stat-strip{display:flex;gap:32px;flex-wrap:wrap;margin:8px 0 40px}
+.stat-strip-item{padding-left:16px;border-left:3px solid var(--orange);min-width:160px}
+.stat-strip-value{font-family:'Space Grotesk';font-size:34px;font-weight:700;color:var(--dark);line-height:1.1}
+.stat-strip-label{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.4;max-width:190px}
+
 /* VEHICLES */
 .vehicle-filters{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
 .vf-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s}
