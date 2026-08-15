@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, MessageCircle, ArrowLeft, Loader2 } from 'lucide-react';
 
 export default function RegisterWhatsAppPage() {
+  const router = useRouter();
   const [step, setStep] = useState<'choose' | 'phone' | 'confirm' | 'waiting'>('choose');
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
@@ -12,6 +14,30 @@ export default function RegisterWhatsAppPage() {
   const [waLink, setWaLink] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // While waiting for the customer to send the code on WhatsApp, poll for
+  // the webhook to have completed registration -- without this the screen
+  // just sits on "Waiting for your message..." forever with no way to know
+  // it finished or to actually continue into the site.
+  useEffect(() => {
+    if (step !== 'waiting' || !phone) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/auth/register-whatsapp?phone=${encodeURIComponent(phone)}`);
+        const data = await res.json();
+        if (data.done && data.token) {
+          clearInterval(interval);
+          localStorage.setItem('whatsapp_session_token', data.token);
+          router.push('/dashboard');
+        }
+      } catch (err) {
+        console.error('Registration status poll failed:', err);
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [step, phone, router]);
 
   const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

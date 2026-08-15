@@ -71,7 +71,7 @@ export async function handleIncomingMessage(message: WebhookMessage, contacts: a
   const { data: customer } = await service
     .from('customers')
     .select('id')
-    .eq('phone_number', senderPhone)
+    .eq('phone', senderPhone)
     .limit(1)
     .single();
 
@@ -122,8 +122,10 @@ async function handleRegistrationMessage(phone: string, code: string, customerNa
     .limit(1)
     .single();
 
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://dmech.app';
+
   if (!pending) {
-    await sendTextMessage(phone, '❌ Registration code expired or invalid. Start again: https://dmech.app/register');
+    await sendTextMessage(phone, `❌ Registration code expired or invalid. Start again: ${appUrl}/register-whatsapp`);
     return;
   }
 
@@ -131,8 +133,9 @@ async function handleRegistrationMessage(phone: string, code: string, customerNa
   const { data: newCustomer, error } = await service
     .from('customers')
     .insert({
-      phone_number: phone,
-      name: customerName || 'DMECH Customer',
+      phone: phone,
+      full_name: customerName || 'DMECH Customer',
+      type: 'cash_buyer',
       whatsapp_verified: true,
       whatsapp_verified_at: new Date().toISOString(),
       registration_source: 'whatsapp',
@@ -142,7 +145,7 @@ async function handleRegistrationMessage(phone: string, code: string, customerNa
 
   if (error || !newCustomer) {
     console.error('Failed to create customer:', error);
-    await sendTextMessage(phone, '❌ Registration failed. Please try again: https://dmech.app/register');
+    await sendTextMessage(phone, `❌ Registration failed. Please try again: ${appUrl}/register-whatsapp`);
     return;
   }
 
@@ -161,7 +164,7 @@ async function handleRegistrationMessage(phone: string, code: string, customerNa
   await service.from('pending_whatsapp_registrations').delete().eq('code', code);
 
   // Send welcome message
-  const loginUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dmech.app'}/login?token=${sessionToken}`;
+  const loginUrl = `${appUrl}/dashboard?token=${sessionToken}`;
   await sendTextMessage(
     phone,
     `✅ Welcome ${customerName || 'to DMECH'}! 🎉\n\nYou can now:\n✓ Browse our vehicles\n✓ Check pricing & financing\n✓ Track orders\n\nLogin here: ${loginUrl}`
@@ -211,8 +214,8 @@ async function handleLoginOTP(phone: string, otpId: string): Promise<void> {
   // Get or create customer
   const { data: customer } = await service
     .from('customers')
-    .select('id, name')
-    .eq('phone_number', phone)
+    .select('id, full_name')
+    .eq('phone', phone)
     .limit(1)
     .single();
 
@@ -223,8 +226,9 @@ async function handleLoginOTP(phone: string, otpId: string): Promise<void> {
     const { data: newCustomer } = await service
       .from('customers')
       .insert({
-        phone_number: phone,
-        name: 'DMECH Customer',
+        phone: phone,
+        full_name: 'DMECH Customer',
+        type: 'cash_buyer',
         whatsapp_verified: true,
       })
       .select()
@@ -252,7 +256,7 @@ async function handleLoginOTP(phone: string, otpId: string): Promise<void> {
   });
 
   // Send login link
-  const loginUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dmech.app'}/portal/dashboard?token=${sessionToken}`;
+  const loginUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dmech.app'}/dashboard?token=${sessionToken}`;
   await sendTextMessage(
     phone,
     `✅ Login successful!\n\nClick here to access your dashboard:\n${loginUrl}\n\nThis link expires in 30 days.`
@@ -266,7 +270,7 @@ async function handleRegistrationOTP(phone: string, otpId: string): Promise<void
   const service = createServiceClient();
 
   // Check if customer already exists
-  const { data: existing } = await service.from('customers').select('id').eq('phone_number', phone).limit(1).single();
+  const { data: existing } = await service.from('customers').select('id').eq('phone', phone).limit(1).single();
 
   if (existing) {
     // Customer already registered, treat as login
@@ -278,8 +282,9 @@ async function handleRegistrationOTP(phone: string, otpId: string): Promise<void
   const { data: newCustomer, error } = await service
     .from('customers')
     .insert({
-      phone_number: phone,
-      name: 'DMECH Customer',
+      phone: phone,
+      full_name: 'DMECH Customer',
+      type: 'cash_buyer',
       whatsapp_verified: true,
       whatsapp_verified_at: new Date().toISOString(),
       registration_source: 'whatsapp',
@@ -304,7 +309,7 @@ async function handleRegistrationOTP(phone: string, otpId: string): Promise<void
   });
 
   // Send welcome message
-  const loginUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dmech.app'}/portal/dashboard?token=${sessionToken}`;
+  const loginUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dmech.app'}/dashboard?token=${sessionToken}`;
   await sendTextMessage(
     phone,
     `✅ Welcome to DMECH! 🎉\n\nYou're all set. Access your account:\n${loginUrl}\n\nStart by browsing our available vehicles.`

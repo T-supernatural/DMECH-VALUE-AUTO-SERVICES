@@ -147,7 +147,7 @@ export async function verifyWhatsAppOTP(
   const { data: existingCustomer } = await service
     .from('customers')
     .select('*')
-    .eq('phone_number', normalizedPhone)
+    .eq('phone', normalizedPhone)
     .limit(1)
     .single();
 
@@ -160,8 +160,9 @@ export async function verifyWhatsAppOTP(
     const { data: newCustomer, error: createError } = await service
       .from('customers')
       .insert({
-        phone_number: normalizedPhone,
-        name: customerName || 'DMECH Customer',
+        phone: normalizedPhone,
+        full_name: customerName || 'DMECH Customer',
+        type: 'cash_buyer',
         whatsapp_verified: true,
         whatsapp_verified_at: new Date().toISOString(),
         registration_source: 'whatsapp',

@@ -51,7 +51,7 @@ export async function sendTemplateMessage(
 
   try {
     const response = await fetch(
-      `https://graph.instagram.com/${WHATSAPP_CONFIG.apiVersion}/${WHATSAPP_CONFIG.phoneNumberId}/messages`,
+      `https://graph.facebook.com/${WHATSAPP_CONFIG.apiVersion}/${WHATSAPP_CONFIG.phoneNumberId}/messages`,
       {
         method: 'POST',
         headers: {
@@ -110,7 +110,7 @@ export async function sendTextMessage(recipientPhone: string, text: string): Pro
 
   try {
     const response = await fetch(
-      `https://graph.instagram.com/${WHATSAPP_CONFIG.apiVersion}/${WHATSAPP_CONFIG.phoneNumberId}/messages`,
+      `https://graph.facebook.com/${WHATSAPP_CONFIG.apiVersion}/${WHATSAPP_CONFIG.phoneNumberId}/messages`,
       {
         method: 'POST',
         headers: {

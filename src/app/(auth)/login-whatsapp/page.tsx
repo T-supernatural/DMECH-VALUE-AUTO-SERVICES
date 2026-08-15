@@ -73,7 +73,7 @@ export default function LoginWhatsAppPage() {
 
       // Store token and redirect
       localStorage.setItem('whatsapp_session_token', data.token);
-      router.push('/portal/dashboard');
+      router.push('/dashboard');
     } catch (err) {
       setError('Network error. Please try again.');
       setStep('otp');

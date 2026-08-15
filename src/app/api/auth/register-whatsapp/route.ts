@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     const { data: existing } = await service
       .from('customers')
       .select('id')
-      .eq('phone_number', normalized)
+      .eq('phone', normalized)
       .limit(1)
       .single();
 
@@ -118,8 +118,9 @@ export async function PUT(request: NextRequest) {
     const { data: customer, error: createError } = await service
       .from('customers')
       .insert({
-        phone_number: normalized,
-        name: name || 'DMECH Customer',
+        phone: normalized,
+        full_name: name || 'DMECH Customer',
+        type: 'cash_buyer',
         whatsapp_verified: true,
         whatsapp_verified_at: new Date().toISOString(),
         registration_source: 'whatsapp',
@@ -160,5 +161,57 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error('Verification error:', error);
     return NextResponse.json({ error: 'Verification failed' }, { status: 500 });
+  }
+}
+
+/**
+ * GET /api/auth/register-whatsapp?phone=...
+ * Polled by the "waiting" screen to detect that the customer has sent
+ * REGISTER <code> on WhatsApp and the webhook has completed registration.
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const phone = request.nextUrl.searchParams.get('phone');
+    if (!phone) {
+      return NextResponse.json({ error: 'Phone number required' }, { status: 400 });
+    }
+
+    let normalized = phone.replace(/\D/g, '');
+    if (normalized.startsWith('0')) {
+      normalized = '234' + normalized.substring(1);
+    } else if (!normalized.startsWith('234')) {
+      normalized = '234' + normalized;
+    }
+
+    const service = createServiceClient();
+    const { data: customer } = await service
+      .from('customers')
+      .select('id')
+      .eq('phone', normalized)
+      .limit(1)
+      .single();
+
+    if (!customer) {
+      return NextResponse.json({ done: false });
+    }
+
+    const { data: session } = await service
+      .from('whatsapp_sessions')
+      .select('session_token')
+      .eq('customer_id', customer.id)
+      .is('revoked_at', null)
+      .gt('expires_at', new Date().toISOString())
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (!session) {
+      return NextResponse.json({ done: false });
+    }
+
+    return NextResponse.json({ done: true, token: session.session_token, customerId: customer.id });
+  } catch (error) {
+    console.error('Registration status check error:', error);
+    return NextResponse.json({ done: false });
   }
 }

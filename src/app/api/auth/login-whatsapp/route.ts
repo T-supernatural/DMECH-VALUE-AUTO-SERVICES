@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     const { data: customer } = await service
       .from('customers')
       .select('id')
-      .eq('phone_number', normalized)
+      .eq('phone', normalized)
       .limit(1)
       .single();
 
