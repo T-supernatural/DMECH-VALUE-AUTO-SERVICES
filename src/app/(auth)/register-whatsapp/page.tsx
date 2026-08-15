@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, MessageCircle, ArrowLeft, Loader2 } from 'lucide-react';
+import { CONTACT } from '@/lib/contact';
 
 export default function RegisterWhatsAppPage() {
   const router = useRouter();
@@ -241,7 +242,7 @@ export default function RegisterWhatsAppPage() {
               {/* Manual Link */}
               <p className="text-slate-400 text-xs text-center">
                 Or copy this code and send it manually to{' '}
-                <span className="text-green-400 font-semibold">+234 800 0000 000</span>
+                <span className="text-green-400 font-semibold">+{CONTACT.whatsappNumber}</span>
               </p>
             </div>
 

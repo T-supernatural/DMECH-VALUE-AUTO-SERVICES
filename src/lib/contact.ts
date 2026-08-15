@@ -2,13 +2,12 @@
 // WhatsApp link on the marketing site reads from here — update once when
 // the real numbers are ready, instead of hunting down each call site.
 //
-// PLACEHOLDER: these are not real numbers yet. Swap them here when DMECH
-// hands over the actual business line and WhatsApp number.
+// Call and WhatsApp are deliberately two different real numbers.
 export const CONTACT = {
-  phoneDisplay: "0800-DMECH-00",
-  phoneHref: "08000000000",
-  whatsappDisplay: "09118064105",
-  whatsappNumber: "2349118064105",
+  phoneDisplay: "0802 940 1484",
+  phoneHref: "08029401484",
+  whatsappDisplay: "0815 102 3414",
+  whatsappNumber: "2348151023414",
   hours: "Mon–Sat: 8am – 6pm",
   addressLine1: "Sangotedo, Ajah Axis,",
   addressLine2: "Lagos, Nigeria",

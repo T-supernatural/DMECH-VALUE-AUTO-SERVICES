@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     // Return the code and WhatsApp message link
     const whatsappMessage = `REGISTER ${code}`;
-    const dmechWhatsAppNumber = process.env.WHATSAPP_DMECH_PHONE || '2349118064105';
+    const dmechWhatsAppNumber = process.env.WHATSAPP_DMECH_PHONE || '2348151023414';
     const waLink = `https://wa.me/${dmechWhatsAppNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
     return NextResponse.json({

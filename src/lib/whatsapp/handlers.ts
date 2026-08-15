@@ -8,6 +8,7 @@ import { createServiceClient } from '@/lib/supabase/server';
 import { formatNaira } from '@/lib/money';
 import { stageLabel } from '@/lib/ops/vehicle-stage';
 import { getConfigValue } from '@/lib/platform-config';
+import { CONTACT } from '@/lib/contact';
 import type { LifecycleStage } from '@/types';
 import { WHATSAPP_CONFIG } from './config';
 import { logWhatsAppMessage, sendTextMessage } from './messaging';
@@ -133,7 +134,7 @@ export async function handleIncomingMessage(message: WebhookMessage, contacts: a
   if (customer) {
     await sendTextMessage(
       senderPhone,
-      '👋 Thanks for reaching out! A DMECH specialist will reply within 30 minutes. For urgent matters, call us: 0800-DMECH-00\n\nType HELP to see what I can look up for you right away.'
+      `👋 Thanks for reaching out! A DMECH specialist will reply within 30 minutes. For urgent matters, call us: ${CONTACT.phoneDisplay}\n\nType HELP to see what I can look up for you right away.`
     );
   }
 }
