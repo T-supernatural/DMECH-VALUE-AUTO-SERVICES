@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { TopBar } from "@/components/ops/TopBar";
 import { ClickableRow } from "@/components/ops/ClickableRow";
+import { CustomerDeleteButton } from "@/components/ops/CustomerDeleteButton";
 import { staffGuard } from "@/lib/guards";
 import { createClient } from "@/lib/supabase/server";
 import { formatNaira } from "@/lib/money";
@@ -62,6 +63,7 @@ export default async function OpsCustomersPage() {
                   <th>Requested Credit</th>
                   <th>Tier</th>
                   <th>Status</th>
+                  <th style={{ width: 120 }}>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -74,6 +76,9 @@ export default async function OpsCustomersPage() {
                     <td>{c.approval_tier ?? "—"}</td>
                     <td>
                       <span className={`ops-badge ${STATUS_CLASS[c.approval_status]}`}>{c.approval_status}</span>
+                    </td>
+                    <td>
+                      <CustomerDeleteButton customerId={c.id} customerName={c.full_name} />
                     </td>
                   </ClickableRow>
                 ))}
