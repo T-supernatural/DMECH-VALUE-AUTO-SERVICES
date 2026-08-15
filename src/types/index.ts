@@ -219,7 +219,7 @@ export interface VehicleHistoryReport {
 // Buyer-persona tags — orthogonal to acquisition_channel/source_region (how
 // DMECH got the vehicle) and condition/fuel_type (what it is). A vehicle can
 // carry more than one (a pickup is both Construction and Logistics).
-export type VehicleUseCategory = "corporate" | "family" | "construction" | "catering" | "logistics" | "luxury";
+export type VehicleUseCategory = "corporate" | "family" | "construction" | "catering" | "logistics" | "fleet" | "luxury";
 
 export const USE_CATEGORY_LABELS: Record<VehicleUseCategory, string> = {
   corporate: "Corporate",
@@ -227,6 +227,7 @@ export const USE_CATEGORY_LABELS: Record<VehicleUseCategory, string> = {
   construction: "Construction",
   catering: "Catering",
   logistics: "Logistics",
+  fleet: "Fleet",
   luxury: "Luxury & Prestige",
 };
 
@@ -236,6 +237,7 @@ export const USE_CATEGORY_DESCRIPTIONS: Record<VehicleUseCategory, string> = {
   construction: "Rugged pickups & trucks built for the job site",
   catering: "Reliable vans for food & hospitality business",
   logistics: "Haulage-ready vehicles for moving goods",
+  fleet: "Multi-vehicle operations, company transport, and managed fleet deployments",
   luxury: "Premium and exotic vehicles for the discerning owner",
 };
 

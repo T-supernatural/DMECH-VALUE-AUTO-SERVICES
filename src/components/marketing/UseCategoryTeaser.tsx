@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Briefcase, Users, HardHat, UtensilsCrossed, Truck, Gem } from "lucide-react";
+import { Briefcase, Users, HardHat, UtensilsCrossed, Truck, BusFront, Gem } from "lucide-react";
 import { Reveal } from "@/components/marketing/Reveal";
 import { USE_CATEGORY_LABELS, USE_CATEGORY_DESCRIPTIONS, type VehicleUseCategory } from "@/types";
 
@@ -9,6 +9,7 @@ const ICONS: Record<VehicleUseCategory, typeof Briefcase> = {
   construction: HardHat,
   catering: UtensilsCrossed,
   logistics: Truck,
+  fleet: BusFront,
   luxury: Gem,
 };
 
