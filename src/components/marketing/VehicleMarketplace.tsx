@@ -23,6 +23,8 @@ type Filter =
   | "all"
   | "available"
   | "in-transit"
+  | "sourced"
+  | "reserved"
   | "at-port"
   | "foreign-used"
   | "nigerian-used"
@@ -42,6 +44,8 @@ const FILTERS: { key: Filter; label: string; icon?: LucideIcon }[] = [
   { key: "all", label: "All" },
   { key: "available", label: "Available" },
   { key: "in-transit", label: "In Transit" },
+  { key: "sourced", label: "Sourced" },
+  { key: "reserved", label: "Reserved" },
   { key: "at-port", label: "At Port" },
   { key: "foreign-used", label: "Foreign Used" },
   { key: "nigerian-used", label: "Nigerian Used" },
@@ -49,12 +53,33 @@ const FILTERS: { key: Filter; label: string; icon?: LucideIcon }[] = [
   { key: "certified", label: "Certified Nigerian-Used", icon: CheckCircle2 },
 ];
 
+const FILTER_DESCRIPTIONS: Record<Filter, string> = {
+  all: "Browse the full DMECH stock and imported inventory.",
+  available: "Available here in Nigeria and ready to buy now.",
+  "in-transit": "On its way from importation and not yet in Nigeria.",
+  sourced: "Available overseas in the USA, Europe, or China, but not yet paid for by DMECH.",
+  reserved: "Already paid for by DMECH and now reserved for the next customer to complete purchase.",
+  "at-port": "Already here in Nigeria at port/customs and ready for clearance.",
+  "foreign-used": "Foreign used vehicles, also called Tokunbo, imported from overseas.",
+  "nigerian-used": "Nigerian used vehicles that have already been in the local market.",
+  ev: "Electric vehicles with lower-duty and EV-specific sourcing advantages.",
+  certified: "Nigerian used vehicles that are fully certified and backed by a DMECH inspection and warranty.",
+  corporate: "Executive vehicles and business-use cars for corporate buyers.",
+  family: "Family-friendly cars, SUVs, and people carriers for everyday life.",
+  construction: "Rugged work vehicles built for job sites and heavy use.",
+  catering: "Practical vans and vehicles for food services and hospitality operations.",
+  logistics: "Vehicles built for haulage and commercial delivery operations.",
+  fleet: "Fleet and multi-vehicle sourcing for managed operations and company transport.",
+  luxury: "Premium and prestige vehicles for discerning buyers.",
+};
+
 // Superset used only for validating a ?filter= deep link — includes the use
 // categories even though they don't get their own button (see above).
 const ALL_FILTER_KEYS = new Set<Filter>([...FILTERS.map((f) => f.key), ...(Object.keys(USE_CATEGORY_LABELS) as VehicleUseCategory[])]);
 
 const STATUS_CLASS: Record<PublicDisplayStatus, string> = {
   Available: "status-available",
+  Sourced: "status-available",
   Reserved: "status-available",
   "In Transit": "status-transit",
   "At Port": "status-port",
@@ -102,10 +127,17 @@ export function VehicleMarketplace({
     if (filter === "certified") return isCertified(v);
     if (filter === "foreign-used") return conditionCategory(v) === "foreign_used";
     if (filter === "nigerian-used") return conditionCategory(v) === "nigerian_used";
+    if (filter === "sourced") return v.lifecycle_stage === "sourced" || v.lifecycle_stage === "purchased";
+    if (filter === "reserved") return v.lifecycle_stage === "reserved";
     if (filter in USE_CATEGORY_LABELS) return v.use_categories.includes(filter as VehicleUseCategory);
     const statusKey = displayStatus(v).toLowerCase().replace(" ", "-");
     return statusKey === filter;
   });
+
+  const activeFilterLabel =
+    (filter in USE_CATEGORY_LABELS ? USE_CATEGORY_LABELS[filter as VehicleUseCategory] : FILTERS.find((item) => item.key === filter)?.label) ?? "Vehicles";
+
+  const activeFilterDescription = FILTER_DESCRIPTIONS[filter as Filter] ?? "Browse the full DMECH stock and imported inventory.";
 
   return (
     <section className="section" id="vehicles" style={{ background: "#fff" }}>
@@ -154,6 +186,23 @@ export function VehicleMarketplace({
             </button>
           ))}
         </div>
+
+        {filter !== "all" && (
+          <div
+            style={{
+              marginBottom: 18,
+              padding: "12px 14px",
+              background: "#F8FAFC",
+              border: "1px solid #E2E8F0",
+              borderRadius: 10,
+              color: "var(--muted)",
+              fontSize: 13,
+              lineHeight: 1.55,
+            }}
+          >
+            <strong style={{ color: "var(--dark)" }}>{activeFilterLabel}:</strong> {activeFilterDescription}
+          </div>
+        )}
 
         {vehicles.length === 0 ? (
           <div className="vehicle-empty">

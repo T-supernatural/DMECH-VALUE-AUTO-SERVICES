@@ -25,6 +25,8 @@ export {
 // actually moving. 'delivered' stops short: once a vehicle has actually
 // reached its buyer, it's left DMECH's marketing story entirely.
 const PUBLIC_LIFECYCLE_STAGES = [
+  "sourced",
+  "purchased",
   "shipped",
   "in_transit",
   "at_port",

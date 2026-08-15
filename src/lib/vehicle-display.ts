@@ -9,14 +9,17 @@ import type { Vehicle, VehiclePhoto, WarrantyPolicy } from "@/types";
 
 export type PublicVehicle = Vehicle & { warranty_policies: WarrantyPolicy[] };
 
-export type PublicDisplayStatus = "In Transit" | "At Port" | "Available" | "Reserved" | "Sold";
+export type PublicDisplayStatus = "In Transit" | "At Port" | "Available" | "Sourced" | "Reserved" | "Sold";
 
 // The public marketing site shows a simplified status rather than the full
-// 13-stage internal lifecycle_stage — matches the original mockup's In
-// Transit/At Port/Available vocabulary, plus Reserved and Sold (which the
-// mockup's simplified model didn't have, since the DB now models both).
+// 13-stage internal lifecycle_stage — the original mockup was missing
+// "sourced" and the reserved pipeline, both of which matter for the
+// import flow DMECH now runs.
 export function displayStatus(vehicle: PublicVehicle): PublicDisplayStatus {
   switch (vehicle.lifecycle_stage) {
+    case "sourced":
+    case "purchased":
+      return "Sourced";
     case "shipped":
     case "in_transit":
       return "In Transit";
