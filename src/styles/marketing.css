@@ -290,14 +290,14 @@ nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.06)}
 .v-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:box-shadow .25s,transform .25s;cursor:pointer}
 .v-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.08);transform:translateY(-2px)}
 .v-card-img{height:150px;background:linear-gradient(135deg,#F1F5F9,#E8EEF4);display:flex;align-items:center;justify-content:center;color:var(--subtle);position:relative}
-.v-card-status{position:absolute;top:12px;right:12px;font-size:11px;font-weight:900;padding:7px 11px;border-radius:999px;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 8px 20px rgba(15,23,42,.14);border:1px solid rgba(15,23,42,.10);display:inline-flex;align-items:center;justify-content:center}
-.status-available{background:rgba(34,197,94,.88);color:#062a17;border-color:rgba(15,118,110,.30);text-shadow:0 1px 0 rgba(255,255,255,.3)}
-.status-transit{background:rgba(125,211,252,.85);color:#082f49;border-color:rgba(14,116,144,.35);text-shadow:0 1px 0 rgba(255,255,255,.25)}
-.status-port{background:rgba(253,186,116,.92);color:#4a1d08;border-color:rgba(234,88,12,.35);text-shadow:0 1px 0 rgba(255,255,255,.2)}
-.status-sold{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(220,38,38,.50);color:#dc2626;border:2px solid #dc2626;font-size:14px;font-weight:900;padding:12px 20px;text-transform:uppercase;letter-spacing:.1em;box-shadow:0 20px 40px rgba(220,38,38,.25);display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
+.v-card-status{position:absolute;top:12px;right:12px;font-size:11px;font-weight:800;padding:7px 12px;border-radius:10px;letter-spacing:.06em;text-transform:uppercase;box-shadow:none;border:1px solid rgba(15,23,42,.10);display:inline-flex;align-items:center;justify-content:center;z-index:2}
+.status-available{background:rgba(34,197,94,.21);color:#14532d;border-color:rgba(34,197,94,.30)}
+.status-transit{background:rgba(14,116,144,.20);color:#0f172a;border-color:rgba(14,116,144,.28)}
+.status-port{background:rgba(234,88,12,.20);color:#7c2d12;border-color:rgba(234,88,12,.28)}
+.status-sold{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-18deg);background:rgba(220,38,38,.18);color:#dc2626;border:2px solid rgba(220,38,38,.82);font-size:18px;font-weight:900;padding:14px 28px;text-transform:uppercase;letter-spacing:.14em;box-shadow:0 12px 24px rgba(220,38,38,.15);display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;width:76%;max-width:260px;height:46px;border-radius:12px;z-index:3;text-shadow:0 0 10px rgba(220,38,38,.10)}
 .v-card.is-sold{opacity:.85}
 .v-card.is-sold .v-card-img{filter:none}
-.v-card.is-sold .v-card-status{transform:translate(-50%,-50%);border-width:2px}
+.v-card.is-sold .v-card-status{transform:translate(-50%,-50%) rotate(-18deg);border:2px solid rgba(220,38,38,.82);background:rgba(220,38,38,.18)}
 .v-card-cert{position:absolute;top:12px;left:12px;background:rgba(34,197,94,.15);color:#16A34A;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px}
 .v-card-body{padding:18px}
 .v-card-name{font-family:'Space Grotesk';font-size:18px;font-weight:700;color:var(--dark)}
