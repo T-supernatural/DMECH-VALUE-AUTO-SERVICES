@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import { staffGuard } from "@/lib/guards";
 import { logAudit } from "@/lib/audit";
+import { normalizeCodeText, normalizeDisplayText } from "@/lib/vehicle-display";
 import type { StaffRole, AcquisitionChannel } from "@/types";
 
 const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager", "it_manager"];
@@ -55,6 +56,16 @@ export async function POST(request: Request) {
   for (const key of TRIM_FIELDS) {
     if (typeof insertRow[key] === "string") insertRow[key] = (insertRow[key] as string).trim();
   }
+
+  const normalizedTextFields: Array<keyof typeof insertRow> = ["make", "model", "colour", "source_detail"];
+  for (const key of normalizedTextFields) {
+    if (typeof insertRow[key] === "string") {
+      insertRow[key] = normalizeDisplayText(insertRow[key] as string) ?? null;
+    }
+  }
+
+  if (typeof insertRow.vin === "string") insertRow.vin = normalizeCodeText(insertRow.vin) ?? null;
+  if (typeof insertRow.lot_number === "string") insertRow.lot_number = normalizeCodeText(insertRow.lot_number) ?? null;
 
   const supabase = createServiceClient();
   const { data, error } = await supabase.from("vehicles").insert(insertRow).select().single();

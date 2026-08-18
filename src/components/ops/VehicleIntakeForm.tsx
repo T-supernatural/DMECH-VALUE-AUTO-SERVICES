@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toKobo } from "@/lib/money";
-import { conditionLabel } from "@/lib/vehicle-display";
+import { conditionLabel, formatSourceRegionLabel, normalizeCodeText, normalizeDisplayText } from "@/lib/vehicle-display";
 import { stageLabel, stageBadgeClass } from "@/lib/ops/vehicle-stage";
 import { VehiclePhotoManager } from "@/components/ops/VehiclePhotoManager";
 import { USE_CATEGORY_LABELS } from "@/types";
@@ -31,13 +31,6 @@ const STEPS: { step: Step; label: string }[] = [
 function initialStage(channel: AcquisitionChannel): LifecycleStage {
   return channel === "import" ? "sourced" : "intake";
 }
-
-const SOURCE_REGION_LABEL: Record<SourceRegion, string> = {
-  usa: "USA",
-  europe: "Europe",
-  china: "China",
-  nigeria: "Nigeria",
-};
 
 export function VehicleIntakeForm({ customers }: Props) {
   const router = useRouter();
@@ -94,17 +87,17 @@ export function VehicleIntakeForm({ customers }: Props) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          make,
-          model,
+          make: normalizeDisplayText(make) ?? "",
+          model: normalizeDisplayText(model) ?? "",
           year: parseInt(year, 10),
-          vin: vin || null,
-          lot_number: lotNumber || null,
-          colour: colour || null,
+          vin: normalizeCodeText(vin) ?? null,
+          lot_number: normalizeCodeText(lotNumber) ?? null,
+          colour: normalizeDisplayText(colour) ?? null,
           fuel_type: fuelType,
           engine_cc: fuelType === "electric" ? null : engineCc ? parseInt(engineCc, 10) : null,
           battery_range_km: fuelType === "electric" && batteryRangeKm ? parseInt(batteryRangeKm, 10) : null,
           source_region: sourceRegion,
-          source_detail: sourceDetail || null,
+          source_detail: normalizeDisplayText(sourceDetail) ?? null,
           condition,
           use_categories: useCategories,
           acquisition_channel: channel,
@@ -125,7 +118,7 @@ export function VehicleIntakeForm({ customers }: Props) {
       }
       setCreatedVehicleId(json.vehicle.id);
       setStatus("idle");
-      setStep(4);
+      router.push(`/ops/vehicles/${json.vehicle.id}`);
     } catch {
       setError("Something went wrong.");
       setStatus("error");
@@ -154,11 +147,11 @@ export function VehicleIntakeForm({ customers }: Props) {
             <div className="ops-form-grid">
               <div>
                 <label className="ops-field-label" htmlFor="in-make">Make</label>
-                <input id="in-make" className="ops-input" value={make} onChange={(e) => setMake(e.target.value)} />
+                <input id="in-make" className="ops-input" value={make} onChange={(e) => setMake(normalizeDisplayText(e.target.value) ?? "")} />
               </div>
               <div>
                 <label className="ops-field-label" htmlFor="in-model">Model</label>
-                <input id="in-model" className="ops-input" value={model} onChange={(e) => setModel(e.target.value)} />
+                <input id="in-model" className="ops-input" value={model} onChange={(e) => setModel(normalizeDisplayText(e.target.value) ?? "")} />
               </div>
               <div>
                 <label className="ops-field-label" htmlFor="in-year">Year</label>
@@ -166,15 +159,15 @@ export function VehicleIntakeForm({ customers }: Props) {
               </div>
               <div>
                 <label className="ops-field-label" htmlFor="in-vin">VIN (optional)</label>
-                <input id="in-vin" className="ops-input" value={vin} onChange={(e) => setVin(e.target.value)} />
+                <input id="in-vin" className="ops-input" value={vin} onChange={(e) => setVin(normalizeCodeText(e.target.value) ?? "")} />
               </div>
               <div>
                 <label className="ops-field-label" htmlFor="in-lot">Lot Number (optional — auction reference)</label>
-                <input id="in-lot" className="ops-input" value={lotNumber} onChange={(e) => setLotNumber(e.target.value)} />
+                <input id="in-lot" className="ops-input" value={lotNumber} onChange={(e) => setLotNumber(normalizeCodeText(e.target.value) ?? "")} />
               </div>
               <div>
                 <label className="ops-field-label" htmlFor="in-colour">Colour</label>
-                <input id="in-colour" className="ops-input" value={colour} onChange={(e) => setColour(e.target.value)} />
+                <input id="in-colour" className="ops-input" value={colour} onChange={(e) => setColour(normalizeDisplayText(e.target.value) ?? "")} />
               </div>
               <div>
                 <label className="ops-field-label" htmlFor="in-fuel">Fuel Type</label>
@@ -207,7 +200,7 @@ export function VehicleIntakeForm({ customers }: Props) {
               </div>
               <div>
                 <label className="ops-field-label" htmlFor="in-source-detail">Source Detail (optional)</label>
-                <input id="in-source-detail" className="ops-input" value={sourceDetail} onChange={(e) => setSourceDetail(e.target.value)} />
+                <input id="in-source-detail" className="ops-input" value={sourceDetail} onChange={(e) => setSourceDetail(normalizeDisplayText(e.target.value) ?? "")} />
               </div>
             </div>
 
@@ -368,7 +361,7 @@ export function VehicleIntakeForm({ customers }: Props) {
         </div>
         <div className="ops-info-row">
           <span className="ops-info-label">Source</span>
-          <span className="ops-info-value">{SOURCE_REGION_LABEL[sourceRegion]}</span>
+          <span className="ops-info-value">{formatSourceRegionLabel(sourceRegion)}</span>
         </div>
         <div className="ops-info-row">
           <span className="ops-info-label">Condition</span>

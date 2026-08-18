@@ -8,7 +8,7 @@ import { TradeInCreditForm } from "@/components/ops/TradeInCreditForm";
 import { staffGuard } from "@/lib/guards";
 import { createClient } from "@/lib/supabase/server";
 import { formatNaira, formatUsd, usdCentsToDollars } from "@/lib/money";
-import { conditionLabel } from "@/lib/vehicle-display";
+import { conditionLabel, formatSourceRegionLabel } from "@/lib/vehicle-display";
 import { stageLabel, stageBadgeClass } from "@/lib/ops/vehicle-stage";
 import { LIFECYCLE_STAGES_BY_CHANNEL } from "@/types";
 import type { Vehicle, StaffRole } from "@/types";
@@ -115,8 +115,8 @@ export default async function VehicleDetailPage({
               <span className="ops-info-label">Source</span>
               <span className="ops-info-value">
                 {vehicle.source_region === "nigeria"
-                  ? "Nigeria (locally sourced)"
-                  : `${vehicle.source_region ?? "—"}${vehicle.source_detail ? ` — ${vehicle.source_detail}` : ""}`}
+                  ? formatSourceRegionLabel(vehicle.source_region)
+                  : `${formatSourceRegionLabel(vehicle.source_region)}${vehicle.source_detail ? ` — ${vehicle.source_detail}` : ""}`}
               </span>
             </div>
             <div className="ops-info-row">

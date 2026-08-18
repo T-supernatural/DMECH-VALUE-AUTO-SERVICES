@@ -1,4 +1,4 @@
-import type { Vehicle, VehiclePhoto, WarrantyPolicy } from "@/types";
+import type { Vehicle, VehiclePhoto, WarrantyPolicy, SourceRegion } from "@/types";
 
 // Client-safe vehicle helpers — pure functions and types only, no Supabase
 // import. Split out from lib/vehicles.ts because that file's
@@ -74,4 +74,78 @@ export function conditionLabel(vehicle: Pick<Vehicle, "condition" | "source_regi
     case "foreign_used":
       return "Foreign Used (Tokunbo)";
   }
+}
+
+export function normalizeDisplayText(value: string | null | undefined): string | null {
+  if (value == null) return null;
+
+  const trimmed = value.replace(/\s+/g, " ").trim();
+  if (!trimmed) return null;
+
+  return trimmed
+    .split(" ")
+    .map((word) => {
+      const cleanWord = word.replace(/[^A-Za-z0-9&/.-]/g, "");
+      if (!cleanWord) return "";
+
+      if (cleanWord.length <= 2 && !/[0-9]/.test(cleanWord)) {
+        return cleanWord.toUpperCase();
+      }
+
+      const upperWord = cleanWord.toUpperCase();
+      const commonAcronyms = [
+        "BMW",
+        "GMC",
+        "SUV",
+        "EV",
+        "RAV4",
+        "4X4",
+        "4WD",
+        "2WD",
+        "GT",
+        "RS",
+        "LX",
+        "SE",
+        "LE",
+        "X5",
+        "X7",
+      ];
+
+      if (commonAcronyms.includes(upperWord)) {
+        return upperWord;
+      }
+
+      return cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1).toLowerCase();
+    })
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function normalizeCodeText(value: string | null | undefined): string | null {
+  if (value == null) return null;
+
+  const trimmed = value.replace(/\s+/g, " ").trim();
+  if (!trimmed) return null;
+
+  return trimmed.toUpperCase();
+}
+
+export function formatSourceRegionLabel(region: SourceRegion | null | undefined): string {
+  const FLAGS: Record<SourceRegion, string> = {
+    usa: "🇺🇸",
+    europe: "🇪🇺",
+    china: "🇨🇳",
+    nigeria: "🇳🇬",
+  };
+
+  const LABELS: Record<SourceRegion, string> = {
+    usa: "USA",
+    europe: "EUROPE",
+    china: "CHINA",
+    nigeria: "NIGERIA",
+  };
+
+  if (!region) return "—";
+  return `${FLAGS[region]} ${LABELS[region]}`;
 }
