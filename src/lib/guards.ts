@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Customer, DmechUser, StaffRole } from "@/types";
+import { currentWhatsAppCustomerSession } from "@/lib/customer-session";
 
 /**
  * Resolve the current session to a `users` row and confirm it's staff (any
@@ -45,7 +46,12 @@ export async function customerGuard(): Promise<Customer | null> {
   const {
     data: { user: authUser },
   } = await supabase.auth.getUser();
-  if (!authUser) return null;
+  if (!authUser) {
+    const whatsappSession = await currentWhatsAppCustomerSession();
+    if (!whatsappSession) return null;
+    const { data: customer } = await supabase.from("customers").select("*").eq("id", whatsappSession.customerId).is("deleted_at", null).maybeSingle();
+    return customer as Customer | null;
+  }
 
   const { data: userRow } = await supabase
     .from("users")

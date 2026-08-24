@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { fromKobo, toKobo } from "@/lib/money";
 import { stageLabel } from "@/lib/ops/vehicle-stage";
 import { USE_CATEGORY_LABELS } from "@/types";
-import type { DamageLevel, LifecycleStage, VehicleCondition, SourceRegion, VehicleUseCategory, VehicleHistoryReport, AccidentStatus, RepairStatus } from "@/types";
+import type { DamageLevel, LifecycleStage, VehicleCondition, SourceRegion, VehicleUseCategory, VehicleHistoryReport, AccidentStatus, RepairStatus, VehicleDisplayStamp } from "@/types";
 
 const DAMAGE_LEVELS: DamageLevel[] = ["none", "light", "moderate", "heavy"];
 const ACCIDENT_STATUS_OPTIONS: AccidentStatus[] = ["none", "minor", "major", "unknown"];
@@ -45,6 +45,7 @@ interface Props {
   seoDescription: string | null;
   useCategories: VehicleUseCategory[];
   historyReport?: VehicleHistoryReport | null;
+  displayStamps?: VehicleDisplayStamp[];
 }
 
 type Status = "idle" | "saving" | "saved" | "error";
@@ -70,6 +71,7 @@ export function VehicleEditForm({
   seoDescription,
   useCategories: initialUseCategories,
   historyReport,
+  displayStamps: initialDisplayStamps = [],
 }: Props) {
   const router = useRouter();
   const [stage, setStage] = useState<LifecycleStage>(lifecycleStage);
@@ -85,6 +87,7 @@ export function VehicleEditForm({
   const [seoDescriptionValue, setSeoDescriptionValue] = useState(seoDescription ?? "");
   const [useCategories, setUseCategories] = useState<VehicleUseCategory[]>(initialUseCategories);
   const [history, setHistory] = useState<VehicleHistoryReport>(normalizeHistoryReport(historyReport));
+  const [displayStamps, setDisplayStamps] = useState<VehicleDisplayStamp[]>(initialDisplayStamps);
   const [status, setStatus] = useState<Status>("idle");
   const [historyUploadBusy, setHistoryUploadBusy] = useState(false);
   const historyInputRef = useRef<HTMLInputElement>(null);
@@ -142,6 +145,7 @@ export function VehicleEditForm({
             ...history,
             before_after_photo_urls: history.before_after_photo_urls ?? [],
           },
+          display_stamps: displayStamps,
         }),
       });
       if (!res.ok) {
@@ -251,6 +255,10 @@ export function VehicleEditForm({
         />
         Published — visible on the marketing site
       </label>
+      <label className="ops-field-label">Vehicle display stamps</label>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 14px", marginBottom: 16 }}>
+        {(["verified", "inspected", "reserved", "sold", "delivered"] as VehicleDisplayStamp[]).map((stamp) => <label key={stamp} style={{ display: "flex", gap: 5, alignItems: "center", fontSize: 13 }}><input type="checkbox" checked={displayStamps.includes(stamp)} onChange={() => setDisplayStamps((value) => value.includes(stamp) ? value.filter((item) => item !== stamp) : [...value, stamp])} />{stamp}</label>)}
+      </div>
 
       <div style={{ borderTop: "1px solid var(--border)", paddingTop: 14, marginBottom: 4 }}>
         <div style={{ fontSize: 11, fontWeight: 600, color: "var(--subtle)", letterSpacing: ".5px", textTransform: "uppercase", marginBottom: 10 }}>

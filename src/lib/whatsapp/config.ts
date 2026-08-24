@@ -8,19 +8,19 @@
 
 export const WHATSAPP_CONFIG = {
   // Meta Cloud API Configuration
-  businessAccountId: process.env.WHATSAPP_BUSINESS_ACCOUNT_ID || 'dummy_account_id',
-  phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID || '1234567890',
+  businessAccountId: process.env.WHATSAPP_BUSINESS_ACCOUNT_ID || '',
+  phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID || '',
   apiVersion: process.env.WHATSAPP_API_VERSION || 'v20.0',
-  accessToken: process.env.WHATSAPP_ACCESS_TOKEN || 'dummy_token',
-  webhookVerifyToken: process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN || 'dummy_verify_token',
-  apiSecret: process.env.WHATSAPP_API_SECRET || 'dummy_secret',
+  accessToken: process.env.WHATSAPP_ACCESS_TOKEN || '',
+  webhookVerifyToken: process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN || '',
+  apiSecret: process.env.WHATSAPP_API_SECRET || '',
 
   // Webhook URL (must be publicly accessible HTTPS)
   webhookUrl: process.env.WHATSAPP_WEBHOOK_URL || 'https://dmech.app/api/webhooks/whatsapp',
 
   // DMECH Business WhatsApp Number
-  dmechPhoneNumber: process.env.WHATSAPP_DMECH_PHONE || '2348151023414',
-  dmechPhoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID || '1234567890',
+  dmechPhoneNumber: process.env.WHATSAPP_DMECH_PHONE || '',
+  dmechPhoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID || '',
 
   // Feature flags
   isDevelopment: process.env.NODE_ENV === 'development',

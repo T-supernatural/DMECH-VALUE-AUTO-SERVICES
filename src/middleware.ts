@@ -9,6 +9,7 @@ import { NextResponse, type NextRequest } from "next/server";
 // dead/no-op entry and restores the intended defense-in-depth + the
 // avoided-render perf benefit, not a live data exposure.)
 const PROTECTED_PREFIXES = ["/ops", "/dashboard", "/documents", "/payments"];
+const CUSTOMER_SESSION_COOKIE = "dmech_customer_session";
 
 // Session refresh + coarse route gating, mirroring justra-web's middleware:
 // redirect unauthenticated visitors away from protected sections before the
@@ -34,8 +35,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Customer WhatsApp sessions are server-verified again by customerGuard()
+  // in every portal page/route. This only avoids an incorrect coarse redirect.
+  if (!path.startsWith("/ops") && request.cookies.has(CUSTOMER_SESSION_COOKIE)) return NextResponse.next();
+
   const redirectToAuth = () => {
-    const redirectPath = path.startsWith("/ops") ? "/login" : "/verify";
+    const redirectPath = path.startsWith("/ops") ? "/login" : "/account";
     const url = request.nextUrl.clone();
     url.pathname = redirectPath;
     url.searchParams.set("next", path);

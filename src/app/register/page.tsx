@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import "@/styles/ops.css";
 import { Logo } from "@/components/Logo";
 import { RegistrationForm } from "@/components/portal/RegistrationForm";
+import { CustomerClaimForm } from "@/components/portal/CustomerClaimForm";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function RegisterPage() {
@@ -27,6 +28,8 @@ export default async function RegisterPage() {
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 28 }}>
         <Logo variant="splash" />
       </div>
+      <CustomerClaimForm />
+      <div style={{ maxWidth: 560, margin: "0 auto 16px", color: "var(--subtle)", fontSize: 12, textAlign: "center" }}>New to DMECH? Complete the registration below.</div>
       <RegistrationForm email={authUser.email ?? ""} />
     </div>
   );

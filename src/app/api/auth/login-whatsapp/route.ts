@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendWhatsAppLoginOTP, verifyWhatsAppOTP, normalizePhoneNumber } from '@/lib/whatsapp/auth';
 import { createServiceClient } from '@/lib/supabase/server';
+import { CUSTOMER_SESSION_COOKIE } from '@/lib/customer-session';
 
 /**
  * POST /api/auth/login-whatsapp
@@ -71,12 +72,12 @@ export async function PUT(request: NextRequest) {
     // Verify OTP and create session
     const { token, customerId } = await verifyWhatsAppOTP(phone, otp);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
-      token,
-      customerId,
       message: 'Login successful!',
     });
+    response.cookies.set(CUSTOMER_SESSION_COOKIE, token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: 60 * 60 * 24 * 30 });
+    return response;
   } catch (error) {
     console.error('Verification error:', error);
     return NextResponse.json(

@@ -116,6 +116,8 @@
 .ops-btn{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s}
 .ops-btn:hover{background:#1280c8}
 .ops-btn:disabled{opacity:.6;cursor:not-allowed}
+.ops-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.portal-spin{animation:opsWheelSpin .9s linear infinite}
 .ops-btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:9px 18px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;transition:border-color .2s,color .2s}
 .ops-btn-ghost:hover{border-color:var(--muted);color:var(--text)}
 .ops-btn-danger{background:#fff1f2;color:#b91c1c;border:1px solid #fecdd3;border-radius:8px;padding:9px 18px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s,border-color .2s,color .2s}

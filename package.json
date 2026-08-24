@@ -21,13 +21,13 @@
   },
   "devDependencies": {
     "@netlify/plugin-nextjs": "^5.15.12",
+    "@types/jest": "^29.5.14",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "typescript": "^5",
-    "vitest": "^1.0.0",
-    "@types/jest": "^29.5.3"
+    "vitest": "^1.6.1"
   }
 }

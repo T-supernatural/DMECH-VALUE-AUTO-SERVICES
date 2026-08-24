@@ -71,11 +71,7 @@ export default function LoginWhatsAppPage() {
         return;
       }
 
-      // Store token and redirect to the token-scoped tracking page --
-      // there's no separate login/dashboard to bounce into, the token
-      // itself is the account.
-      localStorage.setItem('whatsapp_session_token', data.token);
-      router.push(`/track/${data.token}`);
+      router.push('/dashboard');
     } catch (err) {
       setError('Network error. Please try again.');
       setStep('otp');

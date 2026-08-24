@@ -312,6 +312,7 @@ export interface Vehicle {
   photos: VehiclePhoto[];
   video_url: string | null;
   inspection_score: number | null;
+  display_stamps: VehicleDisplayStamp[];
 
   // Nigerian-Used/Certified program
   acquisition_channel: AcquisitionChannel;
@@ -425,6 +426,30 @@ export interface Instalment {
 
 export type PaymentStatus = "pending" | "paid" | "overdue" | "partial";
 export type PaymentMethod = "bank_transfer" | "paystack" | "pos" | "cash";
+
+export type PaymentCurrency = "NGN" | "USD";
+export type OnlinePaymentTarget = "instalment_payment" | "pre_order_deposit" | "pre_order_balance" | "invoice";
+export type OnlinePaymentStatus = "initialized" | "pending" | "succeeded" | "failed" | "abandoned";
+
+export interface PaymentTransaction {
+  id: string;
+  customer_id: string;
+  target_type: OnlinePaymentTarget;
+  target_id: string;
+  provider: "paystack";
+  reference: string;
+  currency: PaymentCurrency;
+  amount_subunit: number;
+  status: OnlinePaymentStatus;
+  provider_transaction_id: string | null;
+  receipt_id: string | null;
+  initiated_at: string;
+  confirmed_at: string | null;
+  failed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+export type VehicleDisplayStamp = "verified" | "sold" | "reserved" | "inspected" | "delivered";
 
 export interface Payment {
   id: string;
@@ -711,6 +736,7 @@ export interface PreOrder {
   estimated_total_usd_cents: number;
   deposit_pct: number;
   deposit_amount_kobo: number;
+  deposit_amount_paid_kobo: number;
   deposit_paid: boolean;
   deposit_paid_at: string | null;
   deposit_payment_method: PaymentMethod | null;
@@ -718,6 +744,7 @@ export interface PreOrder {
   // left after the deposit, against the real final sale price rather than
   // the reservation-time estimate. Null until then.
   balance_amount_kobo: number | null;
+  balance_amount_paid_kobo: number;
   balance_paid: boolean;
   balance_paid_at: string | null;
   balance_payment_method: PaymentMethod | null;

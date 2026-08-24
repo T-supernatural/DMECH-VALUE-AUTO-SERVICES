@@ -5,6 +5,7 @@ import { computeApprovalTier, DEFAULT_TIER_THRESHOLDS, type ApprovalTierThreshol
 import { toKobo } from "@/lib/money";
 import { FINANCING_CUSTOMER_TYPES } from "@/types";
 import type { CustomerType } from "@/types";
+import { normalizePhoneNumber } from "@/lib/whatsapp/auth";
 
 const VALID_TYPES: CustomerType[] = [
   "instalment_buyer",
@@ -36,8 +37,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Name, phone, and customer type are required." }, { status: 400 });
   }
   const type: CustomerType = body.type;
+  const phone = normalizePhoneNumber(body.phone);
+  if (!/^234\d{10}$/.test(phone)) {
+    return NextResponse.json({ error: "Enter a valid Nigerian phone number." }, { status: 400 });
+  }
 
   const service = createServiceClient();
+  // Never turn a staff-created customer into a second record just because
+  // they later sign in to the website. They must prove this phone using the
+  // dedicated claim flow, which is the account-takeover protection.
+  const { data: matchingCustomer } = await service
+    .from("customers")
+    .select("id, user_id")
+    .eq("phone", phone)
+    .is("deleted_at", null)
+    .maybeSingle();
+  if (matchingCustomer) {
+    return NextResponse.json({ error: "A DMECH customer record already uses this phone number. Use the WhatsApp verification section above to link it safely." }, { status: 409 });
+  }
 
   let userId: string;
   const { data: existingUser } = await service.from("users").select("id").eq("auth_user_id", authUser.id).maybeSingle();
@@ -49,7 +66,7 @@ export async function POST(request: Request) {
       .insert({
         auth_user_id: authUser.id,
         email: authUser.email ?? "",
-        phone: body.phone,
+        phone,
         full_name: body.full_name,
         role: "customer",
         is_active: true,
@@ -86,7 +103,7 @@ export async function POST(request: Request) {
       user_id: userId,
       type,
       full_name: body.full_name,
-      phone: body.phone,
+      phone,
       email: authUser.email ?? null,
       address: body.address || null,
       bvn: type === "instalment_buyer" ? body.bvn || null : null,

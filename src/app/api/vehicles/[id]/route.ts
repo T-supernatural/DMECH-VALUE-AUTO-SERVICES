@@ -23,6 +23,7 @@ const ALLOWED = [
   "seo_description",
   "use_categories",
   "history_report",
+  "display_stamps",
 ] as const;
 
 const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "ops_manager", "sales_manager", "it_manager"];
@@ -50,6 +51,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   for (const key of ALLOWED) {
     if (key in body) updates[key] = body[key];
   }
+  if ("display_stamps" in updates && (!Array.isArray(updates.display_stamps) || !(updates.display_stamps as unknown[]).every((stamp) => ["verified", "sold", "reserved", "inspected", "delivered"].includes(stamp as string)))) return NextResponse.json({ error: "Invalid vehicle display stamp." }, { status: 400 });
   for (const key of TRIM_FIELDS) {
     if (typeof updates[key] === "string") updates[key] = (updates[key] as string).trim();
   }

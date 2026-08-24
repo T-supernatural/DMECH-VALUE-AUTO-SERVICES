@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import crypto from 'crypto';
+import { normalizePhoneNumber } from '@/lib/whatsapp/auth';
 
 /**
  * POST /api/auth/register-whatsapp
@@ -20,12 +21,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Phone number required' }, { status: 400 });
     }
 
-    // Normalize phone number
-    let normalized = phone.replace(/\D/g, '');
-    if (normalized.startsWith('0')) {
-      normalized = '234' + normalized.substring(1);
-    } else if (!normalized.startsWith('234')) {
-      normalized = '234' + normalized;
+    const normalized = normalizePhoneNumber(phone);
+    if (!/^234\d{10}$/.test(normalized)) {
+      return NextResponse.json({ error: 'Enter a valid Nigerian phone number.' }, { status: 400 });
     }
 
     // Check if already registered
@@ -80,92 +78,6 @@ export async function POST(request: NextRequest) {
 }
 
 /**
- * PUT /api/auth/register-whatsapp
- * Verify registration code (called after customer sends WhatsApp message)
- */
-export async function PUT(request: NextRequest) {
-  try {
-    const { phone, code, name } = await request.json();
-
-    if (!phone || !code) {
-      return NextResponse.json({ error: 'Phone and code required' }, { status: 400 });
-    }
-
-    // Normalize phone
-    let normalized = phone.replace(/\D/g, '');
-    if (normalized.startsWith('0')) {
-      normalized = '234' + normalized.substring(1);
-    } else if (!normalized.startsWith('234')) {
-      normalized = '234' + normalized;
-    }
-
-    const service = createServiceClient();
-
-    // Check pending registration
-    const { data: pending } = await service
-      .from('pending_whatsapp_registrations')
-      .select('*')
-      .eq('code', code)
-      .eq('phone_number', normalized)
-      .gt('expires_at', new Date().toISOString())
-      .limit(1)
-      .single();
-
-    if (!pending) {
-      return NextResponse.json({ error: 'Invalid or expired registration code' }, { status: 400 });
-    }
-
-    // Create customer
-    const { data: customer, error: createError } = await service
-      .from('customers')
-      .insert({
-        phone: normalized,
-        full_name: name || 'DMECH Customer',
-        type: 'cash_buyer',
-        whatsapp_verified: true,
-        whatsapp_verified_at: new Date().toISOString(),
-        registration_source: 'whatsapp',
-      })
-      .select()
-      .single();
-
-    if (createError || !customer) {
-      console.error('Failed to create customer:', createError);
-      return NextResponse.json({ error: 'Failed to create account' }, { status: 500 });
-    }
-
-    // Create session
-    const sessionToken = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-
-    const { error: sessionError } = await service.from('whatsapp_sessions').insert({
-      customer_id: customer.id,
-      phone_number: normalized,
-      session_token: sessionToken,
-      expires_at: expiresAt.toISOString(),
-    });
-
-    if (sessionError) {
-      console.error('Failed to create session:', sessionError);
-      return NextResponse.json({ error: 'Failed to create session' }, { status: 500 });
-    }
-
-    // Delete pending registration
-    await service.from('pending_whatsapp_registrations').delete().eq('code', code);
-
-    return NextResponse.json({
-      success: true,
-      customerId: customer.id,
-      token: sessionToken,
-      message: 'Registration successful! You can now access your account.',
-    });
-  } catch (error) {
-    console.error('Verification error:', error);
-    return NextResponse.json({ error: 'Verification failed' }, { status: 500 });
-  }
-}
-
-/**
  * GET /api/auth/register-whatsapp?phone=...
  * Polled by the "waiting" screen to detect that the customer has sent
  * REGISTER <code> on WhatsApp and the webhook has completed registration.
@@ -177,12 +89,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Phone number required' }, { status: 400 });
     }
 
-    let normalized = phone.replace(/\D/g, '');
-    if (normalized.startsWith('0')) {
-      normalized = '234' + normalized.substring(1);
-    } else if (!normalized.startsWith('234')) {
-      normalized = '234' + normalized;
-    }
+    const normalized = normalizePhoneNumber(phone);
 
     const service = createServiceClient();
     const { data: customer } = await service

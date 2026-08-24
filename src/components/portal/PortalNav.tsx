@@ -25,6 +25,7 @@ export function PortalNav({ customer }: { customer: Customer }) {
   const router = useRouter();
 
   async function logout() {
+    await fetch("/api/auth/customer-logout", { method: "POST" });
     const supabase = createClient();
     await supabase.auth.signOut();
     router.push("/verify");

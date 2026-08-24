@@ -20,15 +20,13 @@ export async function GET(request: NextRequest) {
   const token = searchParams.get('hub.verify_token');
   const challenge = searchParams.get('hub.challenge');
 
-  console.log('[WhatsApp Webhook] Verification request:', { mode, token });
-
   // Verify the mode and token
   if (mode === 'subscribe' && token === WHATSAPP_CONFIG.webhookVerifyToken) {
-    console.log('[WhatsApp Webhook] ✅ Webhook verified');
+    console.info('[WhatsApp Webhook] Verification succeeded.');
     return new NextResponse(challenge, { status: 200 });
   }
 
-  console.warn('[WhatsApp Webhook] ❌ Verification failed');
+  console.warn('[WhatsApp Webhook] Verification failed.');
   return new NextResponse('Forbidden', { status: 403 });
 }
 
@@ -44,15 +42,12 @@ export async function POST(request: NextRequest) {
     // Read body
     const body = await request.text();
 
-    // In development mode, skip signature verification
-    if (process.env.NODE_ENV !== 'development' && !verifyWebhookSignature(body, xHubSignature)) {
-      console.warn('[WhatsApp Webhook] ❌ Signature verification failed');
+    if (!verifyWebhookSignature(body, xHubSignature)) {
+      console.warn('[WhatsApp Webhook] Signature verification failed.');
       return new NextResponse('Forbidden', { status: 403 });
     }
 
     const payload = JSON.parse(body);
-
-    console.log('[WhatsApp Webhook] Received payload:', JSON.stringify(payload, null, 2));
 
     // Check if this is a message webhook
     if (payload.object !== 'whatsapp_business_account') {
@@ -66,8 +61,8 @@ export async function POST(request: NextRequest) {
 
         // Handle message status updates
         if (value.statuses) {
-          for (const status of value.statuses) {
-            console.log(`[WhatsApp Webhook] Message ${status.id} status: ${status.status}`);
+          for (const _status of value.statuses) {
+            console.info('[WhatsApp Webhook] Received message status update.');
             // Update in database
             // TODO: Update message status in whatsapp_messages table
           }
@@ -83,8 +78,8 @@ export async function POST(request: NextRequest) {
     }
 
     return new NextResponse('OK', { status: 200 });
-  } catch (error) {
-    console.error('[WhatsApp Webhook] Error processing webhook:', error);
+  } catch {
+    console.error('[WhatsApp Webhook] Error processing webhook.');
     return new NextResponse('Error', { status: 500 });
   }
 }

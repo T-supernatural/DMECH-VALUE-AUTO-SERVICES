@@ -11,7 +11,8 @@ import { getConfigValue } from '@/lib/platform-config';
 import { CONTACT } from '@/lib/contact';
 import type { LifecycleStage } from '@/types';
 import { WHATSAPP_CONFIG } from './config';
-import { logWhatsAppMessage, sendTextMessage } from './messaging';
+import { createWhatsAppSession } from './auth';
+import { sendTextMessage } from './messaging';
 
 /**
  * Verify webhook signature from Meta
@@ -37,6 +38,10 @@ export function verifyWebhookSignature(body: string, xHubSignature: string): boo
 /**
  * Extract message from Meta's webhook payload
  */
+interface WebhookContact {
+  profile?: { name?: string };
+}
+
 interface WebhookMessage {
   from: string;
   id: string;
@@ -53,11 +58,11 @@ interface WebhookMessage {
 /**
  * Handle incoming WhatsApp message
  */
-export async function handleIncomingMessage(message: WebhookMessage, contacts: any[]): Promise<void> {
+export async function handleIncomingMessage(message: WebhookMessage, contacts: WebhookContact[]): Promise<void> {
   const senderPhone = message.from;
   const messageText = message.text?.body || message.button?.text || '';
 
-  console.log(`[WhatsApp Webhook] Received message from ${senderPhone}: ${messageText}`);
+  console.info('[WhatsApp Webhook] Received inbound message.');
 
   const service = createServiceClient();
 
@@ -244,8 +249,9 @@ async function handleRegistrationMessage(phone: string, code: string, customerNa
   // Check if code is valid and not expired
   const { data: pending } = await service
     .from('pending_whatsapp_registrations')
-    .select('*')
+    .select('id')
     .eq('code', code)
+    .eq('phone_number', phone)
     .gt('expires_at', new Date().toISOString())
     .limit(1)
     .single();
@@ -257,39 +263,37 @@ async function handleRegistrationMessage(phone: string, code: string, customerNa
     return;
   }
 
-  // Create customer
-  const { data: newCustomer, error } = await service
+  const { data: existingCustomer } = await service
     .from('customers')
-    .insert({
-      phone: phone,
-      full_name: customerName || 'DMECH Customer',
-      type: 'cash_buyer',
-      whatsapp_verified: true,
-      whatsapp_verified_at: new Date().toISOString(),
-      registration_source: 'whatsapp',
-    })
-    .select()
-    .single();
+    .select('id')
+    .eq('phone', phone)
+    .is('deleted_at', null)
+    .maybeSingle();
+  const { data: newCustomer, error } = existingCustomer
+    ? { data: existingCustomer, error: null }
+    : await service
+        .from('customers')
+        .insert({
+          phone,
+          full_name: customerName || 'DMECH Customer',
+          type: 'cash_buyer',
+          whatsapp_verified: true,
+          whatsapp_verified_at: new Date().toISOString(),
+          registration_source: 'whatsapp',
+        })
+        .select('id')
+        .single();
 
   if (error || !newCustomer) {
-    console.error('Failed to create customer:', error);
+    console.error('WhatsApp registration could not create a customer.');
     await sendTextMessage(phone, `❌ Registration failed. Please try again: ${appUrl}/register-whatsapp`);
     return;
   }
 
-  // Create session
-  const sessionToken = crypto.randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-
-  await service.from('whatsapp_sessions').insert({
-    customer_id: newCustomer.id,
-    phone_number: phone,
-    session_token: sessionToken,
-    expires_at: expiresAt.toISOString(),
-  });
+  const sessionToken = await createWhatsAppSession(newCustomer.id, phone);
 
   // Delete pending registration
-  await service.from('pending_whatsapp_registrations').delete().eq('code', code);
+  await service.from('pending_whatsapp_registrations').delete().eq('id', pending.id).eq('phone_number', phone);
 
   // Send welcome message
   const trackUrl = `${appUrl}/track/${sessionToken}`;
@@ -310,33 +314,47 @@ async function handleOTPMessage(phone: string, otp: string): Promise<void> {
     .from('whatsapp_otp_codes')
     .select('*')
     .eq('phone_number', phone)
-    .eq('otp_code', otp)
     .gt('expires_at', new Date().toISOString())
     .is('used_at', null)
     .order('created_at', { ascending: false })
     .limit(1)
     .single();
 
-  if (!validOtp) {
+  const matches = validOtp?.otp_code?.length === otp.length
+    && crypto.timingSafeEqual(Buffer.from(validOtp.otp_code), Buffer.from(otp));
+  if (!validOtp || validOtp.attempt_count >= 5 || !matches) {
+    if (validOtp && validOtp.attempt_count < 5) {
+      await service
+        .from('whatsapp_otp_codes')
+        .update({ attempt_count: validOtp.attempt_count + 1 })
+        .eq('id', validOtp.id)
+        .eq('attempt_count', validOtp.attempt_count);
+    }
     await sendTextMessage(phone, '❌ Invalid or expired code. Please try again.');
     return;
   }
 
-  // Mark as used
-  await service.from('whatsapp_otp_codes').update({ used_at: new Date().toISOString() }).eq('id', validOtp.id);
+  const { data: consumedOtp } = await service
+    .from('whatsapp_otp_codes')
+    .update({ used_at: new Date().toISOString() })
+    .eq('id', validOtp.id)
+    .is('used_at', null)
+    .select('id')
+    .maybeSingle();
+  if (!consumedOtp) return;
 
   // Handle based on purpose
   if (validOtp.purpose === 'login') {
-    await handleLoginOTP(phone, validOtp.id);
+    await handleLoginOTP(phone);
   } else if (validOtp.purpose === 'registration') {
-    await handleRegistrationOTP(phone, validOtp.id);
+    await handleRegistrationOTP(phone);
   }
 }
 
 /**
  * Handle OTP for login
  */
-async function handleLoginOTP(phone: string, otpId: string): Promise<void> {
+async function handleLoginOTP(phone: string): Promise<void> {
   const service = createServiceClient();
 
   // Get or create customer -- excludes soft-deleted customers
@@ -373,16 +391,7 @@ async function handleLoginOTP(phone: string, otpId: string): Promise<void> {
     customerId = customer.id;
   }
 
-  // Create session
-  const sessionToken = crypto.randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-
-  await service.from('whatsapp_sessions').insert({
-    customer_id: customerId,
-    phone_number: phone,
-    session_token: sessionToken,
-    expires_at: expiresAt.toISOString(),
-  });
+  const sessionToken = await createWhatsAppSession(customerId, phone);
 
   // Send login link
   const trackUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dmech.app'}/track/${sessionToken}`;
@@ -395,7 +404,7 @@ async function handleLoginOTP(phone: string, otpId: string): Promise<void> {
 /**
  * Handle OTP for registration
  */
-async function handleRegistrationOTP(phone: string, otpId: string): Promise<void> {
+async function handleRegistrationOTP(phone: string): Promise<void> {
   const service = createServiceClient();
 
   // Check if customer already exists
@@ -409,7 +418,7 @@ async function handleRegistrationOTP(phone: string, otpId: string): Promise<void
 
   if (existing) {
     // Customer already registered, treat as login
-    await handleLoginOTP(phone, otpId);
+    await handleLoginOTP(phone);
     return;
   }
 
@@ -432,16 +441,7 @@ async function handleRegistrationOTP(phone: string, otpId: string): Promise<void
     return;
   }
 
-  // Create session
-  const sessionToken = crypto.randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-
-  await service.from('whatsapp_sessions').insert({
-    customer_id: newCustomer.id,
-    phone_number: phone,
-    session_token: sessionToken,
-    expires_at: expiresAt.toISOString(),
-  });
+  const sessionToken = await createWhatsAppSession(newCustomer.id, phone);
 
   // Send welcome message
   const trackUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dmech.app'}/track/${sessionToken}`;
