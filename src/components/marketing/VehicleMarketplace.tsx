@@ -14,6 +14,7 @@ import {
 import { Zap, CheckCircle2, Car, X, Scale, type LucideIcon } from "lucide-react";
 import { VehicleDetailModal } from "@/components/marketing/VehicleDetailModal";
 import { VehicleCompareModal } from "@/components/marketing/VehicleCompareModal";
+import { VehicleStampOverlay } from "@/components/marketing/VehicleStampOverlay";
 import { Reveal } from "@/components/marketing/Reveal";
 import { USE_CATEGORY_LABELS, type VehicleUseCategory } from "@/types";
 
@@ -249,6 +250,7 @@ export function VehicleMarketplace({
                       ) : (
                         <Car size={56} strokeWidth={1.25} />
                       ))}
+                    <VehicleStampOverlay vehicle={v} />
                     <div className={`v-card-status ${STATUS_CLASS[status]}`}>{status}</div>
                     {certified && (
                       <div className="v-card-cert" style={{ display: "flex", alignItems: "center", gap: 4 }}>

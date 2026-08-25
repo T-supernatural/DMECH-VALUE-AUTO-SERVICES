@@ -14,6 +14,7 @@ import {
 } from "@/lib/vehicle-display";
 import { whatsappHref, AUTOCHEK_URL } from "@/lib/contact";
 import { ImageLightbox } from "@/components/marketing/ImageLightbox";
+import { VehicleStampOverlay } from "@/components/marketing/VehicleStampOverlay";
 
 type Tab = "condition" | "specs" | "history" | "financing" | "certification";
 
@@ -91,6 +92,7 @@ export function VehicleDetailModal({ vehicle, onClose, defaultDepositPct, defaul
         <div className="modal-body">
           {photos.length > 0 && (
             <div style={{ marginBottom: 16 }}>
+              <div style={{ position: "relative" }}>
               {/* eslint-disable-next-line @next/next/no-img-element -- external Supabase Storage URL, not a local /public asset */}
               <img
                 src={photos[photoIndex]?.url}
@@ -98,6 +100,8 @@ export function VehicleDetailModal({ vehicle, onClose, defaultDepositPct, defaul
                 onClick={() => setLightboxOpen(true)}
                 style={{ width: "100%", height: 220, objectFit: "cover", borderRadius: 10, display: "block", cursor: "zoom-in" }}
               />
+              <VehicleStampOverlay vehicle={vehicle} />
+              </div>
               {photos.length > 1 && (
                 <div style={{ display: "flex", gap: 6, marginTop: 8, overflowX: "auto" }}>
                   {photos.map((photo, i) => (

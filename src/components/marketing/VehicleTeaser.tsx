@@ -3,6 +3,7 @@ import { Zap, Car, CheckCircle2 } from "lucide-react";
 import { formatNaira } from "@/lib/money";
 import { isCertified, displayStatus, publicPhotos, type PublicVehicle } from "@/lib/vehicle-display";
 import { Reveal } from "@/components/marketing/Reveal";
+import { VehicleStampOverlay } from "@/components/marketing/VehicleStampOverlay";
 
 // Condensed Home-page version of the full /vehicles marketplace — top few
 // vehicles, no filters/modal, just a taste plus a link to the real page.
@@ -60,6 +61,7 @@ export function VehicleTeaser({ vehicles }: { vehicles: PublicVehicle[] }) {
                         ) : (
                           <Car size={56} strokeWidth={1.25} />
                         ))}
+                      <VehicleStampOverlay vehicle={v} />
                       <div
                         className={`v-card-status ${
                           status === "In Transit"

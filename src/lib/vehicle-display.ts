@@ -1,4 +1,4 @@
-import type { Vehicle, VehiclePhoto, WarrantyPolicy, SourceRegion } from "@/types";
+import type { Vehicle, VehicleDisplayStamp, VehiclePhoto, WarrantyPolicy, SourceRegion } from "@/types";
 
 // Client-safe vehicle helpers — pure functions and types only, no Supabase
 // import. Split out from lib/vehicles.ts because that file's
@@ -10,6 +10,18 @@ import type { Vehicle, VehiclePhoto, WarrantyPolicy, SourceRegion } from "@/type
 export type PublicVehicle = Vehicle & { warranty_policies: WarrantyPolicy[] };
 
 export type PublicDisplayStatus = "In Transit" | "At Port" | "Available" | "Sourced" | "Reserved" | "Sold";
+
+export function displayStamps(vehicle: Pick<Vehicle, "display_stamps" | "lifecycle_stage">): VehicleDisplayStamp[] {
+  const stamps = new Set<VehicleDisplayStamp>(vehicle.display_stamps ?? []);
+
+  if (vehicle.lifecycle_stage === "reserved") stamps.add("reserved");
+  if (vehicle.lifecycle_stage === "sold") stamps.add("sold");
+  if (vehicle.lifecycle_stage === "delivered") stamps.add("delivered");
+
+  return ["verified", "inspected", "reserved", "sold", "delivered"].filter((stamp) =>
+    stamps.has(stamp as VehicleDisplayStamp),
+  ) as VehicleDisplayStamp[];
+}
 
 // The public marketing site shows a simplified status rather than the full
 // 13-stage internal lifecycle_stage — the original mockup was missing

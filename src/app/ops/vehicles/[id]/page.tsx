@@ -237,6 +237,7 @@ export default async function VehicleDetailPage({
             seoDescription={vehicle.seo_description}
             useCategories={vehicle.use_categories}
             historyReport={vehicle.history_report}
+            displayStamps={vehicle.display_stamps}
           />
         )}
 
