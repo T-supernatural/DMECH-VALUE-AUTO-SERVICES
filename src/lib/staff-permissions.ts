@@ -13,7 +13,7 @@ export const OPS_NAV_ITEMS = [
   { id: "specialists", href: "/ops/specialists", label: "Specialists", section: "Operations" },
   { id: "invoices", href: "/ops/invoices", label: "Invoices", section: "Finance" },
   { id: "receipts", href: "/ops/receipts", label: "Receipts", section: "Finance" },
-  { id: "financing", href: "/ops/settings/platform", label: "Financing", section: "Finance" },
+  { id: "financing", href: "/ops/financing", label: "Financing", section: "Finance" },
   { id: "shipments", href: "/ops/shipments", label: "Shipments", section: "Logistics" },
   { id: "customs", href: "/ops/customs", label: "Customs", section: "Logistics" },
   { id: "warranty-claims", href: "/ops/warranty-claims", label: "Warranty Claims", section: "Certified Program" },

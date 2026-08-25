@@ -14,8 +14,6 @@ interface PartsCreditLimits {
 interface Props {
   ngnUsdRate: number;
   dmechServiceFeePct: number;
-  defaultDepositPct: number;
-  defaultTenorMonths: number;
   reservationHoldHours: number;
   maxSelfFinanceKobo: number;
   warrantyReserveContributionPct: number;
@@ -31,8 +29,6 @@ export function PlatformSettingsForm(props: Props) {
   const router = useRouter();
   const [ngnUsdRate, setNgnUsdRate] = useState(String(props.ngnUsdRate));
   const [serviceFeePct, setServiceFeePct] = useState(String(props.dmechServiceFeePct));
-  const [depositPct, setDepositPct] = useState(String(props.defaultDepositPct));
-  const [tenorMonths, setTenorMonths] = useState(String(props.defaultTenorMonths));
   const [holdHours, setHoldHours] = useState(String(props.reservationHoldHours));
   const [maxSelfFinanceNaira, setMaxSelfFinanceNaira] = useState(String(Math.round(fromKobo(props.maxSelfFinanceKobo))));
   const [reservePct, setReservePct] = useState(String(props.warrantyReserveContributionPct));
@@ -55,8 +51,6 @@ export function PlatformSettingsForm(props: Props) {
         body: JSON.stringify({
           ngn_usd_rate: parseFloat(ngnUsdRate),
           dmech_service_fee_pct: parseFloat(serviceFeePct),
-          default_deposit_pct: parseFloat(depositPct),
-          default_tenor_months: parseInt(tenorMonths, 10),
           reservation_hold_hours: parseInt(holdHours, 10),
           max_self_finance_kobo: toKobo(parseFloat(maxSelfFinanceNaira)),
           warranty_reserve_contribution_pct: parseFloat(reservePct),
@@ -98,14 +92,6 @@ export function PlatformSettingsForm(props: Props) {
             <div>
               <label className="ops-field-label" htmlFor="ps-fee">DMECH Service Fee (%)</label>
               <input id="ps-fee" className="ops-input" type="number" value={serviceFeePct} onChange={(e) => setServiceFeePct(e.target.value)} />
-            </div>
-            <div>
-              <label className="ops-field-label" htmlFor="ps-deposit">Default Deposit (%)</label>
-              <input id="ps-deposit" className="ops-input" type="number" value={depositPct} onChange={(e) => setDepositPct(e.target.value)} />
-            </div>
-            <div>
-              <label className="ops-field-label" htmlFor="ps-tenor">Default Tenor (months)</label>
-              <input id="ps-tenor" className="ops-input" type="number" value={tenorMonths} onChange={(e) => setTenorMonths(e.target.value)} />
             </div>
           </div>
           <label className="ops-field-label" htmlFor="ps-max-finance">Max Self-Finance (₦)</label>

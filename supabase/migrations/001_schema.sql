@@ -389,6 +389,7 @@ insert into platform_config (key, value) values
   ('dmech_service_fee_pct', '8'),
   ('default_deposit_pct', '40'),
   ('default_tenor_months', '6'),
+  ('financing_config', '{"defaultDepositPct":40,"defaultTenorMonths":6,"tenors":[{"months":3,"interestPct":15},{"months":6,"interestPct":20},{"months":9,"interestPct":25},{"months":12,"interestPct":30}]}'),
   ('reservation_hold_hours', '48'),
   ('max_self_finance_kobo', '1500000000'),
   ('parts_credit_limits', '{"retail": 50000000, "wholesale_auto": 200000000, "wholesale_manual": 500000000}'),

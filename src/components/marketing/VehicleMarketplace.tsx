@@ -17,6 +17,7 @@ import { VehicleCompareModal } from "@/components/marketing/VehicleCompareModal"
 import { VehicleStampOverlay } from "@/components/marketing/VehicleStampOverlay";
 import { Reveal } from "@/components/marketing/Reveal";
 import { USE_CATEGORY_LABELS, type VehicleUseCategory } from "@/types";
+import type { FinancingConfig } from "@/lib/financing-config";
 
 const MAX_COMPARE = 3;
 
@@ -89,15 +90,13 @@ const STATUS_CLASS: Record<PublicDisplayStatus, string> = {
 
 interface Props {
   vehicles: PublicVehicle[];
-  defaultDepositPct: number;
-  defaultTenorMonths: number;
+  financingConfig: FinancingConfig;
   initialFilterKey?: string;
 }
 
 export function VehicleMarketplace({
   vehicles,
-  defaultDepositPct,
-  defaultTenorMonths,
+  financingConfig,
   initialFilterKey,
 }: Props) {
   const isValidFilter = (k: string): k is Filter => ALL_FILTER_KEYS.has(k as Filter);
@@ -334,8 +333,7 @@ export function VehicleMarketplace({
         <VehicleDetailModal
           vehicle={selected}
           onClose={() => setSelected(null)}
-          defaultDepositPct={defaultDepositPct}
-          defaultTenorMonths={defaultTenorMonths}
+          financingConfig={financingConfig}
         />
       )}
 

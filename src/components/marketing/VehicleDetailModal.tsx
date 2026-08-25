@@ -14,6 +14,8 @@ import {
 } from "@/lib/vehicle-display";
 import { whatsappHref, AUTOCHEK_URL } from "@/lib/contact";
 import { ImageLightbox } from "@/components/marketing/ImageLightbox";
+import { calculateFinancing } from "@/lib/financing-calculator";
+import type { FinancingConfig } from "@/lib/financing-config";
 import { VehicleStampOverlay } from "@/components/marketing/VehicleStampOverlay";
 
 type Tab = "condition" | "specs" | "history" | "financing" | "certification";
@@ -35,14 +37,14 @@ const SCORE_COLORS: Record<string, string> = {
 interface Props {
   vehicle: PublicVehicle;
   onClose: () => void;
-  defaultDepositPct: number;
-  defaultTenorMonths: number;
+  financingConfig: FinancingConfig;
 }
 
-export function VehicleDetailModal({ vehicle, onClose, defaultDepositPct, defaultTenorMonths }: Props) {
+export function VehicleDetailModal({ vehicle, onClose, financingConfig }: Props) {
   const [tab, setTab] = useState<Tab>("condition");
   const [plan, setPlan] = useState<"dmech_direct" | "partner_finance">("dmech_direct");
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [selectedTenorMonths, setSelectedTenorMonths] = useState(financingConfig.defaultTenorMonths);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
   const titleId = "vehicle-modal-title";
@@ -61,10 +63,9 @@ export function VehicleDetailModal({ vehicle, onClose, defaultDepositPct, defaul
   const photos = publicPhotos(vehicle);
   const price = vehicle.sale_price_kobo ?? 0;
   const sold = displayStatus(vehicle) === "Sold";
-  const deposit = plan === "dmech_direct" ? Math.max(defaultDepositPct, 30) : 25;
-  const tenor = plan === "dmech_direct" ? defaultTenorMonths : 18;
-  const depositAmount = (price * deposit) / 100;
-  const monthly = ((price - depositAmount) / tenor) || 0;
+  const deposit = financingConfig.defaultDepositPct;
+  const tenor = financingConfig.tenors.find((item) => item.months === selectedTenorMonths) ?? financingConfig.tenors[0];
+  const financing = calculateFinancing(price, deposit, tenor);
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -380,20 +381,38 @@ export function VehicleDetailModal({ vehicle, onClose, defaultDepositPct, defaul
               {price ? (
                 <>
                   <div className="spec-row">
-                    <span className="spec-label">Total Price</span>
+                    <span className="spec-label">Original Price</span>
                     <span className="spec-value">{formatNaira(price)}</span>
                   </div>
                   <div className="spec-row">
+                    <span className="spec-label">Interest ({tenor.interestPct}%)</span>
+                    <span className="spec-value">{formatNaira(financing.interestKobo)}</span>
+                  </div>
+                  <div className="spec-row">
+                    <span className="spec-label">Financed Price</span>
+                    <span className="spec-value">{formatNaira(financing.financedPriceKobo)}</span>
+                  </div>
+                  <div className="spec-row">
                     <span className="spec-label">Deposit ({deposit}%)</span>
-                    <span className="spec-value">{formatNaira(depositAmount)}</span>
+                    <span className="spec-value">{formatNaira(financing.depositAmountKobo)}</span>
+                  </div>
+                  <div className="spec-row" style={{ alignItems: "center", gap: 12 }}>
+                    <label className="spec-label" htmlFor="vehicle-financing-tenor">Tenor</label>
+                    <select
+                      id="vehicle-financing-tenor"
+                      className="ops-input"
+                      value={tenor.months}
+                      onChange={(event) => setSelectedTenorMonths(Number(event.target.value))}
+                      style={{ width: "auto", minWidth: 130, padding: "7px 10px" }}
+                    >
+                      {financingConfig.tenors.map((item) => (
+                        <option key={item.months} value={item.months}>{item.months} months</option>
+                      ))}
+                    </select>
                   </div>
                   <div className="spec-row">
-                    <span className="spec-label">Tenor</span>
-                    <span className="spec-value">{tenor} months</span>
-                  </div>
-                  <div className="spec-row">
-                    <span className="spec-label">Monthly</span>
-                    <span className="spec-value">{formatNaira(monthly)}/mo</span>
+                    <span className="spec-label">Monthly Repayment</span>
+                    <span className="spec-value">{formatNaira(financing.monthlyAmountKobo)}/mo</span>
                   </div>
                   {sold ? (
                     <p style={{ fontSize: 12, color: "var(--subtle)", marginTop: 12 }}>

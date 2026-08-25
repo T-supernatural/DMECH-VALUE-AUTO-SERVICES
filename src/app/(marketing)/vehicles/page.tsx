@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { VehicleMarketplace } from "@/components/marketing/VehicleMarketplace";
 import { getPublicVehicles } from "@/lib/vehicles";
-import { getConfigValue } from "@/lib/platform-config";
+import { getFinancingConfig } from "@/lib/financing-config";
 
 export const metadata: Metadata = {
   title: "Vehicle Marketplace — DMECH Services Limited",
@@ -15,18 +15,16 @@ interface PageProps {
 
 export default async function VehiclesPage({ searchParams }: PageProps) {
   const { filter } = await searchParams;
-  const [vehicles, defaultDepositPct, defaultTenorMonths] = await Promise.all([
+  const [vehicles, financingConfig] = await Promise.all([
     getPublicVehicles(),
-    getConfigValue("default_deposit_pct", 40),
-    getConfigValue("default_tenor_months", 6),
+    getFinancingConfig(),
   ]);
 
   return (
     <div className="page-fade">
       <VehicleMarketplace
         vehicles={vehicles}
-        defaultDepositPct={defaultDepositPct}
-        defaultTenorMonths={defaultTenorMonths}
+        financingConfig={financingConfig}
         initialFilterKey={filter}
       />
     </div>

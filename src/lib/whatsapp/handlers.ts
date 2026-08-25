@@ -7,7 +7,7 @@ import crypto from 'crypto';
 import { createServiceClient } from '@/lib/supabase/server';
 import { formatNaira } from '@/lib/money';
 import { stageLabel } from '@/lib/ops/vehicle-stage';
-import { getConfigValue } from '@/lib/platform-config';
+import { getFinancingConfig } from '@/lib/financing-config';
 import { CONTACT } from '@/lib/contact';
 import type { LifecycleStage } from '@/types';
 import { WHATSAPP_CONFIG } from './config';
@@ -219,10 +219,8 @@ async function handlePaymentCommand(phone: string, customerId: string): Promise<
  * FINANCE / FINANCING -- reads real platform settings, not a hardcoded script
  */
 async function handleFinanceCommand(phone: string): Promise<void> {
-  const [depositPct, tenorMonths] = await Promise.all([
-    getConfigValue('default_deposit_pct', 40),
-    getConfigValue('default_tenor_months', 6),
-  ]);
+  const financingConfig = await getFinancingConfig();
+  const { defaultDepositPct: depositPct, defaultTenorMonths: tenorMonths } = financingConfig;
 
   await sendTextMessage(
     phone,

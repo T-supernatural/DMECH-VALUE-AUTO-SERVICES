@@ -18,8 +18,6 @@ export default async function PlatformSettingsPage() {
   const [
     ngnUsdRate,
     dmechServiceFeePct,
-    defaultDepositPct,
-    defaultTenorMonths,
     reservationHoldHours,
     maxSelfFinanceKobo,
     warrantyReserveContributionPct,
@@ -30,8 +28,6 @@ export default async function PlatformSettingsPage() {
   ] = await Promise.all([
     getConfigValue("ngn_usd_rate", 1580),
     getConfigValue("dmech_service_fee_pct", 8),
-    getConfigValue("default_deposit_pct", 40),
-    getConfigValue("default_tenor_months", 6),
     getConfigValue("reservation_hold_hours", 48),
     getConfigValue("max_self_finance_kobo", 1_500_000_000),
     getConfigValue("warranty_reserve_contribution_pct", 5),
@@ -48,8 +44,6 @@ export default async function PlatformSettingsPage() {
         <PlatformSettingsForm
           ngnUsdRate={ngnUsdRate}
           dmechServiceFeePct={dmechServiceFeePct}
-          defaultDepositPct={defaultDepositPct}
-          defaultTenorMonths={defaultTenorMonths}
           reservationHoldHours={reservationHoldHours}
           maxSelfFinanceKobo={maxSelfFinanceKobo}
           warrantyReserveContributionPct={warrantyReserveContributionPct}

@@ -4,6 +4,7 @@ import { InstalmentIntakeForm } from "@/components/ops/InstalmentIntakeForm";
 import { staffGuard } from "@/lib/guards";
 import { createClient } from "@/lib/supabase/server";
 import { getConfigValue } from "@/lib/platform-config";
+import { getFinancingConfig } from "@/lib/financing-config";
 import type { StaffRole } from "@/types";
 
 const EDIT_ROLES: StaffRole[] = ["super_admin", "managing_partner", "accountant", "sales_manager"];
@@ -14,7 +15,7 @@ export default async function NewInstalmentPage() {
   if (!EDIT_ROLES.includes(staff.role as StaffRole)) redirect("/ops/invoices");
 
   const supabase = await createClient();
-  const [customersRes, vehiclesRes, depositPct, tenorMonths, adminFeePct] = await Promise.all([
+  const [customersRes, vehiclesRes, financingConfig, adminFeePct] = await Promise.all([
     supabase.from("customers").select("id, full_name").is("deleted_at", null).order("full_name"),
     supabase
       .from("vehicles")
@@ -23,8 +24,7 @@ export default async function NewInstalmentPage() {
       .not("lifecycle_stage", "in", "(sold,delivered)")
       .is("deleted_at", null)
       .order("created_at", { ascending: false }),
-    getConfigValue("default_deposit_pct", 40),
-    getConfigValue("default_tenor_months", 6),
+    getFinancingConfig(),
     getConfigValue("dmech_service_fee_pct", 8),
   ]);
 
@@ -35,8 +35,8 @@ export default async function NewInstalmentPage() {
         <InstalmentIntakeForm
           customers={customersRes.data ?? []}
           vehicles={vehiclesRes.data ?? []}
-          defaultDepositPct={depositPct}
-          defaultTenorMonths={tenorMonths}
+          defaultDepositPct={financingConfig.defaultDepositPct}
+          defaultTenorMonths={financingConfig.defaultTenorMonths}
           defaultAdminFeePct={adminFeePct}
         />
       </div>

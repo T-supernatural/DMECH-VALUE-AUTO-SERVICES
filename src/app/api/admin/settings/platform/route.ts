@@ -9,8 +9,6 @@ import { logAudit } from "@/lib/audit";
 const SIMPLE_KEYS = [
   "ngn_usd_rate",
   "dmech_service_fee_pct",
-  "default_deposit_pct",
-  "default_tenor_months",
   "reservation_hold_hours",
   "max_self_finance_kobo",
   "warranty_reserve_contribution_pct",
