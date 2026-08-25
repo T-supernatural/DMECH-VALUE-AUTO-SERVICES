@@ -89,6 +89,7 @@ export function VehicleEditForm({
   const [history, setHistory] = useState<VehicleHistoryReport>(normalizeHistoryReport(historyReport));
   const [displayStamps, setDisplayStamps] = useState<VehicleDisplayStamp[]>(initialDisplayStamps);
   const [status, setStatus] = useState<Status>("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [historyUploadBusy, setHistoryUploadBusy] = useState(false);
   const historyInputRef = useRef<HTMLInputElement>(null);
 
@@ -106,11 +107,12 @@ export function VehicleEditForm({
         method: "POST",
         body: formData,
       });
-      const json = await res.json();
       if (!res.ok) {
+        await res.json().catch(() => null);
         setStatus("error");
         return;
       }
+      const json = await res.json();
       const uploadedUrls = (json.photos ?? []).map((photo: { url: string }) => photo.url);
       setHistory((prev) => ({
         ...prev,
@@ -126,6 +128,7 @@ export function VehicleEditForm({
 
   async function save() {
     setStatus("saving");
+    setErrorMessage(null);
     try {
       const res = await fetch(`/api/vehicles/${vehicleId}`, {
         method: "PATCH",
@@ -149,13 +152,16 @@ export function VehicleEditForm({
         }),
       });
       if (!res.ok) {
+        const json = await res.json().catch(() => null) as { error?: string } | null;
         setStatus("error");
+        setErrorMessage(json?.error ?? "Something went wrong.");
         return;
       }
       setStatus("saved");
       router.refresh();
     } catch {
       setStatus("error");
+      setErrorMessage("Something went wrong.");
     }
   }
 
@@ -475,7 +481,7 @@ export function VehicleEditForm({
           <span style={{ color: "var(--green)", fontSize: 12 }}>Saved</span>
         )}
         {status === "error" && (
-          <span style={{ color: "var(--red)", fontSize: 12 }}>Something went wrong</span>
+          <span style={{ color: "var(--red)", fontSize: 12 }}>{errorMessage ?? "Something went wrong"}</span>
         )}
       </div>
     </div>

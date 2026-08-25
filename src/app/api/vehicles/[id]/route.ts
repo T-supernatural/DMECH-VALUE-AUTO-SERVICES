@@ -100,7 +100,22 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     .single();
 
   if (error) {
-    return NextResponse.json({ error: "Could not update vehicle." }, { status: 500 });
+    console.error("Vehicle update failed", {
+      vehicleId: id,
+      code: error.code,
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+    });
+    const missingColumn = error.code === "42703" || /column .* does not exist/i.test(error.message);
+    return NextResponse.json(
+      {
+        error: missingColumn
+          ? "Vehicle updates need the latest database migrations. Apply migrations 018 and 029 in Supabase, then try again."
+          : "Could not update the vehicle. Check the server log for the database error.",
+      },
+      { status: 500 },
+    );
   }
 
   // Only is_published is audited here — a public-visibility toggle is a

@@ -32,6 +32,10 @@ function initialStage(channel: AcquisitionChannel) {
   return channel === "import" ? "sourced" : "intake";
 }
 
+function isAcquisitionChannel(value: unknown): value is AcquisitionChannel {
+  return ["import", "local_outright", "consignment", "trade_in"].includes(value as AcquisitionChannel);
+}
+
 export async function POST(request: Request) {
   const staff = await staffGuard();
   if (!staff) {
@@ -42,8 +46,11 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json().catch(() => null);
-  if (!body || !body.make || !body.model || !body.year || !body.source_region || !body.condition || !body.acquisition_channel) {
+  if (!body || !body.make || !body.model || !body.year || !body.source_region || !body.condition || !isAcquisitionChannel(body.acquisition_channel)) {
     return NextResponse.json({ error: "Make, model, year, source, condition, and channel are required." }, { status: 400 });
+  }
+  if (!Number.isInteger(body.year) || body.year < 1886 || body.year > new Date().getFullYear() + 1) {
+    return NextResponse.json({ error: "Enter a valid vehicle year." }, { status: 400 });
   }
 
   const insertRow: Record<string, unknown> = {
@@ -71,6 +78,12 @@ export async function POST(request: Request) {
   const { data, error } = await supabase.from("vehicles").insert(insertRow).select().single();
 
   if (error) {
+    console.error("Vehicle creation failed", {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+    });
     return NextResponse.json({ error: "Could not create the vehicle." }, { status: 500 });
   }
 
