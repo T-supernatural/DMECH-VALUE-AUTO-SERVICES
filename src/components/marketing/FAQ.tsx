@@ -34,6 +34,34 @@ const FAQS = [
     a: "Yes — that's the DMECH advantage. Once you pay your deposit and we purchase your vehicle, you begin your instalments while it's still shipping. By the time it clears customs, you've already paid down a significant portion.",
   },
   {
+    q: "Why is my check engine light on?",
+    a: "The onboard computer detects a fault in the vehicle's system. It could be a small sensor issue or a more serious engine or electrical problem, so a proper diagnostic check is the safest way to find the real cause.",
+  },
+  {
+    q: "Do you service EVs in Lagos?",
+    a: "Yes. DMECH provides EV diagnostics, battery support, charging checks, and high-voltage service for drivers in Lagos and nearby areas.",
+  },
+  {
+    q: "How much does car diagnostics cost in Lagos?",
+    a: "The cost depends on the type of vehicle and the fault being checked, but the value is in identifying the real issue before you pay for unnecessary repairs.",
+  },
+  {
+    q: "How do I know if a used car is good before buying it?",
+    a: "A used car inspection checks the engine, electrical system, tires, brakes, bodywork, and more. That gives you a much clearer picture of the car's real condition before payment.",
+  },
+  {
+    q: "How long does it take to import a car to Nigeria?",
+    a: "It generally depends on the country of origin, shipping route, and customs timing, but the process usually takes several weeks from order to delivery.",
+  },
+  {
+    q: "Do you work on battery and electrical faults in cars?",
+    a: "Yes. We handle battery faults, alternator problems, starter issues, wiring faults, and other electrical problems before recommending a repair.",
+  },
+  {
+    q: "How do I know if my car needs a repair or just a diagnosis?",
+    a: "If your car shows warning lights, unusual sounds, poor performance, or behaves strangely, a diagnosis is the correct first step before major repairs begin.",
+  },
+  {
     q: "How do I know the vehicle isn't damaged or salvaged?",
     a: "Every vehicle comes with a verified history report showing accident records, title status, and mileage where available. We inspect before purchase and again on arrival. If a vehicle doesn't meet standards, we don't sell it as certified.",
   },

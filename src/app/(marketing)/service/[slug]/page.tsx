@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServicePage, SERVICE_PAGES, WHAT_TO_EXPECT } from "@/lib/service-pages";
 import { Reveal } from "@/components/marketing/Reveal";
+import { FaqAccordion } from "@/components/marketing/FaqAccordion";
 import { Check } from "lucide-react";
 
 export function generateStaticParams() {
@@ -57,6 +58,36 @@ export default async function ServiceCategoryPage({
                 See our full high-voltage &amp; battery certification capability →
               </Link>
             )}
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="section-inner">
+          <Reveal>
+            <div className="section-eyebrow">Quick answer</div>
+            <div className="section-title" style={{ fontSize: 26 }}>
+              {page.quickAnswer}
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 18 }}>
+              {page.symptoms.map((symptom) => (
+                <span
+                  key={symptom}
+                  style={{
+                    display: "inline-flex",
+                    padding: "8px 12px",
+                    borderRadius: 999,
+                    background: "rgba(24, 153, 231, 0.08)",
+                    border: "1px solid rgba(24, 153, 231, 0.18)",
+                    color: "var(--text)",
+                    fontSize: 13,
+                    fontWeight: 600,
+                  }}
+                >
+                  {symptom}
+                </span>
+              ))}
+            </div>
           </Reveal>
         </div>
       </section>
@@ -125,6 +156,20 @@ export default async function ServiceCategoryPage({
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="section-inner">
+          <Reveal>
+            <div className="section-eyebrow" style={{ textAlign: "center" }}>
+              Common questions
+            </div>
+            <div className="section-title" style={{ textAlign: "center", fontSize: 26 }}>
+              What customers usually ask before booking
+            </div>
+            <FaqAccordion items={page.faq} />
+          </Reveal>
         </div>
       </section>
     </div>

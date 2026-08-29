@@ -11,9 +11,12 @@ import { getPublicVehicles } from "@/lib/vehicles";
 import { getConfigValue } from "@/lib/platform-config";
 
 export const metadata: Metadata = {
-  title: "Buy, Import & Finance a Vehicle — DMECH Services Limited",
+  title: "Buy, Import & Finance a Vehicle in Lagos, Nigeria",
   description:
-    "Import your vehicle from the USA, Europe, or China with transparent pricing and instalment plans, or buy a DMECH Certified Nigerian-used vehicle with a real warranty.",
+    "Browse imported vehicles, foreign-used cars, certified Nigerian-used vehicles, and flexible financing options from DMECH Services Limited in Lagos, Nigeria.",
+  alternates: {
+    canonical: "/sales",
+  },
 };
 
 // Everything on this page was formerly Home — relocated wholesale when Home

@@ -6,8 +6,12 @@ import { Reveal } from "@/components/marketing/Reveal";
 import { SERVICE_PAGES, WHAT_TO_EXPECT } from "@/lib/service-pages";
 
 export const metadata: Metadata = {
-  title: "Vehicle Services — DMECH Services Limited",
-  description: "Book workshop service for your vehicle — diagnostics, repairs, and maintenance.",
+  title: "Car Diagnostics, Repair & Servicing in Lagos",
+  description:
+    "Book car diagnostics, engine repair, auto electrical repair, AC repair, suspension service, and routine maintenance in Lagos, Nigeria with DMECH Services Limited.",
+  alternates: {
+    canonical: "/service",
+  },
 };
 
 const WORK_STEPS = [
