@@ -89,6 +89,7 @@ export type VehicleCondition = "used" | "new";
 
 export interface DutyInput {
   priceUsd: number;
+  dutyReferenceUsd?: number;
   shippingUsd: number;
   condition: VehicleCondition;
   engineSize: EngineSize;
@@ -110,6 +111,7 @@ export interface DutyBreakdown {
   costKobo: number;
   dutyKobo: number;
   dutyRatePct: number;
+  dutyReferenceUsd: number;
   levyKobo: number;
   levyRatePct: number;
   surchargeKobo: number;
@@ -143,6 +145,7 @@ const TERMINAL_FEE_NAIRA = 180_000;
 export function calculateLandedCost(input: DutyInput): DutyBreakdown {
   const { priceUsd, shippingUsd, condition, engineSize, isEV, isDiesel, ngnRate } = input;
   const insuranceRatePct = input.insuranceRatePct ?? DEFAULT_INSURANCE_RATE_PCT;
+  const dutyReferenceUsd = input.dutyReferenceUsd ?? priceUsd;
 
   const hsCode = isEV ? HS_CODE_ELECTRIC : isDiesel ? HS_CODE_DIESEL : HS_CODE_PETROL;
 
@@ -155,9 +158,13 @@ export function calculateLandedCost(input: DutyInput): DutyBreakdown {
   const cifNaira = cifUsd * ngnRate;
   const costNaira = priceUsd * ngnRate;
 
-  const evDutyExempt = isEV && priceUsd < EV_LUXURY_THRESHOLD_USD;
+  const evDutyExempt = isEV && dutyReferenceUsd < EV_LUXURY_THRESHOLD_USD;
   const dutyRatePct = evDutyExempt ? 0 : 20;
-  const dutyNaira = cifNaira * (dutyRatePct / 100);
+  // Duty is selected from the vehicle's model/year reference value when one
+  // is supplied. The customer's purchase price remains a separate commercial
+  // input for acquisition and other valuation-dependent costs.
+  const dutyBaseNaira = dutyReferenceUsd * ngnRate;
+  const dutyNaira = dutyBaseNaira * (dutyRatePct / 100);
 
   const levyRatePct = condition === "used" ? 5 : 10;
   const levyNaira = cifNaira * (levyRatePct / 100);
@@ -205,6 +212,7 @@ export function calculateLandedCost(input: DutyInput): DutyBreakdown {
     costKobo: toKobo(costNaira),
     dutyKobo: toKobo(dutyNaira),
     dutyRatePct,
+    dutyReferenceUsd,
     levyKobo: toKobo(levyNaira),
     levyRatePct,
     surchargeKobo: toKobo(surchargeNaira),

@@ -108,9 +108,15 @@ export function Calculator({ ngnRate = 1580, marketPriceBenchmarks = {} }: Calcu
       alert("Please select a vehicle or enter a valid price in USD");
       return;
     }
+    const selectedSpec = make && model ? models[model] : undefined;
+    const dutyReferenceUsd =
+      selectedSpec && typeof year === "number"
+        ? estimatedPriceForYear(selectedSpec.base, year, selectedSpec.fuel === "electric")
+        : undefined;
     setResult(
       calculateLandedCost({
         priceUsd: numericPrice,
+        dutyReferenceUsd,
         shippingUsd: shipping,
         condition,
         engineSize: engine,
@@ -171,6 +177,7 @@ export function Calculator({ ngnRate = 1580, marketPriceBenchmarks = {} }: Calcu
           <select id="calc-fuel" value={fuel} onChange={(e) => onFuelChange(e.target.value)}>
             <option value="all">All Types</option>
             <option value="petrol">Petrol</option>
+            <option value="diesel">Diesel</option>
             <option value="hybrid">Hybrid</option>
             <option value="electric">Electric (EV)</option>
           </select>
@@ -396,7 +403,9 @@ export function Calculator({ ngnRate = 1580, marketPriceBenchmarks = {} }: Calcu
                 {result.evDutyExempt ? (
                   <span className="line-value" style={{ color: "#22C55E" }}>EXEMPT (EV, pending IDEC)</span>
                 ) : (
-                  <span className="line-value">{formatNaira(result.dutyKobo)} ({result.dutyRatePct}%)</span>
+                  <span className="line-value">
+                    {formatNaira(result.dutyKobo)} ({result.dutyRatePct}% of {formatUsd(result.dutyReferenceUsd)} reference value)
+                  </span>
                 )}
               </div>
               <div className="line">
