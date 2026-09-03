@@ -10,7 +10,7 @@ const NAV_GROUPS = [
   { label: "Vehicles", links: [{ href: "/sales", label: "Buy a Vehicle" }, { href: "/vehicles/sourcing", label: "Reserve From Abroad" }] },
   { label: "Workshop", links: [{ href: "/workshop", label: "The Workshop" }] },
   { label: "About", links: [{ href: "/about", label: "Why DMECH" }, { href: "/faq", label: "FAQ" }] },
-] as const;
+];
 
 const LINKS = NAV_GROUPS.flatMap((group) => group.links);
 const ACADEMY_URL = "https://training.dmechservices.ng";
