@@ -7,7 +7,7 @@ export function AcademyFooter() {
       <div className="academy-footer-inner">
         <div className="academy-footer-intro">
           <div className="academy-footer-brand">
-            <Image className="academy-footer-mark" src="/favicon.ico" alt="DMECH Academy" width={52} height={52} />
+            <a href="https://dmechservices.ng"><Image className="academy-footer-logo" src="/logo.png" alt="DMECH Services Limited" width={160} height={62} /></a>
             <strong>Academy</strong>
           </div>
           <p>A working workshop is the classroom.</p>
