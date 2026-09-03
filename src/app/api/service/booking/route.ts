@@ -26,21 +26,20 @@ export async function POST(request: Request) {
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.from("leads").insert({
+  const { error } = await supabase.from("workshop_bookings").insert({
+    name,
     phone,
-    source: "workshop_booking",
-    payload: {
-      name,
-      vehicleMake: body?.vehicleMake ?? null,
-      vehicleModel: body?.vehicleModel ?? null,
-      vehicleYear: body?.vehicleYear ?? null,
-      plateNumber: body?.plateNumber ?? null,
-      services: Array.isArray(body?.services) ? body.services : [],
-      complaint: body?.complaint ?? null,
-      urgency: body?.urgency ?? null,
-      preferredDate: body?.preferredDate ?? null,
-      preferredTime: body?.preferredTime ?? null,
-    },
+    vehicle_make: body?.vehicleMake ?? null,
+    vehicle_model: body?.vehicleModel ?? null,
+    vehicle_year: body?.vehicleYear ?? null,
+    plate_number: body?.plateNumber ?? null,
+    powertrain: body?.powertrain ?? null,
+    enquiry_type: body?.enquiryType ?? null,
+    services: Array.isArray(body?.services) ? body.services : [],
+    complaint: body?.complaint ?? null,
+    urgency: body?.urgency ?? null,
+    preferred_date: body?.preferredDate || null,
+    preferred_time: body?.preferredTime || null,
   });
 
   if (error) {

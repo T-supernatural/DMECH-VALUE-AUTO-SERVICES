@@ -2,6 +2,7 @@
 
 import { Fragment, useState } from "react";
 import { CheckCircle2, Check } from "lucide-react";
+import { trackMarketingEvent } from "@/components/marketing/Analytics";
 
 const SERVICES = [
   "Diagnostics",
@@ -28,10 +29,12 @@ export function ServiceBookingForm() {
   const [vehicleModel, setVehicleModel] = useState("");
   const [vehicleYear, setVehicleYear] = useState("");
   const [plateNumber, setPlateNumber] = useState("");
+  const [powertrain, setPowertrain] = useState("not_sure");
 
   const [services, setServices] = useState<string[]>([]);
   const [complaint, setComplaint] = useState("");
   const [urgency, setUrgency] = useState<"Today" | "This Week" | "Flexible">("This Week");
+  const [enquiryType, setEnquiryType] = useState("diagnostic");
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -59,6 +62,8 @@ export function ServiceBookingForm() {
           vehicleModel,
           vehicleYear,
           plateNumber,
+          powertrain,
+          enquiryType,
           services,
           complaint,
           urgency,
@@ -66,7 +71,12 @@ export function ServiceBookingForm() {
           preferredTime,
         }),
       });
-      setStatus(res.ok ? "sent" : "error");
+      if (res.ok) {
+        trackMarketingEvent("workshop_booking_submit", { source: window.location.pathname });
+        setStatus("sent");
+      } else {
+        setStatus("error");
+      }
     } catch {
       setStatus("error");
     }
@@ -139,6 +149,14 @@ export function ServiceBookingForm() {
             value={plateNumber}
             onChange={(e) => setPlateNumber(e.target.value)}
           />
+          <label className="field-label" htmlFor="svc-powertrain">Powertrain</label>
+          <select id="svc-powertrain" className="field-input" value={powertrain} onChange={(e) => setPowertrain(e.target.value)}>
+            <option value="not_sure">Not sure</option>
+            <option value="petrol">Petrol</option>
+            <option value="diesel">Diesel</option>
+            <option value="hybrid">Hybrid</option>
+            <option value="electric">Full electric</option>
+          </select>
           <button className="calc-btn" style={{ background: "var(--blue)" }} onClick={() => setStep(2)}>
             Next: Service Details
           </button>
@@ -148,6 +166,15 @@ export function ServiceBookingForm() {
       {step === 2 && (
         <div>
           <div style={{ fontWeight: 700, marginBottom: 16 }}>Service Needed</div>
+          <label className="field-label" htmlFor="svc-enquiry">What are you contacting us about?</label>
+          <select id="svc-enquiry" className="field-input" value={enquiryType} onChange={(e) => setEnquiryType(e.target.value)}>
+            <option value="diagnostic">Diagnostic</option>
+            <option value="service">Scheduled service</option>
+            <option value="repair">Repair</option>
+            <option value="inspection">Pre-purchase inspection</option>
+            <option value="fleet">Fleet / SLA enquiry</option>
+            <option value="academy">Technician development enquiry</option>
+          </select>
           <label className="field-label">What does your vehicle need?</label>
           <div className="chip-row" style={{ marginBottom: 16 }}>
             {SERVICES.map((s) => (

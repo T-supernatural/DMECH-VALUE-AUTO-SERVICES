@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { TopBar } from "@/components/ops/TopBar";
 import { ClickableRow } from "@/components/ops/ClickableRow";
+import { WorkshopBookingActions } from "@/components/ops/WorkshopBookingActions";
 import { staffGuard } from "@/lib/guards";
 import { createClient } from "@/lib/supabase/server";
 import { formatNaira } from "@/lib/money";
@@ -35,17 +36,49 @@ export default async function OpsWorkshopPage() {
   if (!staff) redirect("/login");
 
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("job_cards")
-    .select("*, customers(full_name), specialists(name)")
-    .order("created_at", { ascending: false });
+  const [jobCardResponse, bookingResponse] = await Promise.all([
+    supabase.from("job_cards").select("*, customers(full_name), specialists(name)").order("created_at", { ascending: false }),
+    supabase.from("workshop_bookings").select("*").order("created_at", { ascending: false }),
+  ]);
 
-  const jobCards = (data as JobCardRow[] | null) ?? [];
+  const jobCards = (jobCardResponse.data as JobCardRow[] | null) ?? [];
+  const bookings = (bookingResponse.data as Array<{
+    id: string;
+    name: string;
+    phone: string;
+    vehicle_make: string | null;
+    vehicle_model: string | null;
+    vehicle_year: string | null;
+    services: string[];
+    preferred_date: string | null;
+    preferred_time: string | null;
+    status: "new" | "confirmed" | "in_progress" | "completed" | "cancelled";
+    job_card_id: string | null;
+    complaint: string | null;
+    created_at: string;
+  }> | null) ?? [];
 
   return (
     <>
       <TopBar title="Workshop" />
       <div className="ops-content">
+        <div className="ops-panel" style={{ marginBottom: 20 }}>
+          <div className="ops-panel-title">Booking Requests</div>
+          {bookings.length === 0 ? <div style={{ color: "var(--muted)", fontSize: 14 }}>No booking requests yet.</div> : (
+            <div className="ops-table-wrap">
+              <table className="ops-table">
+                <thead><tr><th>Customer</th><th>Vehicle</th><th>Requested slot</th><th>Services</th><th>Manage</th></tr></thead>
+                <tbody>{bookings.map((booking) => <tr key={booking.id}>
+                  <td><strong>{booking.name}</strong><br /><span style={{ color: "var(--muted)", fontSize: 12 }}>{booking.phone}</span></td>
+                  <td>{[booking.vehicle_year, booking.vehicle_make, booking.vehicle_model].filter(Boolean).join(" ") || "—"}</td>
+                  <td>{booking.preferred_date || "Flexible"}{booking.preferred_time ? ` · ${booking.preferred_time}` : ""}</td>
+                  <td>{booking.services.join(", ") || "General service"}</td>
+                  <td><WorkshopBookingActions bookingId={booking.id} status={booking.status} jobCardId={booking.job_card_id} jobCards={jobCards.map((job) => ({ id: job.id, reference: job.reference }))} /></td>
+                </tr>)}</tbody>
+              </table>
+            </div>
+          )}
+        </div>
         {jobCards.length === 0 ? (
           <div className="ops-panel" style={{ color: "var(--muted)", fontSize: 14 }}>
             No job cards yet.

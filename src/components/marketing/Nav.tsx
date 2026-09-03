@@ -26,6 +26,7 @@ import { Logo } from "@/components/Logo";
 // Fleet sits right after Services since it's the same diagnostic identity
 // applied at corporate scale, not a separate offering.
 const LINKS = [
+  { href: "/workshop", label: "Workshop" },
   { href: "/service", label: "Services" },
   { href: "/fleet", label: "Fleet" },
   { href: "/ev-workshop", label: "EV & Battery" },
