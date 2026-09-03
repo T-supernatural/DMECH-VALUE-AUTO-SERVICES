@@ -1,0 +1,61 @@
+.academy-shell > main {
+  flex: 1;
+}
+
+.academy-footer {
+  padding: 48px 0 22px;
+}
+
+.academy-footer-inner {
+  align-items: flex-start;
+}
+
+.academy-footer-intro {
+  max-width: 280px;
+}
+
+.academy-footer-brand {
+  margin-bottom: 12px;
+}
+
+.academy-footer p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.academy-footer-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 12px 34px;
+  min-width: 360px;
+}
+
+.academy-footer-links a {
+  line-height: 1.4;
+}
+
+.academy-dark-band:not(.academy-section) {
+  padding: 72px 0;
+}
+
+@media (max-width: 900px) {
+  .academy-footer-links {
+    min-width: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .academy-footer {
+    padding-top: 36px;
+  }
+
+  .academy-footer-links {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .academy-footer-bottom {
+    margin-top: 28px;
+  }
+}

@@ -1,0 +1,115 @@
+.academy-page-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 112px 0 94px;
+  background:
+    linear-gradient(135deg, rgba(10, 17, 24, .94), rgba(16, 29, 46, .89) 55%, rgba(20, 37, 60, .94)),
+    url("/workshop/exterior.jpeg") center / cover;
+}
+
+.academy-page-hero::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 780px 460px at 10% 34%, rgba(22, 143, 209, .15), transparent 72%),
+    radial-gradient(ellipse 560px 420px at 88% 72%, rgba(215, 123, 63, .11), transparent 70%);
+}
+
+.academy-page-hero .academy-container {
+  position: relative;
+}
+
+.academy-page-hero .academy-kicker,
+.academy-page-hero .academy-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 22px;
+  padding: 7px 14px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, .05);
+  color: #b9cede;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .11em;
+}
+
+.academy-page-hero .academy-kicker::before,
+.academy-page-hero .academy-code::before {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--academy-blue), var(--academy-orange));
+  content: "";
+}
+
+.academy-page-hero h1 {
+  max-width: 780px;
+  margin: 0 0 22px;
+  color: #fff;
+  font-size: clamp(42px, 5.6vw, 70px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+
+.academy-page-hero p {
+  max-width: 650px;
+  margin: 0;
+  color: #a9c2d6;
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.academy-page-hero .academy-back-link {
+  margin-bottom: 26px;
+  color: #dce8f2;
+  font-weight: 700;
+}
+
+.academy-page-hero .academy-detail-meta {
+  gap: 10px;
+  margin-top: 30px;
+  color: #c4d8e6;
+}
+
+.academy-page-hero .academy-detail-meta span {
+  padding: 7px 11px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .05);
+}
+
+.academy-page-hero .academy-actions {
+  margin-top: 32px;
+}
+
+.academy-page-hero .academy-button-primary {
+  border-radius: 11px;
+  box-shadow: 0 12px 30px -10px rgba(22, 143, 209, .55);
+}
+
+@media (max-width: 900px) {
+  .academy-page-hero {
+    padding: 84px 0 66px;
+  }
+}
+
+@media (max-width: 600px) {
+  .academy-page-hero {
+    padding: 68px 0 54px;
+  }
+
+  .academy-page-hero h1 {
+    font-size: 42px;
+  }
+
+  .academy-page-hero p {
+    font-size: 16px;
+  }
+}

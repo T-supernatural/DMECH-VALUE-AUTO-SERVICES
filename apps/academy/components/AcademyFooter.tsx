@@ -1,11 +1,25 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export function AcademyFooter() {
   return (
-    <footer className="academy-footer">
+    <footer className="academy-footer" aria-label="Academy footer">
       <div className="academy-footer-inner">
-        <div><div className="academy-brand">DMECH <span>Academy</span></div><p>A working workshop is the classroom.</p></div>
-        <div className="academy-footer-links"><Link href="/programmes">Programmes</Link><Link href="/register-interest">Register Interest</Link><a href="https://dmechservices.ng">Main DMECH website</a></div>
+        <div className="academy-footer-intro">
+          <div className="academy-footer-brand">
+            <Image className="academy-footer-mark" src="/favicon.ico" alt="DMECH Academy" width={52} height={52} />
+            <strong>Academy</strong>
+          </div>
+          <p>A working workshop is the classroom.</p>
+        </div>
+        <nav className="academy-footer-links" aria-label="Academy footer navigation">
+          <Link href="/programmes">Programmes</Link>
+          <Link href="/technician-standard">Technician Standard</Link>
+          <Link href="/how-its-taught">How It&apos;s Taught</Link>
+          <Link href="/corporate-training">Corporate Training</Link>
+          <Link href="/register-interest">Register Interest</Link>
+          <a href="https://dmechservices.ng">Main DMECH website</a>
+        </nav>
       </div>
       <div className="academy-footer-bottom">DMECH Academy · Professional automotive technician training</div>
     </footer>

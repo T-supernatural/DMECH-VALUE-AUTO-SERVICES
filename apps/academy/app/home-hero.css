@@ -1,0 +1,214 @@
+.academy-home-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 130px 0 110px;
+  color: #fff;
+  background:
+    linear-gradient(135deg, rgba(10, 17, 24, .93), rgba(16, 29, 46, .88) 52%, rgba(20, 37, 60, .94)),
+    url("/workshop/diagnostic-bay.jpeg") center / cover;
+}
+
+.academy-home-hero::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 900px 600px at 12% 35%, rgba(22, 143, 209, .16), transparent 70%),
+    radial-gradient(ellipse 700px 500px at 88% 65%, rgba(215, 123, 63, .12), transparent 70%);
+}
+
+.academy-home-hero-inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 56px;
+  align-items: center;
+}
+
+.academy-home-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 28px;
+  padding: 7px 16px 7px 8px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, .05);
+  color: #b9cede;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .3px;
+}
+
+.academy-home-hero-badge span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--academy-blue), var(--academy-orange));
+}
+
+.academy-home-hero h1 {
+  max-width: 700px;
+  margin: 0 0 24px;
+  color: #fff;
+  font-size: clamp(42px, 5.4vw, 68px);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -.035em;
+}
+
+.academy-home-hero h1 em {
+  color: var(--academy-orange);
+  font-style: normal;
+}
+
+.academy-home-hero > .academy-container > div > p {
+  max-width: 540px;
+  margin: 0 0 36px;
+  color: #a9c2d6;
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.academy-home-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 28px;
+}
+
+.academy-home-hero-cta,
+.academy-home-hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.academy-home-hero-cta {
+  padding: 16px 30px;
+  border-radius: 11px;
+  background: var(--academy-blue);
+  box-shadow: 0 12px 30px -10px rgba(22, 143, 209, .55);
+  color: #fff;
+  transition: background .2s, transform .2s;
+}
+
+.academy-home-hero-cta:hover {
+  transform: translateY(-1px);
+  background: #117db9;
+}
+
+.academy-home-hero-link {
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(220, 232, 242, .3);
+  color: #dce8f2;
+  transition: border-color .2s, color .2s;
+}
+
+.academy-home-hero-link:hover {
+  border-color: #fff;
+  color: #fff;
+}
+
+.academy-home-hero-capsule {
+  position: relative;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, .045);
+  backdrop-filter: blur(10px);
+}
+
+.academy-home-hero-capsule::before {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  left: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--academy-blue), var(--academy-orange));
+  content: "";
+}
+
+.academy-home-hero-capsule-inner {
+  padding: 24px 20px;
+}
+
+.academy-home-hero-capsule-eyebrow {
+  margin-bottom: 20px;
+  color: #6fa9d6;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.academy-home-hero-capsule-item {
+  display: flex;
+  gap: 14px;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, .07);
+}
+
+.academy-home-hero-capsule-item:last-child {
+  padding-bottom: 4px;
+  border-bottom: 0;
+}
+
+.academy-home-hero-capsule-icon {
+  display: flex;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(22, 143, 209, .16);
+  color: #5cb8f0;
+}
+
+.academy-home-hero-capsule-title {
+  margin-bottom: 3px;
+  color: #fff;
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.academy-home-hero-capsule-desc {
+  color: #8ba6bc;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+@media (max-width: 900px) {
+  .academy-home-hero {
+    padding: 88px 0 60px;
+  }
+
+  .academy-home-hero-inner {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
+@media (max-width: 600px) {
+  .academy-home-hero {
+    padding: 72px 0 52px;
+  }
+
+  .academy-home-hero h1 {
+    font-size: 43px;
+  }
+
+  .academy-home-hero > .academy-container > div > p {
+    font-size: 16px;
+  }
+
+  .academy-home-hero-actions {
+    gap: 18px;
+  }
+}
