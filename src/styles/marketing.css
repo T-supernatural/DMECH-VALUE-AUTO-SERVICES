@@ -96,16 +96,26 @@
 nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 20px;transition:box-shadow .3s}
 nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.06)}
 .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
-.nav-links{display:flex;gap:26px;align-items:center}
+.nav-links{display:flex;gap:12px;align-items:center}
 .nav-links a{font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;transition:color .2s}
 .nav-links a:hover{color:var(--blue)}
+.nav-group{position:relative}
+.nav-group>button{display:inline-flex;align-items:center;gap:5px;background:none;border:0;padding:10px 8px;color:var(--muted);font:500 14px var(--font-body);cursor:pointer}
+.nav-group>button span{font-size:12px;line-height:1;transition:transform .2s}
+.nav-group>button[aria-expanded="true"] span{transform:rotate(180deg)}
+.nav-group>button:hover,.nav-group>button.active{color:var(--blue)}
+.nav-dropdown{position:absolute;top:calc(100% + 8px);left:0;min-width:190px;padding:8px;background:#fff;border:1px solid var(--border);box-shadow:0 12px 28px rgba(0,0,0,.1);opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .2s,transform .2s,visibility .2s}
+.nav-dropdown.open{opacity:1;visibility:visible;transform:translateY(0)}
+.nav-dropdown a{display:block;padding:10px 12px;white-space:nowrap;font-size:13px;border-radius:5px}
+.nav-dropdown a:hover,.nav-dropdown a.active{background:var(--blue-d);color:var(--blue)}
 .nav-cta{background:var(--blue);color:#fff!important;padding:8px 18px;border-radius:8px;font-weight:600!important;font-size:13px!important}
 .nav-cta:hover{background:#1280C8!important}
 .nav-toggle{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:4px}
 .nav-toggle span{width:22px;height:2px;background:var(--dark);border-radius:2px;transition:.3s}
 .mobile-menu{position:fixed;top:60px;left:0;right:0;background:#fff;border-bottom:1px solid var(--border);padding:0 20px;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,.08)}
 /* open/closed state (max-height/opacity transition) defined further down under MOTION & POLISH */
-.mobile-menu a{display:block;padding:12px 0;font-size:15px;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);font-weight:500}
+.mobile-nav-group-label{padding:12px 0 6px;color:var(--blue);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.mobile-menu a{display:block;padding:9px 0 9px 12px;font-size:15px;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);font-weight:500}
 .mobile-menu a:last-child{border:none}
 
 /* TICKER */
@@ -507,6 +517,13 @@ footer{background:var(--dark);color:#fff;padding:50px 20px 30px}
 .teaser-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.08);transform:translateY(-2px)}
 .teaser-link{color:var(--blue);font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:4px;transition:gap .2s ease}
 .teaser-link:hover{gap:8px}
+.workshop-zone-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.workshop-zone-card{height:100%;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:box-shadow .25s,transform .25s}
+.workshop-zone-card:hover{box-shadow:0 12px 30px rgba(0,0,0,.1);transform:translateY(-2px)}
+.workshop-zone-image{height:150px;background-position:center;background-size:cover}
+.workshop-zone-body{padding:20px}
+@media(max-width:900px){.workshop-zone-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.workshop-zone-grid{grid-template-columns:1fr}.workshop-zone-image{height:180px}}
 
 /* Marketing site loading screen — full-bleed rotating photo backdrop,
    shown on every load (matches the ops splash's behavior). Six stacked

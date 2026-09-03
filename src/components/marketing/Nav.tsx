@@ -19,22 +19,35 @@ import { Logo } from "@/components/Logo";
 // to appear together on Home before Home became identity-led), so two
 // separate nav entries for the same destination just added clutter.
 //
-// Order matters here too: Services, Fleet, and EV & Battery lead because
-// that's DMECH's actual strategic weight (a decade-old diagnostic/workshop
-// business now extending into corporate SLA contracts and high-voltage EV
-// capability) — vehicle import is real but deliberately not the lead story.
-// Fleet sits right after Services since it's the same diagnostic identity
-// applied at corporate scale, not a separate offering.
-const LINKS = [
-  { href: "/workshop", label: "Workshop" },
-  { href: "/service", label: "Services" },
-  { href: "/fleet", label: "Fleet" },
-  { href: "/ev-workshop", label: "EV & Battery" },
-  { href: "/sales", label: "Buy a Vehicle" },
-  { href: "/vehicles/sourcing", label: "Reserve From Abroad" },
-  { href: "/about", label: "About" },
-  { href: "/faq", label: "FAQ" },
+// Keep the primary navigation compact and ordered around the main customer
+// journey: services, vehicles, workshop, then company information.
+const NAV_GROUPS = [
+  {
+    label: "Services",
+    links: [
+      { href: "/service", label: "All Services" },
+      { href: "/ev-workshop", label: "EV & Battery" },
+      { href: "/fleet", label: "Fleet" },
+    ],
+  },
+  {
+    label: "Vehicles",
+    links: [
+      { href: "/sales", label: "Buy a Vehicle" },
+      { href: "/vehicles/sourcing", label: "Reserve From Abroad" },
+    ],
+  },
+  { label: "Workshop", links: [{ href: "/workshop", label: "The Workshop" }] },
+  {
+    label: "About",
+    links: [
+      { href: "/about", label: "Why DMECH" },
+      { href: "/faq", label: "FAQ" },
+    ],
+  },
 ];
+
+const LINKS = NAV_GROUPS.flatMap((group) => group.links);
 
 // Picks the single most specific matching link (longest href prefix) so
 // "/vehicles/sourcing" doesn't also light up the plain "Vehicles" link now
@@ -48,6 +61,7 @@ function activeHref(pathname: string): string | null {
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const pathname = usePathname();
   const active = activeHref(pathname);
 
@@ -70,14 +84,20 @@ export function Nav() {
             <Logo variant="nav" />
           </a>
           <div className="nav-links">
-            {LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={active === link.href ? "active" : ""}
-              >
-                {link.label}
-              </Link>
+            {NAV_GROUPS.map((group) => (
+              <div className="nav-group" key={group.label}>
+                <button
+                  type="button"
+                  className={group.links.some((link) => active === link.href) ? "active" : ""}
+                  aria-expanded={dropdownOpen === group.label}
+                  onClick={() => setDropdownOpen((open) => (open === group.label ? null : group.label))}
+                >
+                  {group.label}<span aria-hidden="true">⌄</span>
+                </button>
+                <div className={`nav-dropdown ${dropdownOpen === group.label ? "open" : ""}`}>
+                  {group.links.map((link) => <Link key={link.href} href={link.href} className={active === link.href ? "active" : ""} onClick={() => setDropdownOpen(null)}>{link.label}</Link>)}
+                </div>
+              </div>
             ))}
             <Link href="/account" className="nav-cta">
               Get Started
@@ -95,15 +115,11 @@ export function Nav() {
         </div>
       </nav>
       <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
-        {LINKS.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className={pathname === link.href ? "active" : ""}
-            onClick={() => setMenuOpen(false)}
-          >
-            {link.label}
-          </Link>
+        {NAV_GROUPS.map((group) => (
+          <div className="mobile-nav-group" key={group.label}>
+            <div className="mobile-nav-group-label">{group.label}</div>
+            {group.links.map((link) => <Link key={link.href} href={link.href} className={active === link.href ? "active" : ""} onClick={() => setMenuOpen(false)}>{link.label}</Link>)}
+          </div>
         ))}
         <Link href="/account" onClick={() => setMenuOpen(false)}>
           Get Started

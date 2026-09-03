@@ -26,10 +26,10 @@ const GATES = [
 ] as const;
 
 const ZONES = [
-  { icon: Search, title: "Diagnostic Bay", description: "The first stop for vehicle assessment, scan data, measurements, and fault investigation." },
-  { icon: Wrench, title: "Mechanical Workshop", description: "The working space for repairs, maintenance, and the vehicle systems that keep you moving." },
-  { icon: Battery, title: "Electrical / EV Area", description: "Electrical, hybrid, and EV-related work handled with the appropriate diagnostic and safety requirements." },
-  { icon: ClipboardCheck, title: "Inspection & Handover", description: "Final checks, documentation, and a clear explanation before the vehicle is released." },
+  { icon: Search, title: "Diagnostic Bay", description: "The first stop for vehicle assessment, scan data, measurements, and fault investigation.", image: "/workshop/workshop-diagnostic-bay.jpeg" },
+  { icon: Wrench, title: "Mechanical Workshop", description: "The working space for repairs, maintenance, and the vehicle systems that keep you moving.", image: "/workshop/workshop-mechanical.jpeg" },
+  { icon: Battery, title: "Electrical / EV Area", description: "Electrical, hybrid, and EV-related work handled with the appropriate diagnostic and safety requirements.", image: "/workshop/workshop-electrical.jpeg" },
+  { icon: ClipboardCheck, title: "Inspection & Handover", description: "Final checks, documentation, and a clear explanation before the vehicle is released.", image: "/workshop/workshop-inspection.jpeg" },
 ] as const;
 
 const VISIT_STEPS = [
@@ -46,7 +46,7 @@ export default function WorkshopPage() {
     name: "DMECH Services Limited Workshop",
     url: "https://dmechservices.ng/workshop",
     telephone: `+${CONTACT.phoneHref}`,
-    image: "https://dmechservices.ng/splash/04-workshop.jpg",
+    image: "https://dmechservices.ng/workshop/workshop-exterior.jpeg",
     address: { "@type": "PostalAddress", streetAddress: CONTACT.addressLine1, addressLocality: "Lagos", addressCountry: "NG" },
     areaServed: ["Sangotedo", "Ajah", "Lagos"],
     serviceType: "Automotive workshop",
@@ -56,7 +56,7 @@ export default function WorkshopPage() {
     <main className="page-fade">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
 
-      <section className="hero hero-workshop">
+      <section className="hero hero-workshop" style={{ backgroundImage: "linear-gradient(135deg,rgba(15,25,35,.82),rgba(22,40,64,.78)),url('/workshop/workshop-exterior.jpeg')" }}>
         <div className="hero-inner">
           <div>
             <div className="hero-badge"><span className="pulse" /> DMECH Workshop · Ajah, Lagos</div>
@@ -96,13 +96,13 @@ export default function WorkshopPage() {
         </div>
       </section>
 
-      <section className="section photo-banner pb-workshop center">
+      <section className="section photo-banner pb-workshop center" style={{ backgroundImage: "url('/workshop/workshop-diagnostic-bay.jpeg')" }}>
         <div className="section-inner"><div className="section-eyebrow">A digital tour of the workshop</div><div className="section-title">Inside the workshop</div><div className="section-subtitle" style={{ margin: "0 auto" }}>A place for assessment, controlled repair, specialist powertrain work, and documented release.</div></div>
       </section>
 
       <section className="section" style={{ background: "#fff" }}>
         <div className="section-inner">
-          <div className="trust-grid">{ZONES.map((zone, index) => <Reveal key={zone.title} delayMs={index * 60}><div className="trust-card"><div className="trust-icon"><zone.icon size={24} /></div><div className="trust-title">{zone.title}</div><div className="trust-desc">{zone.description}</div></div></Reveal>)}</div>
+          <div className="workshop-zone-grid">{ZONES.map((zone, index) => <Reveal key={zone.title} delayMs={index * 60}><div className="workshop-zone-card"><div className="workshop-zone-image" style={{ backgroundImage: `url('${zone.image}')` }} /><div className="workshop-zone-body"><div className="trust-icon"><zone.icon size={24} /></div><div className="trust-title">{zone.title}</div><div className="trust-desc">{zone.description}</div></div></div></Reveal>)}</div>
           <div style={{ display: "flex", justifyContent: "center", gap: 18, flexWrap: "wrap", marginTop: 28 }}><Link href="/service" className="teaser-link">Explore all workshop services <ArrowRight size={14} /></Link><Link href="/ev-workshop" className="teaser-link">Explore EV &amp; Battery <ArrowRight size={14} /></Link><Link href="/fleet" className="teaser-link">For Fleet Operators <ArrowRight size={14} /></Link></div>
         </div>
       </section>
