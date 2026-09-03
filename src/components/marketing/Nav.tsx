@@ -28,6 +28,7 @@ const NAV_GROUPS = [
       { href: "/service", label: "All Services" },
       { href: "/ev-workshop", label: "EV & Battery" },
       { href: "/fleet", label: "Fleet" },
+      { href: "https://training.dmechservices.ng", label: "DMECH Academy", external: true },
     ],
   },
   {
@@ -95,7 +96,7 @@ export function Nav() {
                   {group.label}<span aria-hidden="true">⌄</span>
                 </button>
                 <div className={`nav-dropdown ${dropdownOpen === group.label ? "open" : ""}`}>
-                  {group.links.map((link) => <Link key={link.href} href={link.href} className={active === link.href ? "active" : ""} onClick={() => setDropdownOpen(null)}>{link.label}</Link>)}
+                  {group.links.map((link) => link.external ? <a key={link.href} href={link.href} onClick={() => setDropdownOpen(null)}>{link.label}</a> : <Link key={link.href} href={link.href} className={active === link.href ? "active" : ""} onClick={() => setDropdownOpen(null)}>{link.label}</Link>)}
                 </div>
               </div>
             ))}
@@ -118,7 +119,7 @@ export function Nav() {
         {NAV_GROUPS.map((group) => (
           <div className="mobile-nav-group" key={group.label}>
             <div className="mobile-nav-group-label">{group.label}</div>
-            {group.links.map((link) => <Link key={link.href} href={link.href} className={active === link.href ? "active" : ""} onClick={() => setMenuOpen(false)}>{link.label}</Link>)}
+            {group.links.map((link) => link.external ? <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)}>{link.label}</a> : <Link key={link.href} href={link.href} className={active === link.href ? "active" : ""} onClick={() => setMenuOpen(false)}>{link.label}</Link>)}
           </div>
         ))}
         <Link href="/account" onClick={() => setMenuOpen(false)}>
