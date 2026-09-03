@@ -9,4 +9,8 @@ export const metadata: Metadata = {
 
 export default function AcademyLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
+    <html lang="en">
+      <body><AcademyShell>{children}</AcademyShell></body>
+    </html>
+  );
+}
