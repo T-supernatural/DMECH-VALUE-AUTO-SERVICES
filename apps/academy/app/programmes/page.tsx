@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { ProgrammeCard } from "@academy-components/ProgrammeCard";
-import { SectionHeading } from "@academy-components/SectionHeading";
-import { PROGRAMMES } from "@academy-lib/programmes";
+import { ProgrammeCard } from "../../components/ProgrammeCard";
+import { SectionHeading } from "../../components/SectionHeading";
+import { PROGRAMMES } from "../../lib/programmes";
 
 export const metadata: Metadata = { title: "Programmes | DMECH Academy", description: "Explore practical automotive technician development programmes from DMECH Academy.", alternates: { canonical: "/programmes" } };
 

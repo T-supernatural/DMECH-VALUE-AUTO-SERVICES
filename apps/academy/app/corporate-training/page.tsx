@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Building2, ClipboardCheck, Users } from "lucide-react";
-import { SectionHeading } from "@academy-components/SectionHeading";
+import { SectionHeading } from "../../components/SectionHeading";
 
 export const metadata: Metadata = { title: "Corporate Training | DMECH Academy", description: "Discuss practical technician development for fleet operators, company workshops, and corporate cohorts with DMECH Academy.", alternates: { canonical: "/corporate-training" } };
 

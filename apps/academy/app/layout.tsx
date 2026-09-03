@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { AcademyShell } from "@academy-components/AcademyShell";
+import { AcademyShell } from "../components/AcademyShell";
 
 export const metadata: Metadata = {
   title: "DMECH Academy",

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { SectionHeading } from "@academy-components/SectionHeading";
+import { SectionHeading } from "../../components/SectionHeading";
 
 export const metadata: Metadata = { title: "Technician Standard | DMECH Academy", description: "Explore the DMECH Academy Technician Standard progression from Bay Technician to Lead Technician.", alternates: { canonical: "/technician-standard" } };
 

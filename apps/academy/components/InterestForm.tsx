@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { PROGRAMMES } from "@academy-lib/programmes";
+import { PROGRAMMES } from "../lib/programmes";
 
 export function InterestForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "sent" | "error">("idle");

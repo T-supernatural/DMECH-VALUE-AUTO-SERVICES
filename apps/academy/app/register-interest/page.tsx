@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { SectionHeading } from "@academy-components/SectionHeading";
-import { InterestForm } from "@academy-components/InterestForm";
+import { SectionHeading } from "../../components/SectionHeading";
+import { InterestForm } from "../../components/InterestForm";
 
 export const metadata: Metadata = { title: "Register Interest | DMECH Academy", description: "Register your interest in practical automotive technician training with DMECH Academy.", alternates: { canonical: "/register-interest" } };
 

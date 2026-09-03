@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { BookOpen, CheckCircle2, Repeat2, Search, ShieldCheck, Wrench } from "lucide-react";
-import { SectionHeading } from "@academy-components/SectionHeading";
+import { SectionHeading } from "../../components/SectionHeading";
 
 export const metadata: Metadata = { title: "How It's Taught | DMECH Academy", description: "Learn how DMECH Academy connects theory, workshop practice, diagnosis, assessment, and technician progression.", alternates: { canonical: "/how-its-taught" } };
 

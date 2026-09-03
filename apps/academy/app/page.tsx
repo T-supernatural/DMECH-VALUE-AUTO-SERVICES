@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, BookOpen, ClipboardCheck, Gauge, ShieldCheck, Wrench } from "lucide-react";
-import { ProgrammeCard } from "@academy-components/ProgrammeCard";
-import { SectionHeading } from "@academy-components/SectionHeading";
-import { PROGRAMMES } from "@academy-lib/programmes";
+import { ProgrammeCard } from "../components/ProgrammeCard";
+import { SectionHeading } from "../components/SectionHeading";
+import { PROGRAMMES } from "../lib/programmes";
 
 const SKILLS = [
   [Gauge, "Diagnostic thinking", "Move from symptom to evidence, then from evidence to a defensible next step."],

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import { notFound } from "next/navigation";
-import { getProgramme, PROGRAMMES } from "@academy-lib/programmes";
+import { getProgramme, PROGRAMMES } from "../../../lib/programmes";
 
 export function generateStaticParams() { return PROGRAMMES.map((programme) => ({ slug: programme.slug })); }
 
